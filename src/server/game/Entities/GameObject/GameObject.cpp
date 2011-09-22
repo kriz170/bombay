@@ -556,8 +556,6 @@ void GameObject::Update(uint32 diff)
                 return;
             }
 
-            SetLootState(GO_READY);
-
             //burning flags in some battlegrounds, if you find better condition, just add it
             if (GetGOInfo()->IsDespawnAtAction() || GetGoAnimProgress() > 0)
             {
@@ -568,6 +566,8 @@ void GameObject::Update(uint32 diff)
 
             if (!m_respawnDelayTime)
                 return;
+
+		    SetLootState(GO_READY);
 
             if (!m_spawnedByDefault)
             {
