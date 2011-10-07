@@ -71,26 +71,26 @@ class icecrown_citadel_teleport : public GameObjectScript
         }
 };
 
-class at_frozen_throne_teleport : public AreaTriggerScript
-{
-    public:
-        at_frozen_throne_teleport() : AreaTriggerScript("at_frozen_throne_teleport") { }
+// class at_frozen_throne_teleport : public AreaTriggerScript
+//{
+ //   public:
+ //       at_frozen_throne_teleport() : AreaTriggerScript("at_frozen_throne_teleport") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/)
-        {
-            if (InstanceScript* instance = player->GetInstanceScript())
-                if (instance->GetBossState(DATA_PROFESSOR_PUTRICIDE) == DONE &&
-                    instance->GetBossState(DATA_BLOOD_QUEEN_LANA_THEL) == DONE &&
-                    instance->GetBossState(DATA_SINDRAGOSA) == DONE &&
-                    instance->GetBossState(DATA_THE_LICH_KING) != IN_PROGRESS)
-                    player->CastSpell(player, FROZEN_THRONE_TELEPORT, true);
+ //       bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/)
+//        {
+ //           if (InstanceScript* instance = player->GetInstanceScript())
+  //              if (instance->GetBossState(DATA_PROFESSOR_PUTRICIDE) == DONE &&
+ //                   instance->GetBossState(DATA_BLOOD_QUEEN_LANA_THEL) == DONE &&
+ //                   instance->GetBossState(DATA_SINDRAGOSA) == DONE &&
+  //                  instance->GetBossState(DATA_THE_LICH_KING) != IN_PROGRESS)
+   //                 player->CastSpell(player, FROZEN_THRONE_TELEPORT, true);
 
-            return true;
-        }
-};
+ //           return true;
+  //      }
+//};
 
 void AddSC_icecrown_citadel_teleport()
 {
     new icecrown_citadel_teleport();
-    new at_frozen_throne_teleport();
+   // new at_frozen_throne_teleport();
 }
