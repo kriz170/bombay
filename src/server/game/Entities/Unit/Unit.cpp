@@ -10591,7 +10591,7 @@ uint32 Unit::SpellDamageBonus(Unit* victim, SpellInfo const* spellProto, uint32 
                 break;
             // Ebon Plague
             case 1933:
-                if ((*i)->GetMiscValue() & (spellProto ? spellProto->GetSchoolMask() : 0))
+                if ((*i)->GetCasterGUID() == GetGUID() && (*i)->GetMiscValue() & (spellProto ? spellProto->GetSchoolMask() : 0))
                     AddPctN(TakenTotalMod, (*i)->GetAmount());
                 break;
         }
