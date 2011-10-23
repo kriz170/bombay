@@ -3094,6 +3094,9 @@ void SpellMgr::LoadDbcDataCorrections()
             case 28200: // Ascendance (Talisman of Ascendance trinket)
                 spellInfo->procCharges = 6;
                 break;
+            case 24259: // Spell Lock silence
+                spellInfo->speed = 80;
+                break;
             case 47201: // Everlasting Affliction
             case 47202:
             case 47203:

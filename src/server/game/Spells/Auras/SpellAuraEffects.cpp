@@ -4933,6 +4933,11 @@ void AuraEffect::HandleAuraDummy(AuraApplication const* aurApp, uint8 mode, bool
                         }
                     }
                     break;
+                case SPELLFAMILY_ROGUE:
+                    // Tricks of the Trade
+                    if (GetId() == 59628)
+                         target->SetReducedThreatPercent(0, 0);
+                     break;
                 case SPELLFAMILY_HUNTER:
                     switch (GetId())
                     {
