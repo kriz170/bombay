@@ -22432,12 +22432,11 @@ uint32 Player::GetBaseWeaponSkillValue (WeaponAttackType attType) const
 void Player::ResurectUsingRequestData()
 {
     /// Teleport before resurrecting by player, otherwise the player might get attacked from creatures near his corpse
-    if (IS_PLAYER_GUID(m_resurrectGUID))
-        TeleportTo(m_resurrectMap, m_resurrectX, m_resurrectY, m_resurrectZ, GetOrientation());
+    TeleportTo(m_resurrectMap, m_resurrectX, m_resurrectY, m_resurrectZ, GetOrientation());
 
     //we cannot resurrect player when we triggered far teleport
     //player will be resurrected upon teleportation
-    if (IsBeingTeleportedFar())
+    if (IsBeingTeleported())
     {
         ScheduleDelayedOperation(DELAYED_RESURRECT_PLAYER);
         return;
