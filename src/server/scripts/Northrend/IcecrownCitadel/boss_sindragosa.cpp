@@ -195,6 +195,7 @@ class boss_sindragosa : public CreatureScript
                 _mysticBuffetStack = 0;
                 _isInAirPhase = false;
                 _isThirdPhase = false;
+                _frostBombCount = 0;
 
                 if (instance->GetData(DATA_SINDRAGOSA_FROSTWYRMS) != 255)
                 {
@@ -289,7 +290,7 @@ class boss_sindragosa : public CreatureScript
                         break;
                     case POINT_AIR_PHASE:
                         me->CastCustomSpell(SPELL_ICE_TOMB_TARGET, SPELLVALUE_MAX_TARGETS, RAID_MODE<int32>(2, 5, 2, 6), NULL);
-                        events.ScheduleEvent(EVENT_FROST_BOMB, 8000);
+                        events.ScheduleEvent(EVENT_FROST_BOMB, 10000);
                         break;
                     case POINT_LAND:
                         me->SetFlying(false);
@@ -434,8 +435,13 @@ class boss_sindragosa : public CreatureScript
                             me->GetMotionMaster()->MoveTakeoff(POINT_TAKEOFF, pos, 8.30078125f);
                             events.DelayEvents(45000, EVENT_GROUP_LAND_PHASE);
                             events.ScheduleEvent(EVENT_AIR_PHASE, 110000);
+                            events.RescheduleEvent(EVENT_CLEAVE, 56000, EVENT_GROUP_LAND_PHASE);
+                            events.RescheduleEvent(EVENT_TAIL_SMASH, 66000, EVENT_GROUP_LAND_PHASE);
+                            events.RescheduleEvent(EVENT_FROST_BREATH, urand(54000, 58000), EVENT_GROUP_LAND_PHASE);
                             events.RescheduleEvent(EVENT_UNCHAINED_MAGIC, urand(55000, 60000), EVENT_GROUP_LAND_PHASE);
+                            events.RescheduleEvent(EVENT_ICY_GRIP, 79000, EVENT_GROUP_LAND_PHASE);
                             events.ScheduleEvent(EVENT_LAND, 45000);
+                            _frostBombCount = 0;
                             break;
                         }
                         case EVENT_AIR_MOVEMENT:
@@ -451,6 +457,8 @@ class boss_sindragosa : public CreatureScript
                             break;
                         case EVENT_FROST_BOMB:
                         {
+                            if(_frostBombCount > 3)
+								break;
                             float destX, destY, destZ;
                             destX = float(rand_norm()) * 117.25f + 4339.25f;
                             if (destX > 4371.5f && destX < 4432.0f)
@@ -467,6 +475,7 @@ class boss_sindragosa : public CreatureScript
                                 DoCast(summ, SPELL_FROST_BOMB_TRIGGER);
                                 //me->CastSpell(destX, destY, destZ, SPELL_FROST_BOMB_TRIGGER, false);
                             }
+                            _frostBombCount++;
                             events.ScheduleEvent(EVENT_FROST_BOMB, urand(5000, 10000));
                             break;
                         }
@@ -501,6 +510,7 @@ class boss_sindragosa : public CreatureScript
             uint8 _mysticBuffetStack;
             bool _isInAirPhase;
             bool _isThirdPhase;
+            int _frostBombCount;
         };
 
         CreatureAI* GetAI(Creature* creature) const
