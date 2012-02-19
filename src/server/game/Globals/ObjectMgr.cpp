@@ -903,7 +903,8 @@ void ObjectMgr::LoadCreatureAddons()
 
         uint32 guid = fields[0].GetUInt32();
 
-        if (_creatureDataStore.find(guid) == _creatureDataStore.end())
+        CreatureData const* creData = GetCreatureData(guid);
+        if (!creData)
         {
             sLog->outErrorDb("Creature (GUID: %u) does not exist but has a record in `creature_addon`", guid);
             continue;
@@ -912,6 +913,12 @@ void ObjectMgr::LoadCreatureAddons()
         CreatureAddon& creatureAddon = _creatureAddonStore[guid];
 
         creatureAddon.path_id = fields[1].GetUInt32();
+        if (creData->movementType == WAYPOINT_MOTION_TYPE && !creatureAddon.path_id)
+        {
+            const_cast<CreatureData*>(creData)->movementType = IDLE_MOTION_TYPE;
+            sLog->outErrorDb("Creature (GUID %u) has movement type set to WAYPOINT_MOTION_TYPE but no path assigned", guid);
+        }
+
         creatureAddon.mount   = fields[2].GetUInt32();
         creatureAddon.bytes1  = fields[3].GetUInt32();
         creatureAddon.bytes2  = fields[4].GetUInt32();
@@ -6701,7 +6708,7 @@ void ObjectMgr::LoadCorpses()
     PreparedQueryResult result = CharacterDatabase.Query(CharacterDatabase.GetPreparedStatement(CHAR_SEL_CORPSES));
     if (!result)
     {
-        sLog->outString(">> Loaded 0 corpses. DB table `pet_name_generation` is empty.");
+        sLog->outString(">> Loaded 0 corpses. DB table `corpse` is empty.");
         sLog->outString();
         return;
     }
@@ -6827,15 +6834,15 @@ void ObjectMgr::LoadReputationOnKill()
         uint32 creature_id = fields[0].GetUInt32();
 
         ReputationOnKillEntry repOnKill;
-        repOnKill.repfaction1          = fields[1].GetUInt32();
-        repOnKill.repfaction2          = fields[2].GetUInt32();
-        repOnKill.is_teamaward1        = fields[3].GetBool();
-        repOnKill.reputation_max_cap1  = fields[4].GetUInt32();
-        repOnKill.repvalue1            = fields[5].GetInt32();
-        repOnKill.is_teamaward2        = fields[6].GetBool();
-        repOnKill.reputation_max_cap2  = fields[7].GetUInt32();
-        repOnKill.repvalue2            = fields[8].GetInt32();
-        repOnKill.team_dependent       = fields[9].GetUInt8();
+        repOnKill.RepFaction1          = fields[1].GetUInt32();
+        repOnKill.RepFaction2          = fields[2].GetUInt32();
+        repOnKill.IsTeamAward1        = fields[3].GetBool();
+        repOnKill.ReputationMaxCap1  = fields[4].GetUInt32();
+        repOnKill.RepValue1            = fields[5].GetInt32();
+        repOnKill.IsTeamAward2        = fields[6].GetBool();
+        repOnKill.ReputationMaxCap2  = fields[7].GetUInt32();
+        repOnKill.RepValue2            = fields[8].GetInt32();
+        repOnKill.TeamDependent       = fields[9].GetUInt8();
 
         if (!GetCreatureTemplate(creature_id))
         {
@@ -6843,22 +6850,22 @@ void ObjectMgr::LoadReputationOnKill()
             continue;
         }
 
-        if (repOnKill.repfaction1)
+        if (repOnKill.RepFaction1)
         {
-            FactionEntry const* factionEntry1 = sFactionStore.LookupEntry(repOnKill.repfaction1);
+            FactionEntry const* factionEntry1 = sFactionStore.LookupEntry(repOnKill.RepFaction1);
             if (!factionEntry1)
             {
-                sLog->outErrorDb("Faction (faction.dbc) %u does not exist but is used in `creature_onkill_reputation`", repOnKill.repfaction1);
+                sLog->outErrorDb("Faction (faction.dbc) %u does not exist but is used in `creature_onkill_reputation`", repOnKill.RepFaction1);
                 continue;
             }
         }
 
-        if (repOnKill.repfaction2)
+        if (repOnKill.RepFaction2)
         {
-            FactionEntry const* factionEntry2 = sFactionStore.LookupEntry(repOnKill.repfaction2);
+            FactionEntry const* factionEntry2 = sFactionStore.LookupEntry(repOnKill.RepFaction2);
             if (!factionEntry2)
             {
-                sLog->outErrorDb("Faction (faction.dbc) %u does not exist but is used in `creature_onkill_reputation`", repOnKill.repfaction2);
+                sLog->outErrorDb("Faction (faction.dbc) %u does not exist but is used in `creature_onkill_reputation`", repOnKill.RepFaction2);
                 continue;
             }
         }
