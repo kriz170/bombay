@@ -283,7 +283,6 @@ class instance_trial_of_the_crusader : public InstanceMapScript
                         {
                             case DONE:
                                 EventStage = 6000;
-                                break;
                             case SPECIAL:
                                 uint32 tributeChest = 0;
                                 if (instance->GetSpawnMode() == RAID_DIFFICULTY_10MAN_HEROIC)
