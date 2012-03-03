@@ -11023,6 +11023,11 @@ uint32 Unit::SpellCriticalDamageBonus(SpellInfo const* spellProto, uint32 damage
 
     crit_bonus += damage;
 
+    // all these spells should have only applied crit damage bonus once instead of twice
+    if (spellProto->Id == 55078 || spellProto->Id == 61840 ||
+       (spellProto->SpellFamilyName == SPELLFAMILY_HUNTER && spellProto->SpellFamilyFlags[0] & 0x4000))
+        crit_bonus -= damage;
+   
     return crit_bonus;
 }
 
