@@ -889,10 +889,10 @@ public:
 * npc_crok_scourgebane
 ######*/
 
-class npc_crok_scourgebane : public CreatureScript
+class npc_crok_scourgebane_argent : public CreatureScript
 {
 public:
-    npc_crok_scourgebane(): CreatureScript("npc_crok_scourgebane_argent"){}
+    npc_crok_scourgebane_argent(): CreatureScript("npc_crok_scourgebane_argent"){}
 
     bool OnGossipHello(Player* pPlayer, Creature* pCreature)
     {
@@ -1013,7 +1013,7 @@ public:
         if (uiAction == GOSSIP_ACTION_INFO_DEF+1)
         {
             pPlayer->CLOSE_GOSSIP_MENU();
-            pCreature->SummonCreature(NPC_ARGENT_CHAMPION,8562.836914,1099.153931,556.787598,5.026550); // TODO (Récupérer les coordonnées réelles)
+            pCreature->SummonCreature(NPC_ARGENT_CHAMPION,8562.836914f,1099.153931f,556.787598f,5.026550f); // TODO (Récupérer les coordonnées réelles)
         }
         //else
         //pPlayer->SEND_GOSSIP_MENU(???, pCreature->GetGUID()); Missing text
@@ -1059,7 +1059,7 @@ public:
         {
             me->CastSpell(me, SPELL_DEFEND_CHAMPION, true);
             me->CastSpell(me, SPELL_DEFEND_CHAMPION, true);
-            pCreature->GetMotionMaster()->MovePoint(0,8552.469727,1124.128784,556.787598); // TODO (Trouver les coordonnées exactes)
+            pCreature->GetMotionMaster()->MovePoint(0,8552.469727f,1124.128784f,556.787598f); // TODO (Trouver les coordonnées exactes)
             pCreature->setFaction(35); //wrong faction in db?
         }
 
@@ -1179,7 +1179,7 @@ void AddSC_icecrown()
     new npc_justicar_mariel_trueheart;
     new npc_crusader_rhydalla;
     new npc_eadric_the_pure;
-    new npc_crok_scourgebane;
+    new npc_crok_scourgebane_argent;
     new npc_squire_danny;
     new npc_argent_champion;
 }
