@@ -3364,6 +3364,11 @@ void SpellMgr::LoadDbcDataCorrections()
             case 71159: // Awaken Plagued Zombies
                 spellInfo->DurationIndex = 21;
                 break;
+            case 71618: // Tear Gas, reduce range from 50000
+                spellInfo->EffectRadiusIndex[0] = EFFECT_RADIUS_200_YARDS;
+                spellInfo->EffectRadiusIndex[1] = EFFECT_RADIUS_200_YARDS;
+                spellInfo->EffectRadiusIndex[2] = EFFECT_RADIUS_200_YARDS;
+                break;
             // THIS IS HERE BECAUSE COOLDOWN ON CREATURE PROCS IS NOT IMPLEMENTED
             case 71604: // Mutated Strength (Professor Putricide)
             case 72673: // Mutated Strength (Professor Putricide)
