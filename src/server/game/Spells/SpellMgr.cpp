@@ -3453,6 +3453,12 @@ void SpellMgr::LoadDbcDataCorrections()
             case 69198: // Raging Spirit Visual
                 spellInfo->rangeIndex = 13;             // 50000yd
                 break;
+            case 68980: // Temp fix, reduce Harvest Soul damage 10N to 10% damage
+                spellInfo->EffectBasePoints[0] = 749;
+                break;
+            case 74325: // Temp fix, reduce Harvest Soul damage 25N to 10% damage
+                spellInfo->EffectBasePoints[0] = 1499;
+                break;
             case 73654: // Harvest Souls
             case 74295: // Harvest Souls
             case 74296: // Harvest Souls
