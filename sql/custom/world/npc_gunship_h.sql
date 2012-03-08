@@ -21,8 +21,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
+DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80027;
 SET @Reward := 51916;
@@ -41,9 +42,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80028;
 SET @Reward := 51915;
@@ -62,9 +63,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80029;
 SET @Reward := 51914;
@@ -83,9 +84,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80030;
 SET @Reward := 51913;
@@ -104,9 +105,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80031;
 SET @Reward := 51912;
@@ -125,9 +126,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80032;
 SET @Reward := 51911;
@@ -146,9 +147,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80033;
 SET @Reward := 51910;
@@ -167,9 +168,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80034;
 SET @Reward := 51909;
@@ -188,9 +189,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80035;
 SET @Reward := 51908;
@@ -209,9 +210,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80036;
 SET @Reward := 51907;
@@ -230,9 +231,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80037;
 SET @Reward := 51906;
@@ -251,9 +252,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80011;
 SET @Reward := 50653;
@@ -272,9 +273,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80012;
 SET @Reward := 50657;
@@ -293,9 +294,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80013;
 SET @Reward := 50655;
@@ -314,9 +315,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80014;
 SET @Reward := 50656;
@@ -335,9 +336,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80015;
 SET @Reward := 50659;
@@ -356,9 +357,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80016;
 SET @Reward := 50660;
@@ -377,9 +378,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80017;
 SET @Reward := 50658;
@@ -398,9 +399,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80018;
 SET @Reward := 50661;
@@ -419,9 +420,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80019;
 SET @Reward := 50664;
@@ -440,9 +441,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80020;
 SET @Reward := 50665;
@@ -461,9 +462,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80021;
 SET @Reward := 50667;
@@ -482,9 +483,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80022;
 SET @Reward := 50663;
@@ -503,9 +504,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80024;
 SET @Reward := 50349;
@@ -524,9 +525,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80025;
 SET @Reward := 50366;
@@ -545,9 +546,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID); 
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID); 
 
 SET @QuestID := 80026;
 SET @Reward := 50654;
@@ -566,9 +567,9 @@ INSERT INTO `quest_template` (
 'Bring me the item and some Emblem of Frost', 'Bring me the item and some Emblem of Frost', @Nama, -1);
 
 DELETE FROM `creature_questrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 DELETE FROM `creature_involvedrelation` WHERE `quest` = @QuestID;
-INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES @Entry, @QuestID);
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (@Entry, @QuestID);
 
 
 
