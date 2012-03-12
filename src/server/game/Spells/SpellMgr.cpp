@@ -3536,6 +3536,18 @@ void SpellMgr::LoadDbcDataCorrections()
             case 24259: // Spell Lock silence
                 spellInfo->speed = 80;
                 break;
+            case 23880: // Bloodthirst
+                // make it capable of crit as magic effect using spell crit chance
+                spellInfo->AttributesEx2 &= ~SPELL_ATTR2_CANT_CRIT;
+                spellInfo->DmgClass = SPELL_DAMAGE_CLASS_MAGIC;
+                spellInfo->SchoolMask = SPELL_SCHOOL_MASK_HOLY;
+                break;
+            case 23881: // Bloodthirst
+                spellInfo->EffectImplicitTargetA[EFFECT_1] = TARGET_UNIT_CASTER;
+                break;
+            case 23885: // Bloodthirst
+                spellInfo->EffectApplyAuraName[EFFECT_0] = SPELL_AURA_PROC_TRIGGER_SPELL_WITH_VALUE;
+                break;
             default:
                 break;
         }
