@@ -958,6 +958,124 @@ public:
 };
 
 /*######
+## npc_valiants
+######*/
+
+enum evaliants
+{
+	QUEST_THE_GRAND_MELEE_TH                    = 13772,
+	QUEST_THE_GRAND_MELEE_OH                    = 13767,
+	QUEST_THE_GRAND_MELEE_CH                    = 13777,
+	QUEST_THE_GRAND_MELEE_UH                    = 13782,
+	QUEST_THE_GRAND_MELEE_BH                    = 13787,
+	QUEST_THE_GRAND_MELEE_GA                    = 13750,
+	QUEST_THE_GRAND_MELEE_KA                    = 13756,
+	QUEST_THE_GRAND_MELEE_NA                    = 13761,
+	QUEST_THE_GRAND_MELEE_HA                    = 13665,
+	QUEST_THE_GRAND_MELEE_DA                    = 13745,
+
+	SPELL_CHARGE2                               = 63010,
+    SPELL_SHIELD_BREAKER2                       = 65147,
+
+	SPELL_MELEE_VICTORY                         = 62770,
+
+    GOSSIP_TEXTID_VALIANTS                      = 14407
+};
+
+#define GOSSIP_VALIANTS_ITEM "I am ready to fight!"
+
+class npc_valiants : public CreatureScript
+{
+public:
+    npc_valiants() : CreatureScript("npc_valiants") { }
+
+    bool OnGossipHello(Player* player, Creature* creature)
+    {
+        if (player->GetQuestStatus(QUEST_THE_GRAND_MELEE_TH) == QUEST_STATUS_INCOMPLETE ||
+		    player->GetQuestStatus(QUEST_THE_GRAND_MELEE_OH) == QUEST_STATUS_INCOMPLETE ||
+		    player->GetQuestStatus(QUEST_THE_GRAND_MELEE_CH) == QUEST_STATUS_INCOMPLETE ||
+		    player->GetQuestStatus(QUEST_THE_GRAND_MELEE_UH) == QUEST_STATUS_INCOMPLETE ||
+		    player->GetQuestStatus(QUEST_THE_GRAND_MELEE_BH) == QUEST_STATUS_INCOMPLETE ||
+		    player->GetQuestStatus(QUEST_THE_GRAND_MELEE_GA) == QUEST_STATUS_INCOMPLETE ||
+		    player->GetQuestStatus(QUEST_THE_GRAND_MELEE_KA) == QUEST_STATUS_INCOMPLETE ||
+		    player->GetQuestStatus(QUEST_THE_GRAND_MELEE_NA) == QUEST_STATUS_INCOMPLETE ||
+		    player->GetQuestStatus(QUEST_THE_GRAND_MELEE_HA) == QUEST_STATUS_INCOMPLETE ||
+		    player->GetQuestStatus(QUEST_THE_GRAND_MELEE_DA) == QUEST_STATUS_INCOMPLETE)//We need more info about it.
+        {
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VALIANTS_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+        }
+
+        player->SEND_GOSSIP_MENU(GOSSIP_TEXTID_VALIANTS, creature->GetGUID());
+        return true;
+    }
+
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 uiAction)
+    {
+        player->PlayerTalkClass->ClearMenus();
+        if (uiAction == GOSSIP_ACTION_INFO_DEF+1)
+        {
+            player->CLOSE_GOSSIP_MENU();
+            creature->setFaction(14);
+		}
+		   return true;
+    }
+
+	struct npc_valiantsAI : public ScriptedAI
+    {
+		npc_valiantsAI(Creature* creature) : ScriptedAI(creature)
+
+        {
+            creature->setFaction(14);
+		}
+
+        uint32 uiChargeTimer;
+        uint32 uiShieldBreakerTimer;
+
+        void Reset()
+        {
+            uiChargeTimer = 7000;
+            uiShieldBreakerTimer = 10000;
+        }
+
+        void DamageTaken(Unit* pDoneBy, uint32& uiDamage)
+        {
+            if (uiDamage > me->GetHealth() && pDoneBy->GetTypeId() == TYPEID_PLAYER)
+            {
+                uiDamage = 0;
+                CAST_PLR(pDoneBy)->AddItem(45127, 1);
+                me->setFaction(35);
+
+            }
+        }
+
+        void UpdateAI(const uint32 uiDiff)
+        {
+            if (!UpdateVictim())
+                return;
+
+            if (uiChargeTimer <= uiDiff)
+            {
+                DoCastVictim(SPELL_CHARGE);
+                uiChargeTimer = 7000;
+            } else uiChargeTimer -= uiDiff;
+
+            if (uiShieldBreakerTimer <= uiDiff)
+            {
+                DoCastVictim(SPELL_SHIELD_BREAKER);
+                uiShieldBreakerTimer = 10000;
+            } else uiShieldBreakerTimer -= uiDiff;
+
+            DoMeleeAttackIfReady();
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_valiantsAI(creature);
+    }
+};
+
+/*######
 ## npc_squire_danny
 ######*/
 
@@ -1180,6 +1298,7 @@ void AddSC_icecrown()
     new npc_crusader_rhydalla;
     new npc_eadric_the_pure;
     new npc_crok_scourgebane_argent;
+    new npc_valiants;
     new npc_squire_danny;
     new npc_argent_champion;
 }

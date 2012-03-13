@@ -240,3 +240,4 @@ INSERT INTO `event_scripts` (`id`, `delay`, `command`, `datalong`, `datalong2`, 
 UPDATE `creature_template` SET `InhabitType`=5, `ScriptName`='npc_maiden_of_drak_mar' WHERE `entry`=33273;
 DELETE FROM `creature_template_addon` WHERE `entry`=33273;
 INSERT INTO `creature_template_addon` (`entry`, `emote`) VALUES (33273, 13); -- 13 = EMOTE_STATE_SIT
+UPDATE creature_template SET ScriptName = 'npc_valiants' WHERE entry in (33562, 33559, 33558, 33564, 33561, 33384, 33306, 33285, 33382, 33383);
