@@ -803,10 +803,12 @@ bool Guardian::InitStatsForLevel(uint8 petlevel)
     {
         float scale;
         if (getLevel() >= cFamily->maxScaleLevel)
+        {
             if (cinfo->type_flags & CREATURE_TYPEFLAGS_EXOTIC)
                 scale = 1.0f;
             else
                 scale = cFamily->maxScale;
+        }
         else if (getLevel() <= cFamily->minScaleLevel)
             scale = cFamily->minScale;
         else
