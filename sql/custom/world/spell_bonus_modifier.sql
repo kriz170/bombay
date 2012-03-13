@@ -5,10 +5,23 @@ INSERT INTO `spell_bonus_data` (`entry`, `direct_bonus`, `dot_bonus`, `ap_bonus`
 (13897, 0, 0, 0, 0, 'Enchant Weapon - Fiery Weapon'),
 (61840, 0, 0, 0, 0, 'Paladin - Righteous Vengeance');
 
-DELETE FROM `spell_bonus_data` WHERE `entry` IN (60089,3044,3674,53209,53353,53352,13812,1978,2818,2819,11353,11354,25349,
- 26968, 27187,57969,57970,32645,32684,57992,57993,8680,8685,8689,11335,11336,11337,26890,57964,57965,13218,13222,13223,
- 13224,27189,57974,57975);
+DELETE FROM `spell_bonus_data` WHERE `entry` IN (49143,51416,51417,51418,51419,55268,66196,66958,66959,66960,
+ 66961,66962,60089,3044,3674,53209,53353,53352,13812,1978,2818,2819,11353,11354,25349,26968,27187,57969,
+ 57970,32645,32684,57992,57993,8680,8685,8689,11335,11336,11337,26890,57964,57965,13218,13222,13223,13224,
+ 27189,57974,57975);
 INSERT INTO `spell_bonus_data` (`entry`, `direct_bonus`, `dot_bonus`, `ap_bonus`, `ap_dot_bonus`, `comments`) VALUES 
+(49143, 0, 0, -1, -1, 'Death Knight - Frost Strike Rank 1'),
+(51416, 0, 0, -1, -1, 'Death Knight - Frost Strike Rank 2'),
+(51417, 0, 0, -1, -1, 'Death Knight - Frost Strike Rank 3'),
+(51418, 0, 0, -1, -1, 'Death Knight - Frost Strike Rank 4'),
+(51419, 0, 0, -1, -1, 'Death Knight - Frost Strike Rank 5'),
+(55268, 0, 0, -1, -1, 'Death Knight - Frost Strike Rank 6'),
+(66196, 0, 0, -1, -1, 'Death Knight - Frost Strike Offhand Rank 1'),
+(66958, 0, 0, -1, -1, 'Death Knight - Frost Strike Offhand Rank 2'),
+(66959, 0, 0, -1, -1, 'Death Knight - Frost Strike Offhand Rank 3'),
+(66960, 0, 0, -1, -1, 'Death Knight - Frost Strike Offhand Rank 4'),
+(66961, 0, 0, -1, -1, 'Death Knight - Frost Strike Offhand Rank 5'),
+(66962, 0, 0, -1, -1, 'Death Knight - Frost Strike Offhand Rank 6'),
 (60089, 0, 0, 0.15, -1, 'Druid - Faerie Fire (feral)'),
 (3044, 0, 0, 0.15, -1, 'Hunter - Arcane Shot'),
 (3674, 0, 0, -1, 0.02, 'Hunter - Black Arrow($RAP*0.1 / number of ticks)'),
