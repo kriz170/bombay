@@ -963,21 +963,18 @@ public:
 
 enum evaliants
 {
-	QUEST_THE_GRAND_MELEE_TH                    = 13772,
-	QUEST_THE_GRAND_MELEE_OH                    = 13767,
-	QUEST_THE_GRAND_MELEE_CH                    = 13777,
-	QUEST_THE_GRAND_MELEE_UH                    = 13782,
-	QUEST_THE_GRAND_MELEE_BH                    = 13787,
-	QUEST_THE_GRAND_MELEE_GA                    = 13750,
-	QUEST_THE_GRAND_MELEE_KA                    = 13756,
-	QUEST_THE_GRAND_MELEE_NA                    = 13761,
-	QUEST_THE_GRAND_MELEE_HA                    = 13665,
-	QUEST_THE_GRAND_MELEE_DA                    = 13745,
+    QUEST_THE_GRAND_MELEE_TH                    = 13772,
+    QUEST_THE_GRAND_MELEE_OH                    = 13767,
+    QUEST_THE_GRAND_MELEE_CH                    = 13777,
+    QUEST_THE_GRAND_MELEE_UH                    = 13782,
+    QUEST_THE_GRAND_MELEE_BH                    = 13787,
+    QUEST_THE_GRAND_MELEE_GA                    = 13750,
+    QUEST_THE_GRAND_MELEE_KA                    = 13756,
+    QUEST_THE_GRAND_MELEE_NA                    = 13761,
+    QUEST_THE_GRAND_MELEE_HA                    = 13665,
+    QUEST_THE_GRAND_MELEE_DA                    = 13745,
 
-	SPELL_CHARGE2                               = 63010,
-    SPELL_SHIELD_BREAKER2                       = 65147,
-
-	SPELL_MELEE_VICTORY                         = 62770,
+    SPELL_MELEE_VICTORY                         = 62770,
 
     GOSSIP_TEXTID_VALIANTS                      = 14407
 };
@@ -987,20 +984,20 @@ enum evaliants
 class npc_valiants : public CreatureScript
 {
 public:
-    npc_valiants() : CreatureScript("npc_valiants") { }
+    npc_valiants() : CreatureScript("npc_valiants"){}
 
     bool OnGossipHello(Player* player, Creature* creature)
     {
         if (player->GetQuestStatus(QUEST_THE_GRAND_MELEE_TH) == QUEST_STATUS_INCOMPLETE ||
-		    player->GetQuestStatus(QUEST_THE_GRAND_MELEE_OH) == QUEST_STATUS_INCOMPLETE ||
-		    player->GetQuestStatus(QUEST_THE_GRAND_MELEE_CH) == QUEST_STATUS_INCOMPLETE ||
-		    player->GetQuestStatus(QUEST_THE_GRAND_MELEE_UH) == QUEST_STATUS_INCOMPLETE ||
-		    player->GetQuestStatus(QUEST_THE_GRAND_MELEE_BH) == QUEST_STATUS_INCOMPLETE ||
-		    player->GetQuestStatus(QUEST_THE_GRAND_MELEE_GA) == QUEST_STATUS_INCOMPLETE ||
-		    player->GetQuestStatus(QUEST_THE_GRAND_MELEE_KA) == QUEST_STATUS_INCOMPLETE ||
-		    player->GetQuestStatus(QUEST_THE_GRAND_MELEE_NA) == QUEST_STATUS_INCOMPLETE ||
-		    player->GetQuestStatus(QUEST_THE_GRAND_MELEE_HA) == QUEST_STATUS_INCOMPLETE ||
-		    player->GetQuestStatus(QUEST_THE_GRAND_MELEE_DA) == QUEST_STATUS_INCOMPLETE)//We need more info about it.
+          player->GetQuestStatus(QUEST_THE_GRAND_MELEE_OH) == QUEST_STATUS_INCOMPLETE ||
+          player->GetQuestStatus(QUEST_THE_GRAND_MELEE_CH) == QUEST_STATUS_INCOMPLETE ||
+          player->GetQuestStatus(QUEST_THE_GRAND_MELEE_UH) == QUEST_STATUS_INCOMPLETE ||
+          player->GetQuestStatus(QUEST_THE_GRAND_MELEE_BH) == QUEST_STATUS_INCOMPLETE ||
+          player->GetQuestStatus(QUEST_THE_GRAND_MELEE_GA) == QUEST_STATUS_INCOMPLETE ||
+          player->GetQuestStatus(QUEST_THE_GRAND_MELEE_KA) == QUEST_STATUS_INCOMPLETE ||
+          player->GetQuestStatus(QUEST_THE_GRAND_MELEE_NA) == QUEST_STATUS_INCOMPLETE ||
+          player->GetQuestStatus(QUEST_THE_GRAND_MELEE_HA) == QUEST_STATUS_INCOMPLETE ||
+          player->GetQuestStatus(QUEST_THE_GRAND_MELEE_DA) == QUEST_STATUS_INCOMPLETE)//We need more info about it.
         {
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VALIANTS_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
         }
@@ -1016,23 +1013,24 @@ public:
         {
             player->CLOSE_GOSSIP_MENU();
             creature->setFaction(14);
-		}
-		   return true;
+            creature->AI()->AttackStart(player->GetVehicleCreatureBase());
+            creature->AddThreat(player, 0.0f);
+            creature->SetInCombatWith(player);
+            player->SetInCombatWith(creature);
+        }
+        return true;
     }
 
-	struct npc_valiantsAI : public ScriptedAI
+    struct npc_valiantsAI : public ScriptedAI
     {
-		npc_valiantsAI(Creature* creature) : ScriptedAI(creature)
-
-        {
-            creature->setFaction(14);
-		}
+	    npc_valiantsAI(Creature* creature) : ScriptedAI(creature){ }
 
         uint32 uiChargeTimer;
         uint32 uiShieldBreakerTimer;
 
         void Reset()
         {
+            me->setFaction(35);
             uiChargeTimer = 7000;
             uiShieldBreakerTimer = 10000;
         }
@@ -1044,7 +1042,6 @@ public:
                 uiDamage = 0;
                 CAST_PLR(pDoneBy)->AddItem(45127, 1);
                 me->setFaction(35);
-
             }
         }
 
@@ -1108,15 +1105,15 @@ public:
     bool OnGossipHello(Player* pPlayer, Creature* pCreature)
     {
         if (pPlayer->GetQuestStatus(QUEST_THE_VALIANT_S_CHALLENGE_0) == QUEST_STATUS_INCOMPLETE ||
-        pPlayer->GetQuestStatus(QUEST_THE_VALIANT_S_CHALLENGE_1) == QUEST_STATUS_INCOMPLETE ||
-        pPlayer->GetQuestStatus(QUEST_THE_VALIANT_S_CHALLENGE_2) == QUEST_STATUS_INCOMPLETE ||
-        pPlayer->GetQuestStatus(QUEST_THE_VALIANT_S_CHALLENGE_3) == QUEST_STATUS_INCOMPLETE ||
-        pPlayer->GetQuestStatus(QUEST_THE_VALIANT_S_CHALLENGE_4) == QUEST_STATUS_INCOMPLETE ||
-        pPlayer->GetQuestStatus(QUEST_THE_VALIANT_S_CHALLENGE_5) == QUEST_STATUS_INCOMPLETE ||
-        pPlayer->GetQuestStatus(QUEST_THE_VALIANT_S_CHALLENGE_6) == QUEST_STATUS_INCOMPLETE ||
-        pPlayer->GetQuestStatus(QUEST_THE_VALIANT_S_CHALLENGE_7) == QUEST_STATUS_INCOMPLETE ||
-        pPlayer->GetQuestStatus(QUEST_THE_VALIANT_S_CHALLENGE_8) == QUEST_STATUS_INCOMPLETE ||
-        pPlayer->GetQuestStatus(QUEST_THE_VALIANT_S_CHALLENGE_9) == QUEST_STATUS_INCOMPLETE)
+         pPlayer->GetQuestStatus(QUEST_THE_VALIANT_S_CHALLENGE_1) == QUEST_STATUS_INCOMPLETE ||
+         pPlayer->GetQuestStatus(QUEST_THE_VALIANT_S_CHALLENGE_2) == QUEST_STATUS_INCOMPLETE ||
+         pPlayer->GetQuestStatus(QUEST_THE_VALIANT_S_CHALLENGE_3) == QUEST_STATUS_INCOMPLETE ||
+         pPlayer->GetQuestStatus(QUEST_THE_VALIANT_S_CHALLENGE_4) == QUEST_STATUS_INCOMPLETE ||
+         pPlayer->GetQuestStatus(QUEST_THE_VALIANT_S_CHALLENGE_5) == QUEST_STATUS_INCOMPLETE ||
+         pPlayer->GetQuestStatus(QUEST_THE_VALIANT_S_CHALLENGE_6) == QUEST_STATUS_INCOMPLETE ||
+         pPlayer->GetQuestStatus(QUEST_THE_VALIANT_S_CHALLENGE_7) == QUEST_STATUS_INCOMPLETE ||
+         pPlayer->GetQuestStatus(QUEST_THE_VALIANT_S_CHALLENGE_8) == QUEST_STATUS_INCOMPLETE ||
+         pPlayer->GetQuestStatus(QUEST_THE_VALIANT_S_CHALLENGE_9) == QUEST_STATUS_INCOMPLETE)
         {
             pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SQUIRE_ITEM_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
             pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SQUIRE_ITEM_2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
@@ -1189,14 +1186,15 @@ public:
         {
             uiChargeTimer = 7000;
             uiShieldBreakerTimer = 10000;
+            uiDefendTimer = 10000;
         }
 
         void MovementInform(uint32 uiType, uint32 /*uiId*/)
         {
-        if (uiType != POINT_MOTION_TYPE)
-            return;
+            if (uiType != POINT_MOTION_TYPE)
+                return;
 
-        me->setFaction(14);
+            me->setFaction(14);
         }
 
         void DamageTaken(Unit* pDoneBy, uint32& uiDamage)
@@ -1275,12 +1273,111 @@ public:
             } else uiDefendTimer -= uiDiff;
 
             DoMeleeAttackIfReady();
-            }
-        };
+        }
+    };
 
     CreatureAI* GetAI(Creature* pCreature) const
     {
         return new npc_argent_championAI (pCreature);
+    }
+};
+
+/*######
+## npc_champions
+######*/
+
+enum eChampions
+{
+    QUEST_AMONG_THE_CHAMPION_A_NONDK            = 13790,
+    QUEST_AMONG_THE_CHAMPION_A_DK               = 13793,
+    QUEST_AMONG_THE_CHAMPION_H_NONDK            = 13811,
+    QUEST_AMONG_THE_CHAMPION_H_DK               = 13814,
+    
+    GOSSIP_TEXTID_CHAMPIONS                     = 14421
+};
+
+class npc_champions : public CreatureScript
+{
+public:
+    npc_champions() : CreatureScript("npc_champions"){}
+
+    bool OnGossipHello(Player* player, Creature* creature)
+    {
+        if (player->GetQuestStatus(QUEST_AMONG_THE_CHAMPION_A_NONDK) == QUEST_STATUS_INCOMPLETE ||
+          player->GetQuestStatus(QUEST_AMONG_THE_CHAMPION_A_DK) == QUEST_STATUS_INCOMPLETE ||
+          player->GetQuestStatus(QUEST_AMONG_THE_CHAMPION_H_NONDK) == QUEST_STATUS_INCOMPLETE ||
+          player->GetQuestStatus(QUEST_AMONG_THE_CHAMPION_H_DK) == QUEST_STATUS_INCOMPLETE)//We need more info about it.
+        {
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VALIANTS_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+        }
+
+        player->SEND_GOSSIP_MENU(GOSSIP_TEXTID_CHAMPIONS, creature->GetGUID());
+        return true;
+    }
+
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 uiAction)
+    {
+        player->PlayerTalkClass->ClearMenus();
+        if (uiAction == GOSSIP_ACTION_INFO_DEF+1)
+        {
+            player->CLOSE_GOSSIP_MENU();
+            creature->setFaction(14);
+            creature->AI()->AttackStart(player->GetVehicleCreatureBase());
+            creature->AddThreat(player, 0.0f);
+            creature->SetInCombatWith(player);
+            player->SetInCombatWith(creature);
+        }
+        return true;
+    }
+
+    struct npc_championsAI : public ScriptedAI
+    {
+	    npc_championsAI(Creature* creature) : ScriptedAI(creature) { }
+
+        uint32 uiChargeTimer;
+        uint32 uiShieldBreakerTimer;
+
+        void Reset()
+        {
+            me->setFaction(35);
+            uiChargeTimer = 7000;
+            uiShieldBreakerTimer = 10000;
+        }
+
+        void DamageTaken(Unit* pDoneBy, uint32& uiDamage)
+        {
+            if (uiDamage > me->GetHealth() && pDoneBy->GetTypeId() == TYPEID_PLAYER)
+            {
+                uiDamage = 0;
+                CAST_PLR(pDoneBy)->AddItem(45500, 1);       //Add Mark of Champion to player
+                me->setFaction(35);
+            }
+        }
+
+        void UpdateAI(const uint32 uiDiff)
+        {
+            if (!UpdateVictim())
+                return;
+
+            if (uiChargeTimer <= uiDiff)
+            {
+                DoCastVictim(SPELL_CHARGE);
+                uiChargeTimer = 7000;
+            } else uiChargeTimer -= uiDiff;
+
+            if (uiShieldBreakerTimer <= uiDiff)
+            {
+                DoCastVictim(SPELL_SHIELD_BREAKER);
+                uiShieldBreakerTimer = 10000;
+            } else uiShieldBreakerTimer -= uiDiff;
+
+            DoMeleeAttackIfReady();
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_championsAI(creature);
     }
 };
 
@@ -1299,6 +1396,7 @@ void AddSC_icecrown()
     new npc_eadric_the_pure;
     new npc_crok_scourgebane_argent;
     new npc_valiants;
+    new npc_champions;
     new npc_squire_danny;
     new npc_argent_champion;
 }

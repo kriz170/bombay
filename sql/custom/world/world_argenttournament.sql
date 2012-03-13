@@ -224,7 +224,7 @@ UPDATE `creature_template` SET `npcflag` = `npcflag` | 1, `ScriptName` = 'npc_ma
 UPDATE creature_template SET speed_run = 1 WHERE entry = 33211;
 UPDATE creature_template SET speed_walk = 1.6 WHERE entry = 33211;
 
--- Quete : A Worthy Weapon
+-- Quest : A Worthy Weapon
 SET @DrakmarGUID := 199000; -- custom, cari guid kosong
 DELETE FROM `gameobject` WHERE `id` =300009;
 INSERT INTO `gameobject` (`guid`, `id`, `map`, `spawnMask`, `phaseMask`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`)VALUES 
@@ -240,4 +240,11 @@ INSERT INTO `event_scripts` (`id`, `delay`, `command`, `datalong`, `datalong2`, 
 UPDATE `creature_template` SET `InhabitType`=5, `ScriptName`='npc_maiden_of_drak_mar' WHERE `entry`=33273;
 DELETE FROM `creature_template_addon` WHERE `entry`=33273;
 INSERT INTO `creature_template_addon` (`entry`, `emote`) VALUES (33273, 13); -- 13 = EMOTE_STATE_SIT
-UPDATE creature_template SET ScriptName = 'npc_valiants' WHERE entry in (33562, 33559, 33558, 33564, 33561, 33384, 33306, 33285, 33382, 33383);
+
+-- Quest: The Grand Melee
+UPDATE creature_template SET ScriptName = 'npc_valiants' WHERE entry IN 
+(33562, 33559, 33558, 33564, 33561, 33384, 33306, 33285, 33382, 33383);
+
+-- Quest: Among The Champions
+UPDATE creature_template SET ScriptName = 'npc_champions' WHERE entry IN
+(33738,33739,33740,33743,33744,33745,33746,33747,33748,33749);
