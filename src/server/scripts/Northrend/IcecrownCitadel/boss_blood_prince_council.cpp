@@ -402,7 +402,7 @@ class boss_prince_keleseth_icc : public CreatureScript
                 if (IsHeroic())
                 {
                     me->AddAura(SPELL_SHADOW_PRISON, me);
-                    DoCast(me, SPELL_SHADOW_PRISON_DUMMY);
+                    me->AddAura(SPELL_SHADOW_PRISON_DUMMY, me);
                 }
             }
 
