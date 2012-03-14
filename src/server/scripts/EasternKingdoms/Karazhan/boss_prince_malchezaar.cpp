@@ -228,7 +228,7 @@ public:
             SWPainTimer = 20000;
             AmplifyDamageTimer = 5000;
             Cleave_Timer = 8000;
-            InfernalTimer = 45000;
+            InfernalTimer = 40000;
             InfernalCleanupTimer = 47000;
             AxesTargetSwitchTimer = urand(7500, 20000);
             SunderArmorTimer = urand(5000, 10000);
@@ -365,9 +365,7 @@ public:
                 pos.Relocate(point->x, point->y, INFERNAL_Z);
             }
 
-            Creature* Infernal = me->SummonCreature(NETHERSPITE_INFERNAL, pos, TEMPSUMMON_TIMED_DESPAWN, 180000);
-
-            if (Infernal)
+            if (Creature* Infernal = me->SummonCreature(NETHERSPITE_INFERNAL, pos, TEMPSUMMON_TIMED_DESPAWN, 180000))
             {
                 Infernal->SetDisplayId(INFERNAL_MODEL_INVISIBLE);
                 Infernal->setFaction(me->getFaction());
