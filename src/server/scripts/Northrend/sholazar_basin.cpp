@@ -745,6 +745,199 @@ public:
     }
 };
 
+enum eArtruisTheHeartless
+{
+    SPELL_TOMB_OF_THE_HEARTLESS		= 52182,
+
+    SPELL_BINDINGS_OF_SUBMISSION    = 52185,
+    SPELL_FROST_NOVA				= 11831,
+    SPELL_FROSTBOLT					= 15530,
+    SPELL_ICE_LANCE					= 54261,
+    SPELL_ICY_VEINS					= 54792,
+
+    NPC_JALOOT						= 28667,
+    NPC_ZEPIK						= 28668,
+
+    ARTRUIS_PHYLACTERY              = 190777,
+    FACTION_MONSTER                 = 16
+};
+
+static Position SpawnLocations[]=
+{
+    {5632.390137f, 3757.199951f, -98.913300f, 0.0f},
+    {5649.290039f, 3794.449951f, -94.228302f, 0.0f}
+};
+
+class npc_artruis_the_heartless : public CreatureScript
+{
+public:
+
+    npc_artruis_the_heartless(): CreatureScript("npc_artruis_the_heartless") { }
+
+    struct npc_artruis_the_heartlessAI : public ScriptedAI
+    {
+        npc_artruis_the_heartlessAI(Creature* creature) : ScriptedAI(creature) 
+        {
+            Reset();
+        }
+
+        uint32 m_uiArtriusPhase;
+
+        uint32 m_uiBindingsOfSubmissionTimer;
+        uint32 m_uiFrostNovaTimer;
+        uint32 m_uiFrostboltTimer;
+        uint32 m_uiIceLanceTimer;
+        uint32 m_uiIcyVeinsTimer;
+
+        uint64 m_uiJalootGuid;
+        uint64 m_uiZepikGuid;
+
+        //Called at creature reset either by death or evade
+        void Reset() 
+        {
+            m_uiFrostNovaTimer = 5 * IN_MILLISECONDS;
+            m_uiFrostboltTimer = 5 * IN_MILLISECONDS;
+            m_uiIceLanceTimer = 0;
+            m_uiIcyVeinsTimer = 0;
+            
+            m_uiArtriusPhase = 0;
+        }
+
+        //Called at World update tick
+        void UpdateAI(uint32 const diff)
+        {
+            if (!me->getVictim())
+            {
+                if (!Unit::GetCreature(*me, m_uiJalootGuid))
+                {
+                    if ( TempSummon* jaloot = me->SummonCreature(NPC_JALOOT, SpawnLocations[0], TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30 * IN_MILLISECONDS))
+                    {
+                        m_uiJalootGuid = jaloot->GetGUID();
+                        jaloot->AddAura(SPELL_TOMB_OF_THE_HEARTLESS, jaloot);
+                    }
+                } else 
+                {
+                    if (Creature * jaloot = Unit::GetCreature(*me, m_uiJalootGuid))
+                        if (jaloot->isAlive() && me->isAlive())
+                            jaloot->AddAura(SPELL_TOMB_OF_THE_HEARTLESS, jaloot);
+                }
+
+                if (!Unit::GetCreature(*me, m_uiZepikGuid))
+                {
+                    if ( TempSummon* zepik = me->SummonCreature(NPC_ZEPIK, SpawnLocations[1], TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30 * IN_MILLISECONDS))
+                    {
+                        m_uiZepikGuid = zepik->GetGUID();
+                        zepik->AddAura(SPELL_TOMB_OF_THE_HEARTLESS, zepik);
+                    }
+                } else 
+                {
+                    if (Creature * zepik = Unit::GetCreature(*me, m_uiZepikGuid))
+                        if (zepik->isAlive() && me->isAlive())
+                            zepik->AddAura(SPELL_TOMB_OF_THE_HEARTLESS, zepik);
+                }
+            }
+
+            //Return since we have no target
+            if (!UpdateVictim())
+                return;
+
+            if (HealthBelowPct(30) && m_uiArtriusPhase == 0)
+            {
+                m_uiArtriusPhase = 1;
+                if (Creature* jaloot = Unit::GetCreature(*me, m_uiJalootGuid))
+                {
+                    jaloot->RemoveAllAuras();
+                    jaloot->setFaction(FACTION_MONSTER);
+                    jaloot->SetInCombatWith(me->getVictim());
+                    jaloot->AddThreat(me->getVictim(), 0.0f);
+                    me->CastSpell(jaloot, SPELL_BINDINGS_OF_SUBMISSION);
+                }
+
+                if (Creature* zepik = Unit::GetCreature(*me, m_uiZepikGuid))
+                {
+                    zepik->RemoveAllAuras();
+                    zepik->setFaction(FACTION_MONSTER);
+                    zepik->SetInCombatWith(me->getVictim());
+                    zepik->AddThreat(me->getVictim(), 0.0f);
+                    me->CastSpell(zepik, SPELL_BINDINGS_OF_SUBMISSION);
+                }
+
+            }
+
+            if ( m_uiArtriusPhase == 0 || m_uiArtriusPhase == 2 )
+            {
+                if ( m_uiFrostboltTimer <= diff )
+                {
+                    DoCast(me->getVictim(), SPELL_FROSTBOLT);
+                    m_uiFrostboltTimer = 5 * IN_MILLISECONDS;
+                } else m_uiFrostboltTimer -= diff;
+
+                if ( m_uiFrostNovaTimer <= diff )
+                {
+                    if ( me->IsInRange(me->getVictim(), 5.0f, 10.0f) )
+                    {
+                        DoCast(SPELL_FROST_NOVA);
+                        m_uiFrostNovaTimer = 5 * IN_MILLISECONDS;
+                    }
+                } else m_uiFrostNovaTimer -= diff;
+
+                if ( m_uiIceLanceTimer <= diff )
+                {
+                    if (me->getVictim()->HasAuraType(SPELL_AURA_MOD_DECREASE_SPEED))
+                    {
+                        DoCast(me->getVictim(), SPELL_ICE_LANCE);
+                        m_uiIceLanceTimer = 5 * IN_MILLISECONDS;
+                    }
+                } else m_uiIceLanceTimer -= diff;
+
+                if ( m_uiIcyVeinsTimer <= diff )
+                {
+                    if (!me->HasUnitState(UNIT_STATE_CASTING))
+                    {
+                        DoCast(SPELL_ICY_VEINS);
+                        m_uiIcyVeinsTimer = 25 * IN_MILLISECONDS;
+                    }
+                } else m_uiIcyVeinsTimer -= diff;
+
+            } else 
+            {
+                Creature* jaloot = Unit::GetCreature(*me, m_uiJalootGuid);
+                Creature* zepik = Unit::GetCreature(*me, m_uiZepikGuid);
+
+                if (!jaloot || !zepik)
+                    return;
+
+                if (jaloot->isDead())
+                {
+                    m_uiArtriusPhase = 2;
+                    me->RemoveAllAuras();
+                    zepik->RestoreFaction();
+                    zepik->SetInCombatWith(me);
+                    zepik->AddThreat(me, 0.0f);
+                }
+
+                if (zepik->isDead())
+                {
+                    m_uiArtriusPhase = 2;
+                    me->RemoveAllAuras();
+                    jaloot->RestoreFaction();
+                    jaloot->SetInCombatWith(me);
+                    jaloot->AddThreat(me, 0.0f);
+                }
+                
+            }
+
+            DoMeleeAttackIfReady();
+        }
+    };
+
+    CreatureAI *GetAI(Creature *creature) const
+    {
+        return new npc_artruis_the_heartlessAI(creature);
+    }
+
+};
+
 void AddSC_sholazar_basin()
 {
     new npc_injured_rainspeaker_oracle();
@@ -755,4 +948,5 @@ void AddSC_sholazar_basin()
     new npc_adventurous_dwarf();
     new npc_jungle_punch_target();
     new spell_q12620_the_lifewarden_wrath();
+    new npc_artruis_the_heartless();
 }
