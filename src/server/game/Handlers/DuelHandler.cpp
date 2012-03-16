@@ -29,14 +29,16 @@ void WorldSession::HandleDuelAcceptedOpcode(WorldPacket& recvPacket)
     uint64 guid;
     Player* player;
     Player* plTarget;
+    uint32 team;
 
     recvPacket >> guid;
 
     if (!GetPlayer()->duel)                                  // ignore accept from duel-sender
         return;
 
-    player       = GetPlayer();
+    player = GetPlayer();
     plTarget = player->duel->opponent;
+    team = player->GetTeam();
 
     if (player == player->duel->initiator || !plTarget || player == plTarget || player->duel->startTime != 0 || plTarget->duel->startTime != 0)
         return;
@@ -51,6 +53,26 @@ void WorldSession::HandleDuelAcceptedOpcode(WorldPacket& recvPacket)
 
     player->SendDuelCountdown(3000);
     plTarget->SendDuelCountdown(3000);
+    // Before duel start, reset power and arena spell cooldowns if duel in durotar as horde or elwynn as alliance
+    if ((player->GetZoneId() == 14 && team == HORDE) || (player->GetZoneId() == 12 && team == ALLIANCE))
+    {
+        player->ResetAllPowers();
+        player->RemoveArenaSpellCooldowns(true);
+        plTarget->ResetAllPowers();
+        plTarget->RemoveArenaSpellCooldowns(true);
+        player->RemoveAura(41425);      // Remove Hypothermia Debuff
+        plTarget->RemoveAura(41425);
+        player->RemoveAura(25771);      // Remove Forbearance Debuff
+        plTarget->RemoveAura(25771);
+        player->RemoveAura(57724);      // Remove Sated Debuff
+        plTarget->RemoveAura(57724);
+        player->RemoveAura(57723);      // Remove Exhaustion Debuff
+        plTarget->RemoveAura(57723);
+        player->RemoveAura(66233);      // Remove Ardent Defender Debuff
+        plTarget->RemoveAura(66233);
+        player->RemoveAura(11196);      // Remove Recently Bandaged Debuff
+        plTarget->RemoveAura(11196);
+    }
 }
 
 void WorldSession::HandleDuelCancelledOpcode(WorldPacket& recvPacket)
