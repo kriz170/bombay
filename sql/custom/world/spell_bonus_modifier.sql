@@ -6,7 +6,7 @@ INSERT INTO `spell_bonus_data` (`entry`, `direct_bonus`, `dot_bonus`, `ap_bonus`
 (61840, 0, 0, 0, 0, 'Paladin - Righteous Vengeance');
 
 DELETE FROM `spell_bonus_data` WHERE `entry` IN (49143,51416,51417,51418,51419,55268,66196,66958,66959,66960,
- 66961,66962,60089,3044,3674,53209,53353,53352,13812,1978,2818,2819,11353,11354,25349,26968,27187,57969,
+ 66961,66962,60089,3044,3674,53209,53353,53352,13812,1978,63544,2818,2819,11353,11354,25349,26968,27187,57969,
  57970,32645,32684,57992,57993,8680,8685,8689,11335,11336,11337,26890,57964,57965,13218,13222,13223,13224,
  27189,57974,57975);
 INSERT INTO `spell_bonus_data` (`entry`, `direct_bonus`, `dot_bonus`, `ap_bonus`, `ap_dot_bonus`, `comments`) VALUES 
@@ -30,6 +30,7 @@ INSERT INTO `spell_bonus_data` (`entry`, `direct_bonus`, `dot_bonus`, `ap_bonus`
 (53352, 0, 0, 0.14, -1, 'Hunter - Explosive Shot (triggered)'),
 (13812, 0, 0, 0.1, -1, 'Hunter - Explosive Trap Effect'),
 (1978, 0, 0, -1, 0.04, 'Hunter - Serpent Sting($RAP*0.2 / number of ticks)'),
+(63544, 0, 0, 0, 0, 'Priest - Empowered Renew'),
 (2818, 0, 0, 0, 0.03, 'Rogue - Deadly Poison All Ranks($AP*0.12 / number of ticks)'),
 (2819, 0, 0, -1, 0.03, 'Rogue - Deadly Poison Rank 2($AP*0.12 / number of ticks)'),
 (11353, 0, 0, -1, 0.03, 'Rogue - Deadly Poison Rank 3($AP*0.12 / number of ticks)'),
