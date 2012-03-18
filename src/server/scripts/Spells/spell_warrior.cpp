@@ -187,6 +187,7 @@ class spell_warr_deep_wounds : public SpellScriptLoader
 
                         SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_DEEP_WOUNDS_RANK_PERIODIC);
                         uint32 ticks = spellInfo->GetDuration() / spellInfo->Effects[EFFECT_0].Amplitude;
+                        ticks = Max (1,Min(10,ticks));
 
                         // Add remaining ticks to damage done
                         if (AuraEffect const* aurEff = target->GetAuraEffect(SPELL_DEEP_WOUNDS_RANK_PERIODIC, EFFECT_0, caster->GetGUID()))
