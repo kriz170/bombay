@@ -826,7 +826,7 @@ bool Guardian::InitStatsForLevel(uint8 petlevel)
     if (pInfo)                                      // exist in DB
     {
         if (petType == HUNTER_PET)
-            SetCreateHealth(pInfo->health + float((m_owner->GetStat(STAT_STAMINA)) * 0.45 ) * 10.5);
+            SetCreateHealth(pInfo->health + float((m_owner->GetStat(STAT_STAMINA)) * 0.40 ) * 10.5);
         else
             SetCreateHealth(pInfo->health);
         
