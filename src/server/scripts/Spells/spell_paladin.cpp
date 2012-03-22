@@ -30,6 +30,9 @@ enum PaladinSpells
 {
     PALADIN_SPELL_DIVINE_PLEA                    = 54428,
     PALADIN_SPELL_BLESSING_OF_SANCTUARY_BUFF     = 67480,
+    PALADIN_SPELL_BLESSING_OF_KINGS              = 20217,
+    PALADIN_SPELL_GREATER_BLESSING_OF_KINGS      = 25898,
+    SPELL_BLESSING_OF_FORGOTTEN_KINGS            = 72586,
 
     PALADIN_SPELL_HOLY_SHOCK_R1                  = 20473,
     PALADIN_SPELL_HOLY_SHOCK_R1_DAMAGE           = 25912,
@@ -189,14 +192,17 @@ class spell_pal_blessing_of_sanctuary : public SpellScriptLoader
             void HandleEffectApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
             {
                 Unit* target = GetTarget();
-                if (Unit* caster = GetCaster())
-                    caster->CastSpell(target, PALADIN_SPELL_BLESSING_OF_SANCTUARY_BUFF, true);
+                if(!target->HasAura(PALADIN_SPELL_BLESSING_OF_KINGS) && !target->HasAura(PALADIN_SPELL_GREATER_BLESSING_OF_KINGS)
+                   && !target->HasAura(SPELL_BLESSING_OF_FORGOTTEN_KINGS))
+                    if (Unit* caster = GetCaster())
+                        caster->CastSpell(target, PALADIN_SPELL_BLESSING_OF_SANCTUARY_BUFF, true);
             }
 
             void HandleEffectRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
             {
                 Unit* target = GetTarget();
-                target->RemoveAura(PALADIN_SPELL_BLESSING_OF_SANCTUARY_BUFF, GetCasterGUID());
+                if (target->HasAura(PALADIN_SPELL_BLESSING_OF_SANCTUARY_BUFF))
+                    target->RemoveAura(PALADIN_SPELL_BLESSING_OF_SANCTUARY_BUFF);
             }
 
             void Register()
@@ -209,6 +215,52 @@ class spell_pal_blessing_of_sanctuary : public SpellScriptLoader
         AuraScript* GetAuraScript() const
         {
             return new spell_pal_blessing_of_sanctuary_AuraScript();
+        }
+};
+
+// 20217 Blessing of Kings
+// 25898 Greater Blessing of Kings
+// 72586 Spell linked, Drums of Forgotten Kings
+class spell_pal_blessing_of_kings : public SpellScriptLoader
+{
+    public:
+        spell_pal_blessing_of_kings() : SpellScriptLoader("spell_pal_blessing_of_kings") { }
+
+        class spell_pal_blessing_of_kings_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_pal_blessing_of_kings_AuraScript);
+
+            bool Validate(SpellInfo const* /*entry*/)
+            {
+                if (!sSpellMgr->GetSpellInfo(PALADIN_SPELL_BLESSING_OF_SANCTUARY_BUFF))
+                    return false;
+                return true;
+            }
+
+            void HandleEffectApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+            {
+                Unit* target = GetTarget();
+                if(target->HasAura(PALADIN_SPELL_BLESSING_OF_SANCTUARY_BUFF))
+                    target->RemoveAura(PALADIN_SPELL_BLESSING_OF_SANCTUARY_BUFF);
+            }
+
+            void HandleEffectRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+            {
+                Unit* target = GetTarget();
+                if (target->HasAura(20911) || target->HasAura(25899))
+                    target->AddAura(PALADIN_SPELL_BLESSING_OF_SANCTUARY_BUFF,target);
+            }
+
+            void Register()
+            {
+                AfterEffectApply += AuraEffectApplyFn(spell_pal_blessing_of_kings_AuraScript::HandleEffectApply, EFFECT_0, SPELL_AURA_MOD_TOTAL_STAT_PERCENTAGE, AURA_EFFECT_HANDLE_REAL_OR_REAPPLY_MASK);
+                AfterEffectRemove += AuraEffectRemoveFn(spell_pal_blessing_of_kings_AuraScript::HandleEffectRemove, EFFECT_0, SPELL_AURA_MOD_TOTAL_STAT_PERCENTAGE, AURA_EFFECT_HANDLE_REAL_OR_REAPPLY_MASK);
+            }
+        };
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_pal_blessing_of_kings_AuraScript();
         }
 };
 
@@ -418,6 +470,7 @@ void AddSC_paladin_spell_scripts()
     new spell_pal_ardent_defender();
     new spell_pal_blessing_of_faith();
     new spell_pal_blessing_of_sanctuary();
+    new spell_pal_blessing_of_kings();
     new spell_pal_guarded_by_the_light();
     new spell_pal_holy_shock();
     new spell_pal_judgement_of_command();
