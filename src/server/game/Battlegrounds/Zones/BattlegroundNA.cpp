@@ -102,7 +102,7 @@ bool BattlegroundNA::HandlePlayerUnderMap(Player* player)
     return true;
 }
 
-bool BattlegroundDS::IsPlayerUnderMap(Player* player, float x, float y, float z)
+bool BattlegroundNA::IsPlayerUnderMap(Player* player, float x, float y, float z)
 {
 	if (z < 11)
 		return true;

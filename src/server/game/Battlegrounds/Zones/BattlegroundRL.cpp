@@ -102,7 +102,7 @@ bool BattlegroundRL::HandlePlayerUnderMap(Player* player)
     return true;
 }
 
-bool BattlegroundDS::IsPlayerUnderMap(Player* player, float x, float y, float z)
+bool BattlegroundRL::IsPlayerUnderMap(Player* player, float x, float y, float z)
 {
 	if (z < 31)
 		return true;
