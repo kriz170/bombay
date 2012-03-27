@@ -491,7 +491,7 @@ public:
                     Creature* coilfangElite = me->SummonCreature(COILFANG_ELITE, CoilfangElitePos[pos][0], CoilfangElitePos[pos][1], CoilfangElitePos[pos][2], CoilfangElitePos[pos][3], TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
                     if (coilfangElite)
                     {
-                        if (Unit* target = target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
                             coilfangElite->AI()->AttackStart(target);
                         else if (me->getVictim())
                             coilfangElite->AI()->AttackStart(me->getVictim());
@@ -865,7 +865,6 @@ public:
     bool OnUse(Player* player, Item* /*item*/, SpellCastTargets const& targets)
     {
         InstanceScript* instance = player->GetInstanceScript();
-
         if (!instance)
         {
             player->GetSession()->SendNotification(TEXT_NOT_INITIALIZED);
@@ -908,12 +907,8 @@ public:
                 }
 
                 // get and remove channel
-                
                 if (Unit* channel = Unit::GetCreature(*vashj, CAST_AI(boss_lady_vashj::boss_lady_vashjAI, vashj->AI())->ShieldGeneratorChannel[channelIdentifier]))
-                {
-                    // call Unsummon()
-                    channel->setDeathState(JUST_DIED);
-                }
+                    channel->setDeathState(JUST_DIED); // call Unsummon()
 
                 instance->SetData(identifier, 1);
 
