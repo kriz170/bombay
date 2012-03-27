@@ -437,7 +437,7 @@ class boss_sindragosa : public CreatureScript
                             events.ScheduleEvent(EVENT_AIR_PHASE, 110000);
                             events.RescheduleEvent(EVENT_CLEAVE, 56000, EVENT_GROUP_LAND_PHASE);
                             events.RescheduleEvent(EVENT_TAIL_SMASH, 66000, EVENT_GROUP_LAND_PHASE);
-                            events.RescheduleEvent(EVENT_FROST_BREATH, urand(54000, 58000), EVENT_GROUP_LAND_PHASE);
+                            events.RescheduleEvent(EVENT_FROST_BREATH, urand(58000, 62000), EVENT_GROUP_LAND_PHASE);
                             events.RescheduleEvent(EVENT_UNCHAINED_MAGIC, urand(55000, 60000), EVENT_GROUP_LAND_PHASE);
                             events.RescheduleEvent(EVENT_ICY_GRIP, 79000, EVENT_GROUP_LAND_PHASE);
                             events.ScheduleEvent(EVENT_LAND, 45000);
@@ -457,8 +457,6 @@ class boss_sindragosa : public CreatureScript
                             break;
                         case EVENT_FROST_BOMB:
                         {
-                            if(_frostBombCount > 3)
-								break;
                             float destX, destY, destZ;
                             destX = float(rand_norm()) * 117.25f + 4339.25f;
                             if (destX > 4371.5f && destX < 4432.0f)
@@ -475,8 +473,9 @@ class boss_sindragosa : public CreatureScript
                                 DoCast(summ, SPELL_FROST_BOMB_TRIGGER);
                                 //me->CastSpell(destX, destY, destZ, SPELL_FROST_BOMB_TRIGGER, false);
                             }
+                            if(_frostBombCount < 4)
+                                events.ScheduleEvent(EVENT_FROST_BOMB, urand(7000, 9000));
                             _frostBombCount++;
-                            events.ScheduleEvent(EVENT_FROST_BOMB, urand(5000, 10000));
                             break;
                         }
                         case EVENT_LAND:
