@@ -134,6 +134,7 @@ bool TargetedMovementGeneratorMedium<T,D>::Update(T &owner, const uint32 & time_
     // prevent movement while casting spells with cast time or channel time
     if (owner.IsNonMeleeSpellCasted(false, false,  true))
     {
+        //Hack fix for Gas Cloud (37562), Volatile Ooze (37697), and Ice Sphere (36633)
         if (owner.GetEntry() == 37562 || owner.GetEntry() == 37697 || owner.GetEntry() == 36633)
             return true;
 
