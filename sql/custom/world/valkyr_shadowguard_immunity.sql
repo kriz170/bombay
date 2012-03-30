@@ -17,5 +17,7 @@ UPDATE `creature_template` SET `mechanic_immune_mask` = `mechanic_immune_mask` |
 1048576|    -- mount
 4194304|    -- turn
 8388608|    -- horror
-536870912   -- sappeed
+33554432|   -- interrupt
+67108864|   -- dazed
+536870912   -- sapped
 where `entry` IN (36609,39120,39121,39122);
