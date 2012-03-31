@@ -220,6 +220,7 @@ public:
                 DoScriptText(SAY_TEXTID_VEKJIK1, creature, player);
                 player->AreaExploredOrEventHappens(QUEST_MAKING_PEACE);
                 creature->CastSpell(player, SPELL_FREANZYHEARTS_FURY, false);
+                creature->Respawn(true);
                 break;
         }
 
