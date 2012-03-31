@@ -187,13 +187,14 @@ class spell_warr_deep_wounds : public SpellScriptLoader
 
                         SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_DEEP_WOUNDS_RANK_PERIODIC);
                         uint32 ticks = spellInfo->GetDuration() / spellInfo->Effects[EFFECT_0].Amplitude;
-                        ticks = ticks > 1 ? (ticks < 10 ? ticks : 10) : 1;
 
                         // Add remaining ticks to damage done
                         if (AuraEffect const* aurEff = target->GetAuraEffect(SPELL_DEEP_WOUNDS_RANK_PERIODIC, EFFECT_0, caster->GetGUID()))
                             damage += aurEff->GetAmount() * (ticks - aurEff->GetTickNumber());
 
                         damage = damage / ticks;
+                        // prevent deep wound tick exceed 20000 damage, temp fix for really high damage when server has high diff
+                        damage = damage > 1 ? (damage < 20000 ? damage : 20000) : 1;
                         caster->CastCustomSpell(target, SPELL_DEEP_WOUNDS_RANK_PERIODIC, &damage, NULL, NULL, true);
                     }
             }
