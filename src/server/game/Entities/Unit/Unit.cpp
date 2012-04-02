@@ -2508,7 +2508,7 @@ uint32 Unit::CalcMagicSpellHitChance(Unit* victim, SpellSchoolMask schoolMask, S
         if (!(spellProto->SpellFamilyName == SPELLFAMILY_WARLOCK && spellProto->SpellIconID == 3178)) // Chaos Bolt should ignore it
 			modHitChance += victim->GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_ATTACKER_SPELL_HIT_CHANCE, schoolMask);
         // Reduce spell hit chance for Area of effect spells from victim SPELL_AURA_MOD_AOE_AVOIDANCE aura
-        if (spellProto->IsAOE())
+        if (spellProto->IsTargetingArea())
             modHitChance -= victim->GetTotalAuraModifier(SPELL_AURA_MOD_AOE_AVOIDANCE);
 
         // Decrease hit chance from victim rating bonus
@@ -2518,8 +2518,8 @@ uint32 Unit::CalcMagicSpellHitChance(Unit* victim, SpellSchoolMask schoolMask, S
   
     // Spells with SPELL_ATTR3_IGNORE_HIT_RESULT will additionally fully ignore
     // resist and deflect chances
-    if (spell->AttributesEx3 & SPELL_ATTR3_IGNORE_HIT_RESULT)
-        return SPELL_MISS_NONE;
+    //if (spell->AttributesEx3 & SPELL_ATTR3_IGNORE_HIT_RESULT)
+    //    return SPELL_MISS_NONE;
 
     // Chance resist mechanic (select max value from every mechanic spell effect)
     modHitChance -= victim->GetMechanicResistChance(spellProto);
