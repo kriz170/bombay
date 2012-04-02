@@ -2674,7 +2674,7 @@ void SpellMgr::LoadSpellCustomAttr()
                     break;
                 case SPELL_AURA_PERIODIC_HEAL:
                 case SPELL_AURA_PERIODIC_DAMAGE_PERCENT:
-                case SPELL_AURA_PERIODIC_LEECH: 
+				case SPELL_AURA_PERIODIC_LEECH:
                 case SPELL_AURA_PERIODIC_HEALTH_FUNNEL:
                 case SPELL_AURA_PERIODIC_ENERGIZE:
 				case SPELL_AURA_PERIODIC_TRIGGER_SPELL:
@@ -2711,8 +2711,6 @@ void SpellMgr::LoadSpellCustomAttr()
                 case SPELL_EFFECT_HEAL:
                     spellInfo->AttributesCu |= SPELL_ATTR0_CU_DIRECT_DAMAGE;
                     break;
-                case SPELL_EFFECT_POWER_DRAIN:
-                case SPELL_EFFECT_POWER_BURN:
                 case SPELL_EFFECT_HEAL_MAX_HEALTH:
                 case SPELL_EFFECT_HEALTH_LEECH:
                 case SPELL_EFFECT_HEAL_PCT:
