@@ -46,40 +46,32 @@ BattlegroundRV::~BattlegroundRV()
 
 void BattlegroundRV::PostUpdateImpl(uint32 diff)
 {
+	if (GetStatus() != STATUS_IN_PROGRESS)
+		return;
+
     if (getTimer() < diff)
     {
         switch (getState())
         {
             case BG_RV_STATE_OPEN_FENCES:
-                setTimer(BG_RV_PILAR_TO_FIRE_TIMER);
+                // Open fire (only at game start)
+				for (uint8 i = BG_RV_OBJECT_FIRE_1; i <= BG_RV_OBJECT_FIREDOOR_2; ++i)
+					DoorOpen(i);
+				setTimer(BG_RV_CLOSE_FIRE_TIMER);
                 setState(BG_RV_STATE_CLOSE_FIRE);
                 break;
             case BG_RV_STATE_CLOSE_FIRE:
                 for (uint8 i = BG_RV_OBJECT_FIRE_1; i <= BG_RV_OBJECT_FIREDOOR_2; ++i)
                     DoorClose(i);
-                setTimer(BG_RV_FIRE_TO_PILAR_TIMER);
-                setState(BG_RV_STATE_OPEN_PILARS);
+                // Fire got closed after five seconds, leaves twenty seconds before toggling pillars
+				setTimer(BG_RV_FIRE_TO_PILLAR_TIMER);
+				setState(BG_RV_STATE_SWITCH_PILLARS);
                 break;
-            case BG_RV_STATE_OPEN_PILARS:
+            case BG_RV_STATE_SWITCH_PILLARS:
                 for (uint8 i = BG_RV_OBJECT_PILAR_1; i <= BG_RV_OBJECT_PULLEY_2; ++i)
                     DoorOpen(i);
-                TogglePillarCollision(false);
-                setTimer(BG_RV_PILAR_TO_FIRE_TIMER);
-                setState(BG_RV_STATE_OPEN_FIRE);
-                break;
-            case BG_RV_STATE_OPEN_FIRE:
-                // FIXME: after 3.2.0 it's only decorative and should be opened only one time at battle start
-                for (uint8 i = BG_RV_OBJECT_FIRE_1; i <= BG_RV_OBJECT_FIREDOOR_2; ++i)
-                    DoorOpen(i);
-                setTimer(BG_RV_FIRE_TO_PILAR_TIMER);
-                setState(BG_RV_STATE_CLOSE_PILARS);
-                break;
-            case BG_RV_STATE_CLOSE_PILARS:
-                for (uint8 i = BG_RV_OBJECT_PILAR_1; i <= BG_RV_OBJECT_PULLEY_2; ++i)
-                    DoorOpen(i);
-                TogglePillarCollision(true);
-                setTimer(BG_RV_PILAR_TO_FIRE_TIMER);
-                setState(BG_RV_STATE_CLOSE_FIRE);
+                TogglePillarCollision();
+				setTimer(BG_RV_PILLAR_SWITCH_TIMER);
                 break;
         }
     }
@@ -103,7 +95,9 @@ void BattlegroundRV::StartingEventOpenDoors()
     setState(BG_RV_STATE_OPEN_FENCES);
     setTimer(BG_RV_FIRST_TIMER);
 
-    TogglePillarCollision(true);
+    // Should be false at first, TogglePillarCollision will do it.
+	SetPillarCollision(true);
+	TogglePillarCollision();
 }
 
 void BattlegroundRV::AddPlayer(Player* player)
@@ -150,7 +144,10 @@ void BattlegroundRV::HandleKillPlayer(Player* player, Player* killer)
 
 bool BattlegroundRV::HandlePlayerUnderMap(Player* player)
 {
-    player->TeleportTo(GetMapId(), 763.5f, -284, 28.277f, 2.422f, false);
+	// Wait for elevators to Go up, before start checking for UnderMaped players
+	if(GetStartTime() < uint32(StartDelayTimes[BG_STARTING_EVENT_FIRST] + 20*IN_MILLISECONDS))
+		return true;
+    player->TeleportTo(GetMapId(), 763.5f, -284, 28.276f, 2.422f, false);
     return true;
 }
 
@@ -265,8 +262,10 @@ bool BattlegroundRV::SetupBattleground()
 }
 
 
-void BattlegroundRV::TogglePillarCollision(bool apply)
+void BattlegroundRV::TogglePillarCollision()
 {
+	bool apply = GetPillarCollision();
+
     for (uint8 i = BG_RV_OBJECT_PILAR_1; i <= BG_RV_OBJECT_PILAR_COLLISION_4; ++i)
     {
         if (GameObject* gob = GetBgMap()->GetGameObject(BgObjects[i]))
@@ -287,4 +286,6 @@ void BattlegroundRV::TogglePillarCollision(bool apply)
                     gob->SendUpdateToPlayer(player);
         }
     }
+
+	SetPillarCollision(!apply);
 }
