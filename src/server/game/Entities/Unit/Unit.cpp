@@ -1596,11 +1596,14 @@ uint32 Unit::CalcSpellResistance(Unit* victim, SpellSchoolMask schoolMask, bool 
     float averageResist = float(victimResistance) / float(victimResistance + resistanceConstant);
 
     if (spellProto && spellProto->AttributesCu & SPELL_ATTR0_CU_BINARY)
+	if (victim->GetTypeId() == TYPEID_PLAYER)
+	if(victim != this)
     {
         int32 tmp = int32(averageResist * 10000);
         int32 rand = irand(0, 10000);
         return rand < tmp ? 100 : 0;
     }
+	return 0;
 
     float discreteResistProbability[11];
 
