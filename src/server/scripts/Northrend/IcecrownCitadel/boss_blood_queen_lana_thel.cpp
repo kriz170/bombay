@@ -83,6 +83,7 @@ uint32 const vampireAuras[3][MAX_DIFFICULTY] =
 #define ESSENCE_OF_BLOOD_QUEEN_PLR RAID_MODE<uint32>(70879, 71525, 71530, 71531)
 #define FRENZIED_BLOODTHIRST       RAID_MODE<uint32>(70877, 71474, 70877, 71474)
 #define DELIRIOUS_SLASH            RAID_MODE<uint32>(71623, 71624, 71625, 71626)
+#define BLOOD_QUICKENING_CREDIT    RAID_MODE<uint32>(38558, 39123, 38558, 39123)
 
 enum Events
 {
@@ -194,7 +195,7 @@ class boss_blood_queen_lana_thel : public CreatureScript
                 {
                     instance->SetData(DATA_BLOOD_QUICKENING_STATE, DONE);
                     if (Player* player = killer->ToPlayer())
-                        player->RewardPlayerAndGroupAtEvent(NPC_INFILTRATOR_MINCHAR_BQ, player);
+                        player->RewardPlayerAndGroupAtEvent(BLOOD_QUICKENING_CREDIT, player);
                     if (Creature* minchar = me->FindNearestCreature(NPC_INFILTRATOR_MINCHAR_BQ, 200.0f))
                     {
                         minchar->SetUInt32Value(UNIT_NPC_EMOTESTATE, 0);
