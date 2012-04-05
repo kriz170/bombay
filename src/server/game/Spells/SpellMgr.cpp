@@ -3372,10 +3372,11 @@ void SpellMgr::LoadDbcDataCorrections()
             case 69240: // Vile Gas
                 spellInfo->rangeIndex = 181; // 200yd
                 break;
-            case 71618: // Tear Gas, reduce range from 50000
-                spellInfo->EffectRadiusIndex[0] = EFFECT_RADIUS_200_YARDS;
-                spellInfo->EffectRadiusIndex[1] = EFFECT_RADIUS_200_YARDS;
-                spellInfo->EffectRadiusIndex[2] = EFFECT_RADIUS_200_YARDS;
+            case 71618: // Tear Gas
+                spellInfo->EffectImplicitTargetB[0] = TARGET_UNIT_SRC_AREA_ENEMY;
+                spellInfo->EffectImplicitTargetB[1] = TARGET_UNIT_SRC_AREA_ENEMY;
+            case 71615: // Tear Gas
+                spellInfo->EffectImplicitTargetB[2] = TARGET_UNIT_SRC_AREA_ENEMY;
                 break;
             case 71412: // Green Ooze Summon (target selection already handled in putricide's script)
             case 71415: // Orange Ooze Summon (target selection already handled in putricide's script)
