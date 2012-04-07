@@ -2746,6 +2746,130 @@ class spell_gen_ds_flush_knockback : public SpellScriptLoader
         }
 };
 
+// 40623 apexis vibrations      -> 40624 swiftness
+// 40625 apexis emanations      -> 40627 swiftness
+// 40626 apexis enlightenment   -> 40628 swiftness
+enum ApexisBuff
+{
+     SPELL_APEXIS_VIBRATION             = 40623,
+     SPELL_SWIFTNESS_VIBRATION          = 40624,
+     SPELL_APEXIS_EMANATION             = 40625,
+     SPELL_SWIFTNESS_EMANATION          = 40627,
+     SPELL_APEXIS_ENLIGHTMENT           = 40626,
+     SPELL_SWIFTNESS_ENLIGHTMENT        = 40628
+};
+
+class spell_gen_apexis_buff : public SpellScriptLoader
+{
+    public:
+        spell_gen_apexis_buff() : SpellScriptLoader("spell_gen_apexis_buff") { }
+
+        class spell_gen_apexis_buff_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_gen_apexis_buff_AuraScript);
+
+            uint32 _swiftness;
+
+            bool Validate(SpellInfo const* /*entry*/)
+            {
+                if (!sSpellMgr->GetSpellInfo(SPELL_SWIFTNESS_VIBRATION) || !sSpellMgr->GetSpellInfo(SPELL_SWIFTNESS_EMANATION) || !sSpellMgr->GetSpellInfo(SPELL_SWIFTNESS_ENLIGHTMENT))
+                    return false;
+                return true;
+            }
+
+            bool Load()
+            {
+                switch (GetId())
+                {
+                    case SPELL_APEXIS_VIBRATION:
+                        _swiftness = SPELL_SWIFTNESS_VIBRATION;
+                        break;
+                    case SPELL_APEXIS_EMANATION:
+                        _swiftness = SPELL_SWIFTNESS_EMANATION;
+                        break;
+                    case SPELL_APEXIS_ENLIGHTMENT:
+                        _swiftness = SPELL_SWIFTNESS_ENLIGHTMENT;
+                        break;
+                    default:
+                        return false;
+                }
+                
+                return GetUnitOwner()->GetTypeId() == TYPEID_PLAYER;
+            }
+
+            // cheap hax to make it have update calls
+            void CalcPeriodic(AuraEffect const* /*effect*/, bool& isPeriodic, int32& amplitude)
+            {
+                isPeriodic = true;
+                amplitude = 5 * IN_MILLISECONDS;
+            }
+
+            void HandleEffectApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+            {
+                Unit* target = GetTarget();
+                target->RemoveAurasDueToSpell(SPELL_SWIFTNESS_VIBRATION);
+                target->RemoveAurasDueToSpell(SPELL_SWIFTNESS_EMANATION);
+                target->RemoveAurasDueToSpell(SPELL_SWIFTNESS_ENLIGHTMENT);
+                target->AddAura(_swiftness, target);
+            }
+
+            void Update(AuraEffect* /*effect*/)
+            {
+                if (Player* owner = GetUnitOwner()->ToPlayer())
+                    if (owner->GetZoneId() == 3522)
+                        owner->AddAura(_swiftness, owner);
+            }
+
+            void Register()
+            {
+                AfterEffectApply += AuraEffectApplyFn(spell_gen_apexis_buff_AuraScript::HandleEffectApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL_OR_REAPPLY_MASK);
+                DoEffectCalcPeriodic += AuraEffectCalcPeriodicFn(spell_gen_apexis_buff_AuraScript::CalcPeriodic, EFFECT_0, SPELL_AURA_DUMMY);
+                OnEffectUpdatePeriodic += AuraEffectUpdatePeriodicFn(spell_gen_apexis_buff_AuraScript::Update, EFFECT_0, SPELL_AURA_DUMMY);
+            }
+        };
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_gen_apexis_buff_AuraScript();
+        }
+};
+
+class spell_gen_apexis_swiftness : public SpellScriptLoader
+{
+    public:
+        spell_gen_apexis_swiftness() : SpellScriptLoader("spell_gen_apexis_swiftness") { }
+
+        class spell_gen_apexis_swiftness_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_gen_apexis_swiftness_AuraScript);
+
+            // cheap hax to make it have update calls
+            void CalcPeriodic(AuraEffect const* /*effect*/, bool& isPeriodic, int32& amplitude)
+            {
+                isPeriodic = true;
+                amplitude = 5 * IN_MILLISECONDS;
+            }
+
+            void Update(AuraEffect* /*effect*/)
+            {
+                if (Player* owner = GetUnitOwner()->ToPlayer())
+                    if (owner->GetZoneId() != 3522)
+                        owner->RemoveAurasDueToSpell(GetId());
+            }
+
+            void Register()
+            {
+                DoEffectCalcPeriodic += AuraEffectCalcPeriodicFn(spell_gen_apexis_swiftness_AuraScript::CalcPeriodic, EFFECT_0, SPELL_AURA_MOD_SPEED_ALWAYS);
+                OnEffectUpdatePeriodic += AuraEffectUpdatePeriodicFn(spell_gen_apexis_swiftness_AuraScript::Update, EFFECT_0, SPELL_AURA_MOD_SPEED_ALWAYS);
+            }
+        };
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_gen_apexis_swiftness_AuraScript();
+        }
+};
+
 void AddSC_generic_spell_scripts()
 {
     new spell_gen_absorb0_hitlimit1();
@@ -2797,4 +2921,6 @@ void AddSC_generic_spell_scripts()
     new spell_gen_chaos_blast();
     new spell_gen_pet_calculate();
     new spell_gen_ds_flush_knockback();
+    new spell_gen_apexis_buff();
+    new spell_gen_apexis_swiftness();
 }
