@@ -34,6 +34,7 @@ enum PriestSpells
     PRIEST_SPELL_PENANCE_R1_HEAL                = 47757,
     PRIEST_SPELL_REFLECTIVE_SHIELD_TRIGGERED    = 33619,
     PRIEST_SPELL_REFLECTIVE_SHIELD_R1           = 33201,
+    PRIEST_SPELL_GLYPH_OF_SHADOW                = 55689,
 };
 
 // Guardian Spirit
@@ -275,6 +276,46 @@ class spell_pri_reflective_shield_trigger : public SpellScriptLoader
         }
 };
 
+// handling removal of glyph of shadow's effect when shift out of shadowform
+class spell_pri_shadowform : public SpellScriptLoader
+{
+    public:
+        spell_pri_shadowform() : SpellScriptLoader("spell_pri_shadowform") { }
+
+        class spell_pri_shadowform_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_pri_shadowform_AuraScript);
+
+            bool Validate(SpellInfo const* /*spellEntry*/)
+            {
+                if (!sSpellMgr->GetSpellInfo(PRIEST_SPELL_GLYPH_OF_SHADOW))
+                    return false;
+                return true;
+            }
+
+            void HandleEffectApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+            {
+                if (Player* player = GetTarget()->ToPlayer())
+                    for (uint8 glyphIndex = 0; glyphIndex < MAX_GLYPH_SLOT_INDEX; ++glyphIndex)
+                        if (player->GetGlyph(glyphIndex) == 262) // if player has glyph of shadow, cast it's spell effect
+                        {
+                            player->CastSpell(player, PRIEST_SPELL_GLYPH_OF_SHADOW, true);
+                            break;
+                        }
+            }
+
+            void Register()
+            {
+                 AfterEffectApply += AuraEffectApplyFn(spell_pri_shadowform_AuraScript::HandleEffectApply, EFFECT_0, SPELL_AURA_MOD_SHAPESHIFT, AURA_EFFECT_HANDLE_REAL);
+            }
+        };
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_pri_shadowform_AuraScript();
+        }
+};
+
 void AddSC_priest_spell_scripts()
 {
     new spell_pri_guardian_spirit();
@@ -283,4 +324,5 @@ void AddSC_priest_spell_scripts()
     new spell_pri_penance;
     new spell_pri_reflective_shield_trigger();
     new spell_pri_mind_sear();
+    new spell_pri_shadowform();
 }
