@@ -36,6 +36,7 @@ EndContentData */
 ######*/
 
 #define GOSSIP_ITEM1 "I am ready to travel to your village now."
+#define GOSSIP_ITEM2 "<Reach down and pull the injured Rainspeaker Oracle to it's feet.>"
 
 enum eRainspeaker
 {
@@ -44,6 +45,8 @@ enum eRainspeaker
     SAY_END_IRO                         = -1571002,
 
     QUEST_FORTUNATE_MISUNDERSTANDINGS   = 12570,
+    QUEST_JUST_FOLLOWING_ORDERS         = 12540,
+    ENTRY_RAVENOUS_MANGAL_CROCOLISK     = 28325,
     FACTION_ESCORTEE_A                  = 774,
     FACTION_ESCORTEE_H                  = 775
 };
@@ -62,12 +65,6 @@ public:
         void Reset()
         {
             me->RestoreFaction();
-            // if we will have other way to assign this to only one npc remove this part
-            if (GUID_LOPART(me->GetGUID()) != 101030)
-            {
-                me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
-                me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-            }
         }
 
         void WaypointReached(uint32 i)
@@ -98,8 +95,9 @@ public:
                 me->SetUnitMovementFlags(MOVEMENTFLAG_JUMPING);
                 break;
             case 28:
-                player->GroupEventHappens(QUEST_FORTUNATE_MISUNDERSTANDINGS, me);
-              //  me->RestoreFaction();
+                if (Player* player = GetPlayerForEscort())
+                    player->GroupEventHappens(QUEST_FORTUNATE_MISUNDERSTANDINGS, me);
+                //me->RestoreFaction();
                 DoScriptText(SAY_END_IRO, me);
                 SetRun(false);
                 break;
@@ -112,10 +110,8 @@ public:
                 return;
 
             if (Player* player = GetPlayerForEscort())
-            {
-              if (player->GetQuestStatus(QUEST_FORTUNATE_MISUNDERSTANDINGS) != QUEST_STATUS_COMPLETE)
-                player->FailQuest(QUEST_FORTUNATE_MISUNDERSTANDINGS);
-            }
+                if (player->GetQuestStatus(QUEST_FORTUNATE_MISUNDERSTANDINGS) != QUEST_STATUS_COMPLETE)
+                    player->FailQuest(QUEST_FORTUNATE_MISUNDERSTANDINGS);
         }
     };
 
@@ -126,6 +122,10 @@ public:
 
         if (player->GetQuestStatus(QUEST_FORTUNATE_MISUNDERSTANDINGS) == QUEST_STATUS_INCOMPLETE)
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+
+        if (player->GetQuestStatus(QUEST_JUST_FOLLOWING_ORDERS) == QUEST_STATUS_INCOMPLETE
+            && !creature->FindNearestCreature(ENTRY_RAVENOUS_MANGAL_CROCOLISK, 10.0f))
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
 
         player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
 
@@ -150,6 +150,11 @@ public:
                 creature->setFaction(FACTION_ESCORTEE_H);
                 break;
             }
+        }
+        else if (uiAction == GOSSIP_ACTION_INFO_DEF + 2)
+        {
+            player->SummonCreature(ENTRY_RAVENOUS_MANGAL_CROCOLISK, *creature, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 60000);
+            player->CLOSE_GOSSIP_MENU();
         }
         return true;
     }
@@ -804,6 +809,24 @@ public:
             m_uiArtriusPhase = 0;
         }
 
+        void JustDied(Unit* /* killer */)
+        {
+            GameObject* object = me->SummonGameObject(ARTRUIS_PHYLACTERY,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ(),0,0,0,0,0,600);
+            if (Creature * jaloot = Unit::GetCreature(*me, m_uiJalootGuid))
+            {
+                jaloot->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+                jaloot->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+            }
+
+            if (Creature * zepik = Unit::GetCreature(*me, m_uiZepikGuid))
+            {
+                zepik->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+                zepik->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+            }
+
+            me->DespawnOrUnsummon();
+        }
+
         //Called at World update tick
         void UpdateAI(uint32 const diff)
         {
@@ -815,12 +838,18 @@ public:
                     {
                         m_uiJalootGuid = jaloot->GetGUID();
                         jaloot->AddAura(SPELL_TOMB_OF_THE_HEARTLESS, jaloot);
+                        jaloot->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+                        jaloot->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                     }
                 } else 
                 {
                     if (Creature * jaloot = Unit::GetCreature(*me, m_uiJalootGuid))
                         if (jaloot->isAlive() && me->isAlive())
+                        {
                             jaloot->AddAura(SPELL_TOMB_OF_THE_HEARTLESS, jaloot);
+                            jaloot->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+                            jaloot->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                        }
                 }
 
                 if (!Unit::GetCreature(*me, m_uiZepikGuid))
@@ -829,12 +858,18 @@ public:
                     {
                         m_uiZepikGuid = zepik->GetGUID();
                         zepik->AddAura(SPELL_TOMB_OF_THE_HEARTLESS, zepik);
+                        zepik->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+                        zepik->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                     }
                 } else 
                 {
                     if (Creature * zepik = Unit::GetCreature(*me, m_uiZepikGuid))
                         if (zepik->isAlive() && me->isAlive())
+                        {
                             zepik->AddAura(SPELL_TOMB_OF_THE_HEARTLESS, zepik);
+                            zepik->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+                            zepik->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                        }
                 }
             }
 
@@ -939,6 +974,121 @@ public:
 
 };
 
+/*######
+## vehicle_haiphoon
+######*/
+
+enum eHaiphoon
+{
+    SPELL_DEVOUR_WIND       = 52862,
+    SPELL_DEVOUR_WATER      = 52864,
+
+    NPC_HAIPHOON_WATER      = 28999,
+    NPC_HAIPHOON_AIR        = 28985
+};
+
+class vehicle_haiphoon : public CreatureScript
+{
+public:
+    vehicle_haiphoon() : CreatureScript("vehicle_haiphoon") { }
+
+    CreatureAI* GetAI(Creature* pCreature) const
+    {
+        return new  vehicle_haiphoonAI(pCreature);
+    }
+
+    struct vehicle_haiphoonAI : public VehicleAI
+    {
+        vehicle_haiphoonAI(Creature* pCreature) : VehicleAI(pCreature) { }
+
+        void SpellHitTarget(Unit* target,SpellInfo const* spell)
+        {
+            if(target == me)
+                return;       
+        
+            if(spell->Id == SPELL_DEVOUR_WIND)
+            {
+                if(Player* player = me->GetCharmerOrOwnerPlayerOrPlayerItself())
+                {
+                    player->KilledMonsterCredit(29009, 0);
+                    me->UpdateEntry(NPC_HAIPHOON_AIR);                    
+                    player->VehicleSpellInitialize();
+                    me->setFaction(player->getFaction());
+                }
+            }
+
+            if(spell->Id == SPELL_DEVOUR_WATER)
+            {
+                if(Player* player = me->GetCharmerOrOwnerPlayerOrPlayerItself())
+                {
+                    player->KilledMonsterCredit(29008, 0);                    
+                    me->UpdateEntry(NPC_HAIPHOON_WATER);
+                    player->VehicleSpellInitialize();
+                    me->setFaction(player->getFaction());
+                }
+            }
+        }
+    };
+};
+
+/*######
+## npc_stormwatcher
+######*/
+
+enum eSpells
+{
+    SPELL_CALL_LIGHTNING                = 32018,
+    SPELL_THROW_VENTURE_CO_EXPLOSIVES   = 53145,
+    SPELL_SUMMON_STORMWATCHERS_HEAD     = 53162
+};
+
+class npc_stormwatcher : public CreatureScript
+{
+    public:
+        npc_stormwatcher() : CreatureScript("npc_stormwatcher"){ }
+
+        CreatureAI* GetAI(Creature* pCreature) const
+        {
+            return new npc_stormwatcherAI(pCreature);
+        }
+
+        struct npc_stormwatcherAI : public ScriptedAI
+        {
+            npc_stormwatcherAI(Creature* pCreature) : ScriptedAI (pCreature){ }
+
+            uint32 uiCallLightning_Timer;
+
+            void Reset()
+            {
+                uiCallLightning_Timer = urand (3000,5000);
+            }
+
+            void SpellHit (Unit* /*caster*/, SpellInfo const* spell)
+            {
+                if (spell->Id == SPELL_THROW_VENTURE_CO_EXPLOSIVES)
+                {
+                    DoCast(me, SPELL_SUMMON_STORMWATCHERS_HEAD, true);
+                    me->DespawnOrUnsummon();
+                }
+            }
+
+            void UpdateAI(const uint32 diff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (uiCallLightning_Timer <= diff)
+                {
+                    DoCastVictim(SPELL_CALL_LIGHTNING);
+                    uiCallLightning_Timer = urand (3000,5000);
+                }
+                else uiCallLightning_Timer -= diff;
+
+                DoMeleeAttackIfReady();
+            }
+        };
+};
+
 void AddSC_sholazar_basin()
 {
     new npc_injured_rainspeaker_oracle();
@@ -950,4 +1100,6 @@ void AddSC_sholazar_basin()
     new npc_jungle_punch_target();
     new spell_q12620_the_lifewarden_wrath();
     new npc_artruis_the_heartless();
+    new vehicle_haiphoon();
+    new npc_stormwatcher();
 }

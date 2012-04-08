@@ -1,5 +1,5 @@
 -- Chicken Escapee
-SET @CreGuid := 262120; -- custom butuh 20
+SET @CreGuid := 250120; -- custom butuh 20
 SET @ENTRY := 28161;
 SET @LIFE := 900000;
 SET @PARTY := 12702;
@@ -86,9 +86,6 @@ INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`link`,`event_type
 (@SCRIPT2,@SOURCETYPE2,2,0,0,0,100,0,5000,5000,0,0,41,0,0,0,0,0,0,1,0,0,0,0,0,0,0,"Script 1 - Despawn");
 
 -- A hero's burden
-DELETE FROM `gameobject` WHERE `id`=190777;
-INSERT INTO `gameobject` (`guid`, `id`, `map`, `spawnMask`, `phaseMask`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`) VALUES 
-(198570, 190777, 571, 1, 1, 5607.33, 3790.33, -90.7351, 5.86099, 0, 0, 0, 0, 300, 0, 1);
 UPDATE `creature_template` SET `ScriptName` = 'npc_artruis_the_heartless' WHERE `entry` = 28659;
 DELETE FROM `creature_ai_scripts` WHERE creature_id = 28659;
 /* creature_ai_scripts yg lama
@@ -115,6 +112,18 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `spawnMask`, `phaseMask`, `modelid`
 (202969, 28667, 571, 1, 1, 0, 0, 5616.92, 3772.68, -94.258, 1.78024, 120, 0, 0, 1, 0, 0, 0, 0, 0),
 (202970, 28668, 571, 1, 1, 0, 0, 5631.63, 3794.36, -92.2367, 3.45575, 120, 0, 0, 1, 0, 0, 0, 0, 0);
 */
+
+-- Hand of the Oracles
+DELETE FROM `creature_involvedrelation` WHERE `quest`=12689;
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (28667, 12689);
+DELETE FROM `creature_questrelation` WHERE `quest`=12689;
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (28667, 12689);
+
+-- Frenzyheart Champion
+DELETE FROM `creature_involvedrelation` WHERE `quest`=12582;
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES (28668, 12582);
+DELETE FROM `creature_questrelation` WHERE `quest`=12582;
+INSERT INTO `creature_questrelation` (`id`, `quest`) VALUES (28668, 12582);
 
 -- Daily quest
 SET @POOL_ENTRY :=44120; -- custom butuh 4
@@ -148,3 +157,246 @@ INSERT INTO `pool_quest` (`entry`,`pool_entry`,`description`) VALUES
 (12703,@POOL_ENTRY+3,'Kartak''s Rampage / Frenzyheart Tribe Daily / Vekgar'),
 (12760,@POOL_ENTRY+3,'Secret Strength of the Frenzyheart / Frenzyheart Tribe Daily / Vekgar'),
 (12759,@POOL_ENTRY+3,'Tools of War / Frenzyheart Tribe Daily / Vekgar');
+
+-- Elder Harkek
+-- creature_ai_scripts
+/*
+INSERT INTO `creature_ai_scripts` (`id`, `creature_id`, `event_type`, `event_inverse_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action1_type`, `action1_param1`, `action1_param2`, `action1_param3`, `action2_type`, `action2_param1`, `action2_param2`, `action2_param3`, `action3_type`, `action3_param1`, `action3_param2`, `action3_param3`, `comment`) VALUES 
+(2813802, 28138, 4, 0, 100, 0, 0, 0, 0, 0, 11, 33643, 1, 0, 23, 1, 0, 0, 0, 0, 0, 0, 'Elder Harkek - Cast Chain Lightning and Set Phase 1 on Aggro'),
+(2813803, 28138, 9, 5, 100, 1, 0, 40, 6000, 9000, 11, 33643, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Elder Harkek - Cast Chain Lightning (Phase 1)'),
+(2813804, 28138, 3, 5, 100, 0, 7, 0, 0, 0, 21, 1, 0, 0, 23, 1, 0, 0, 0, 0, 0, 0, 'Elder Harkek - Start Combat Movement and Set Phase 2 when Mana is at 7% (Phase 1)'),
+(2813805, 28138, 9, 5, 100, 0, 35, 80, 0, 0, 21, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Elder Harkek - Start Combat Movement at 35 Yards (Phase 1)'),
+(2813806, 28138, 9, 5, 100, 0, 5, 15, 0, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Elder Harkek - Prevent Combat Movement at 15 Yards (Phase 1)'),
+(2813807, 28138, 9, 5, 100, 0, 0, 5, 0, 0, 21, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Elder Harkek - Start Combat Movement Below 5 Yards (Phase 1)'),
+(2813808, 28138, 3, 3, 100, 1, 100, 15, 100, 100, 23, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Elder Harkek - Set Phase 1 when Mana is above 15% (Phase 2)'),
+(2813809, 28138, 0, 0, 100, 1, 13000, 18000, 13000, 18000, 11, 52905, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Elder Harkek - Cast Thunderbolt'),
+(2813810, 28138, 7, 0, 100, 0, 0, 0, 0, 0, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Elder Harkek - Set Phase to 0 on Evade');
+*/
+SET @HERKEK := 28138;
+SET @GOSSIP := 9741;
+SET @GOREGEK := 38619;
+SET @DAJIK := 38621;
+SET @ZEPIK := 38512;
+DELETE FROM `creature_ai_scripts` WHERE `creature_id`=@HERKEK;
+DELETE FROM `gossip_menu_option` WHERE `menu_id`=@GOSSIP AND `id` IN (2,3);
+INSERT INTO `gossip_menu_option` (`menu_id`, `id`, `option_icon`, `option_text`, `option_id`, `npc_option_npcflag`, `action_menu_id`, `action_poi_id`, `box_coded`, `box_money`, `box_text`) VALUES 
+(@GOSSIP, 2, 0, 'I need to find Dajik, do you have his worn chalk?', 1, 1, 0, 0, 0, 0, ''),
+(@GOSSIP, 3, 0, 'I need to find Zepik, do you have his hunting horn?', 1, 1, 0, 0, 0, 0, '');
+
+UPDATE `creature_template` SET `AIName`='SmartAI' WHERE `entry`=@HERKEK;
+
+DELETE FROM `smart_scripts` WHERE `entryorguid`=@HERKEK AND `source_type`=0;
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES
+(@HERKEK, 0, 0, 0, 62, 0, 100, 0, @GOSSIP, 1, 0, 0, 56, @GOREGEK, 1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Elder Herkek - On Gossip Select - Give item'),
+(@HERKEK, 0, 1, 0, 62, 0, 100, 0, @GOSSIP, 2, 0, 0, 56, @DAJIK, 1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Elder Herkek - On Gossip Select - Give item'),
+(@HERKEK, 0, 2, 0, 62, 0, 100, 0, @GOSSIP, 3, 0, 0, 56, @ZEPIK, 1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Elder Herkek - On Gossip Select - Give item'),
+(@HERKEK, 0, 3, 0, 62, 0, 100, 0, @GOSSIP, 1, 0, 0, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Elder Herkek - On Gossip Select - Close Gossip'),
+(@HERKEK, 0, 4, 0, 62, 0, 100, 0, @GOSSIP, 2, 0, 0, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Elder Herkek - On Gossip Select - Close Gossip'),
+(@HERKEK, 0, 5, 0, 62, 0, 100, 0, @GOSSIP, 3, 0, 0, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Elder Herkek - On Gossip Select - Close Gossip');
+
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=15 AND `SourceGroup`=@GOSSIP;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`,`SourceGroup`,`SourceEntry`,`ElseGroup`,`ConditionTypeOrReference`,`ConditionValue1`,`ConditionValue2`,`ConditionValue3`,`NegativeCondition`,`ErrorTextId`,`ScriptName`,`Comment`) VALUES
+(15,@GOSSIP,1,0,2,@GOREGEK,1,0,1,0,'','Only show first gossip if player doesn''t have item'),
+(15,@GOSSIP,2,0,2,@DAJIK,1,0,1,0,'','Only show second gossip if player doesn''t have item'),
+(15,@GOSSIP,3,0,2,@ZEPIK,1,0,1,0,'','Only show third gossip if player doesn''t have item');
+
+
+-- [Q] Just Following Orders
+
+-- Add Gossips (sniffs & github)
+DELETE FROM `gossip_menu` WHERE `entry`=9677 AND `text_id`=13124;
+INSERT INTO `gossip_menu` (`entry`,`text_id`) VALUES
+(9677,13124);
+
+DELETE FROM `gossip_menu_option` WHERE `menu_id`=9677;
+INSERT INTO `gossip_menu_option` (`menu_id`,`id`,`option_icon`,`option_text`,`option_id`,`npc_option_npcflag`,`action_menu_id`,`action_poi_id`,`box_coded`,`box_money`,`box_text`) VALUES
+(9677,0,0, '<Reach down and pull the Injured Rainspeaker Oracle to its feet.>',1,1,0,0,0,0, '');
+
+-- SAI
+SET @ENTRY := 28217;
+UPDATE `creature_template` SET `AIName`='SmartAI', `ScriptName`='', `gossip_menu_id`=9677 WHERE `entry`=@ENTRY;
+DELETE FROM `smart_scripts` WHERE `entryorguid`=@ENTRY AND `source_type`=0;
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`)
+VALUES
+(@ENTRY, 0, 0, 1, 62, 0, 100, 0, 9677, 0, 0, 0, 72, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Injured Rainspeaker Oracle - On Gossip Select - Close Gossip'),
+(@ENTRY, 0, 1, 0, 61, 0, 100, 0, 0, 0, 0, 0, 12, 28325, 6, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Injured Rainspeaker Oracle - On Gossip Select - Spawn npc 28325');
+
+-- Add quest completer
+DELETE FROM `creature_involvedrelation` WHERE `id`=28217 AND `quest`=12540;
+INSERT INTO `creature_involvedrelation` (`id`, `quest`) VALUES
+(28217, 12540);
+
+-- Conditions
+DELETE FROM `conditions` WHERE `SourceGroup`=9677 AND `SourceTypeOrReferenceId`=15;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES
+(15, 9677, 0, 0, 9, 12540, 0, 0, 0, '', 'Only show gossip if quest 12540 is active');
+
+-- High-Oracle Soo-Say
+SET @SOOSAY := 28027;
+SET @GOSSIP := 9742;
+SET @LAFOO := 38622;
+SET @JALOOT := 38623;
+SET @MOODLE := 38624;
+DELETE FROM `creature_ai_scripts` WHERE `creature_id`=@SOOSAY;
+DELETE FROM `gossip_menu_option` WHERE `menu_id`=@GOSSIP AND `id` IN (1,3);
+INSERT INTO `gossip_menu_option` (`menu_id`, `id`, `option_icon`, `option_text`, `option_id`, `npc_option_npcflag`, `action_menu_id`, `action_poi_id`, `box_coded`, `box_money`, `box_text`) VALUES 
+(@GOSSIP, 1, 0, 'I need to find Lafoo, do you have his bug bag?', 1, 1, 0, 0, 0, 0, ''),
+(@GOSSIP, 3, 0, 'I need to find Moodle, do you have his stress ball?', 1, 1, 0, 0, 0, 0, '');
+
+UPDATE `creature_template` SET `AIName`='SmartAI' WHERE `entry`=@SOOSAY;
+
+DELETE FROM `smart_scripts` WHERE `entryorguid`=@SOOSAY AND `source_type`=0;
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES
+(@SOOSAY, 0, 0, 0, 62, 0, 100, 0, @GOSSIP, 1, 0, 0, 56, @LAFOO, 1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'High-Oracle Soo-Say - On Gossip Select - Give item'),
+(@SOOSAY, 0, 1, 0, 62, 0, 100, 0, @GOSSIP, 2, 0, 0, 56, @JALOOT, 1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'High-Oracle Soo-Say - On Gossip Select - Give item'),
+(@SOOSAY, 0, 2, 0, 62, 0, 100, 0, @GOSSIP, 3, 0, 0, 56, @MOODLE, 1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'High-Oracle Soo-Say - On Gossip Select - Give item'),
+(@SOOSAY, 0, 3, 0, 62, 0, 100, 0, @GOSSIP, 1, 0, 0, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'High-Oracle Soo-Say - On Gossip Select - Close Gossip'),
+(@SOOSAY, 0, 4, 1, 62, 0, 100, 0, @GOSSIP, 2, 0, 0, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'High-Oracle Soo-Say - On Gossip Select - Close Gossip'),
+(@SOOSAY, 0, 5, 2, 62, 0, 100, 0, @GOSSIP, 3, 0, 0, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'High-Oracle Soo-Say - On Gossip Select - Close Gossip'),
+(@SOOSAY, 0, 6, 0, 1, 0, 100, 0, 5000, 10000, 12000, 16000, 11, 53071, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 'High-Oracle Soo-Say - On Gossip Select - Close Gossip');
+
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=15 AND `SourceGroup`=@GOSSIP;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`,`SourceGroup`,`SourceEntry`,`ElseGroup`,`ConditionTypeOrReference`,`ConditionValue1`,`ConditionValue2`,`ConditionValue3`,`NegativeCondition`,`ErrorTextId`,`ScriptName`,`Comment`) VALUES
+(15,@GOSSIP,1,0,2,@LAFOO,1,0,1,0,'','Only show first gossip if player doesn''t have item'),
+(15,@GOSSIP,2,0,2,@JALOOT,1,0,1,0,'','Only show second gossip if player doesn''t have item'),
+(15,@GOSSIP,3,0,2,@MOODLE,1,0,1,0,'','Only show third gossip if player doesn''t have item');
+
+-- Gods Like Shiny Things
+SET @GUID := 199011; -- 16
+DELETE FROM `gameobject` WHERE `id` IN (190558,190560,190561,190562,190563);
+INSERT INTO `gameobject` (`guid`, `id`, `map`, `spawnMask`, `phaseMask`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`) VALUES 
+(@GUID, 190558, 571, 1, 1, 5839.37, 4677.29, -134.094, 5.51972, 0, 0, 0.372531, -0.92802, 300, 0, 1),
+(@GUID+1, 190558, 571, 1, 1, 5655.36, 4642.14, -135.815, 5.02099, 0, 0, 0.590032, -0.80738, 300, 0, 1),
+(@GUID+2, 190558, 571, 1, 1, 5704.73, 4433.04, -141.367, 5.64617, 0, 0, 0.313151, -0.949703, 300, 0, 1),
+(@GUID+3, 190558, 571, 1, 1, 5652.39, 4494.46, -136.81, 1.70975, 0, 0, 0.754489, 0.656312, 300, 0, 1),
+(@GUID+4, 190560, 571, 1, 1, 5867.36, 4498.38, -132.999, 5.57391, 0, 0, 0.34725, -0.937773, 300, 0, 1),
+(@GUID+5, 190560, 571, 1, 1, 5427.44, 4322.03, -139.269, 5.3218, 0, 0, 0.462393, -0.886675, 300, 0, 1),
+(@GUID+6, 190560, 571, 1, 1, 5522.49, 4547.63, -139.578, 0.945564, 0, 0, 0.455365, 0.890305, 300, 0, 1),
+(@GUID+7, 190560, 571, 1, 1, 5745.39, 4642.14, -134.911, 0.945564, 0, 0, 0.455365, 0.890305, 300, 0, 1),
+(@GUID+8, 190561, 571, 1, 1, 5791.17, 4567.29, -134.07, 3.5955, 0, 0, 0.974357, -0.225009, 300, 0, 1),
+(@GUID+9, 190561, 571, 1, 1, 5696.02, 4629.07, -138.104, 3.46434, 0, 0, 0.987008, -0.160674, 300, 0, 1),
+(@GUID+10, 190561, 571, 1, 1, 5725.06, 4367.69, -138.174, 5.70901, 0, 0, 0.283161, -0.959072, 300, 0, 1),
+(@GUID+11, 190562, 571, 1, 1, 5565.33, 4607.29, -140.032, 5.74357, 0, 0, 0.266548, -0.963822, 300, 0, 1),
+(@GUID+12, 190562, 571, 1, 1, 5805.82, 4527.46, -134.765, 6.02081, 0, 0, 0.13081, -0.991407, 300, 0, 1),
+(@GUID+13, 190562, 571, 1, 1, 5677.5, 4727.92, -135.982, 0.215935, 0, 0, 0.107758, 0.994177, 300, 0, 1),
+(@GUID+14, 190563, 571, 1, 1, 5907.15, 4609.28, -132.131, 4.77046, 0, 0, 0.686281, -0.727337, 300, 0, 1),
+(@GUID+15, 190563, 571, 1, 1, 5489.01, 4600.46, -139.151, 3.18474, 0, 0, 0.999767, -0.0215726, 300, 0, 1);
+
+-- Mistcaller Soo-Gan
+DELETE FROM `creature` WHERE `id`=28114;
+INSERT INTO `creature` (`guid`, `id`, `map`, `spawnMask`, `phaseMask`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`) VALUES 
+(250841, 28114, 571, 1, 1, 0, 0, 6166.91, 5093.86, -97.3677, 0.312533, 300, 0, 0, 117700, 3809, 0, 0, 0, 0);
+
+-- The Lost Mistweaver Treasure
+UPDATE `gameobject_template` SET AIName='SmartGameObjectAI' WHERE entry=190578;
+DELETE FROM `smart_scripts` WHERE entryorguid=190578;
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+(190578,1,0,0,70,0,100,0,2,0,0,0,12,28105,1,90000,0,0,0,7,0,0,0,0,0,0,0,'Mistweaver Treasure -  Activated - Summon Warlord Tartek');
+UPDATE `creature_template` SET `faction_A`=14, `faction_H`=14 WHERE `entry`=28105;
+
+-- The Angry Gorloc
+DELETE FROM `spell_area` WHERE `spell`=54057;
+INSERT INTO `spell_area` (`spell`, `area`, `quest_start`, `quest_start_active`, `quest_end`, `aura_spell`, `racemask`, `gender`, `autocast`) VALUES
+(54057, 4297, 12578, 1, 12578, 0, 0, 2, 1);
+
+-- Shaman Jakjek
+DELETE FROM `creature` WHERE `id`=28106;
+INSERT INTO `creature` (`guid`, `id`, `map`, `spawnMask`, `phaseMask`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`) VALUES 
+(250842, 28106, 571, 1, 1, 0, 0, 4871.15, 5910.37, -40.5266, 4.78312, 300, 0, 0, 117700, 3809, 0, 0, 0, 0);
+
+-- Lightningcaller Soo-met
+DELETE FROM `creature` WHERE `id`=28107;
+INSERT INTO `creature` (`guid`, `id`, `map`, `spawnMask`, `phaseMask`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`) VALUES 
+(250843, 28107, 571, 1, 1, 0, 0, 5115.24, 5473.78, -92.0593, 1.71394, 300, 0, 0, 117700, 3809, 0, 0, 0, 0);
+
+-- Song of Wind and Water
+SET @HAIPHOON_W     :=28999; -- WATER
+SET @HAIPHOON_A     :=28985; -- AIR
+SET @STORM          :=28858; -- Storm Revenant
+SET @AQUEOUS        :=28862; -- Aqueous Spirit
+-- WATER SPELLS
+SET @SPELL_W_1      :=61375; -- Water Bolt
+SET @SPELL_W_2      :=61376; -- Frost Nova
+SET @SPELL_W_3      :=52862; -- Devour Wind
+SET @SPELL_W_4      :=52869; -- Evocation
+-- AIR SPELLS
+SET @SPELL_A_1      :=61374; -- Lightning Bolt
+SET @SPELL_A_2      :=52870; -- Windshear
+SET @SPELL_A_3      :=52864; -- Devour Water
+
+UPDATE `creature_template` SET
+`spell1`=@SPELL_W_1,
+`spell2`=@SPELL_W_2,
+`spell3`=@SPELL_W_3,
+`spell4`=@SPELL_W_4,
+`npcflag`=`npcflag`|16777216,
+`unit_flags`=`unit_flags`|16777216,
+`type_flags`=`type_flags`|2048,
+`VehicleId`=257,
+`AIName`='',
+`exp`=2,
+`minlevel`=80,
+`maxlevel`=80,
+`mindmg`=417,
+`maxdmg`=582,
+`attackpower`=608,
+`minrangedmg`=341,
+`maxrangedmg`=506,
+`rangedattackpower`=80,
+`ScriptName`='vehicle_haiphoon'
+WHERE `entry`=@HAIPHOON_W;
+
+UPDATE `creature_template` SET
+`spell1`=@SPELL_A_1,
+`spell2`=@SPELL_A_2,
+`spell3`=@SPELL_A_3,
+`spell4`=@SPELL_W_4,
+`npcflag`=`npcflag`|16777216,
+`unit_class`=2,
+`unit_flags`=`unit_flags`|16777216,
+`type_flags`=`type_flags`|2048,
+`VehicleId`=257,
+`AIName`='',
+`exp`=2,
+`minlevel`=80,
+`maxlevel`=80,
+`mindmg`=417,
+`maxdmg`=582,
+`attackpower`=608,
+`minrangedmg`=341,
+`maxrangedmg`=506,
+`rangedattackpower`=80,
+`ScriptName`='vehicle_haiphoon'
+WHERE `entry`=@HAIPHOON_A;
+
+DELETE FROM `npc_spellclick_spells` WHERE `npc_entry` IN (@HAIPHOON_W,@HAIPHOON_A);
+INSERT INTO `npc_spellclick_spells` (`npc_entry`,`spell_id`,`quest_start`,`quest_start_active`,`quest_end`,`cast_flags`,`aura_required`,`aura_forbidden`,`user_type`) VALUES
+(@HAIPHOON_W,46598,12726,1,12726,1,0,0,0),
+(@HAIPHOON_A,46598,12726,1,12726,1,0,0,0);
+
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=17 AND `SourceEntry` IN (@SPELL_W_3,@SPELL_A_3);
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES
+(17,0,@SPELL_W_3,0,0,31,1,3,@STORM,0,0,63,'','Spell only target Storm Revenant'),
+(17,0,@SPELL_A_3,0,0,31,1,3,@AQUEOUS,0,0,63,'','Spell only target Aqueous Spirit');
+
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=16 AND `SourceEntry` IN (@HAIPHOON_W,@HAIPHOON_A);
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`,`SourceGroup`,`SourceEntry`,`ElseGroup`,`ConditionTypeOrReference`,`ConditionValue1`,`ConditionValue2`,`ConditionValue3`,`ErrorTextId`,`ScriptName`,`Comment`) VALUES
+(16,0,@HAIPHOON_W,0,23,4392,0,0,0,'','Ride Vehicle only in Area'),
+(16,0,@HAIPHOON_A,0,23,4392,0,0,0,'','Ride Vehicle only in Area');
+
+UPDATE `creature_template` SET `AIName`='SmartAI',`ScriptName`='' WHERE `entry` IN (@STORM,@AQUEOUS);
+DELETE FROM `creature_ai_scripts` WHERE `creature_id` IN (@STORM,@AQUEOUS);
+DELETE FROM `smart_scripts` WHERE `source_type`=0 AND `entryorguid` IN (@STORM,@AQUEOUS);
+INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`link`,`event_type`,`event_phase_mask`,`event_chance`,`event_flags`,`event_param1`,`event_param2`,`event_param3`,`event_param4`,`action_type`,`action_param1`,`action_param2`,`action_param3`,`action_param4`,`action_param5`,`action_param6`,`target_type`,`target_param1`,`target_param2`,`target_param3`,`target_x`,`target_y`,`target_z`,`target_o`,`comment`) VALUES
+(@STORM,0,0,0,0,0,100,0,2000,4000,5000,7000,11,32018,1,0,0,0,0,2,0,0,0,0,0,0,0,'Storm Revenant - IC - Cast Call Lightning'),
+(@AQUEOUS,0,0,0,0,0,100,0,6000,9000,7000,10000,11,55087,1,0,0,0,0,2,0,0,0,0,0,0,0,'Aqueous Spirit - IC - Cast Typhoon');
+
+-- A Hero's Headgear
+SET @STORMWATCHER := 28877;
+UPDATE `creature_template` SET `AIName`='', `ScriptName`='npc_stormwatcher' WHERE `entry`=@STORMWATCHER;
+DELETE FROM `creature_ai_scripts` WHERE `creature_id`=@STORMWATCHER;
+
+-- A Cleansing Song
+DELETE FROM `spell_script_names` WHERE `ScriptName`='spell_item_chime_of_cleansing';
+INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
+(52941, 'spell_item_chime_of_cleansing');
