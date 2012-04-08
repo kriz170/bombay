@@ -1999,7 +1999,7 @@ enum ChimeOfCleansing
 
     NPC_HA_KHALAN           = 29018,
     NPC_ATHA                = 29033,
-    NPC_KOOSU               = 29034
+    NPC_KOOSU               = 29034,
 };
 
 class spell_item_chime_of_cleansing : public SpellScriptLoader
