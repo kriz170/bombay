@@ -783,10 +783,8 @@ class spell_rotface_slime_spray : public SpellScriptLoader
             void ChangeOrientation()
             {
                 Unit* caster = GetCaster();
-                std::list<Creature*> creList;
                 // find stalker and set caster orientation to face it
-                GetCreatureListWithEntryInGrid(creList, caster, NPC_OOZE_SPRAY_STALKER, 100.0f);
-                if (Creature* target = creList.front())
+                if (Creature* target = caster->FindNearestCreature(NPC_OOZE_SPRAY_STALKER, 200.0f))
                     caster->SetOrientation(caster->GetAngle(target));
             }
 
