@@ -542,7 +542,18 @@ void ReputationMgr::LoadFromDB(PreparedQueryResult result)
 
                 // set atWar for hostile
                 if (GetRank(factionEntry) <= REP_HOSTILE)
-                    SetAtWar(faction, true);
+                {
+                    // Hack fix for Frenzyheart (1104) and Oracles (1105), temporary remove peace forced before set to war
+                    if (factionEntry->ID == 1104 || factionEntry->ID == 1105)
+                    {
+                        faction->Flags &= ~FACTION_FLAG_PEACE_FORCED;
+                        SetAtWar(faction, true);
+                        // restore peace forced
+                        faction->Flags |= FACTION_FLAG_PEACE_FORCED;
+                    }
+                    else
+                        SetAtWar(faction, true);
+                }
 
                 // reset changed flag if values similar to saved in DB
                 if (faction->Flags == dbFactionFlags)
