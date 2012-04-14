@@ -152,7 +152,7 @@ public:
                 break;
             }
         }
-        else if (uiAction == GOSSIP_ACTION_INFO_DEF + 2)
+        else if (action == GOSSIP_ACTION_INFO_DEF + 2)
         {
             player->SummonCreature(ENTRY_RAVENOUS_MANGAL_CROCOLISK, *creature, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 60000);
             player->CLOSE_GOSSIP_MENU();

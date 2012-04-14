@@ -2749,6 +2749,34 @@ class spell_gen_ds_flush_knockback : public SpellScriptLoader
         }
 };
 
+class spell_gen_wg_water : public SpellScriptLoader
+{
+    public:
+        spell_gen_wg_water() : SpellScriptLoader("spell_gen_wg_water") {}
+
+        class spell_gen_wg_water_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_gen_wg_water_SpellScript);
+
+            SpellCastResult CheckCast()
+            {
+                if (!GetSpellInfo()->CheckTargetCreatureType(GetCaster()))
+                    return SPELL_FAILED_DONT_REPORT;
+                return SPELL_CAST_OK;
+            }
+
+            void Register()
+            {
+                OnCheckCast += SpellCheckCastFn(spell_gen_wg_water_SpellScript::CheckCast);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_gen_wg_water_SpellScript();
+        }
+};
+
 // 40623 apexis vibrations      -> 40624 swiftness
 // 40625 apexis emanations      -> 40627 swiftness
 // 40626 apexis enlightenment   -> 40628 swiftness
