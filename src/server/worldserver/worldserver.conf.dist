@@ -1408,10 +1408,10 @@ AllowTickets = 1
 #
 #     DungeonFinder.Enable
 #        Description: Dungeon and raid finder system.
-#        Default:     0 - (Disabled)
-#                     1 - (Enabled, Experimental as of still being in development)
+#        Default:     1 - (Enabled)
+#                     0 - (Disabled)
 
-DungeonFinder.Enable = 0
+DungeonFinder.Enable = 1
 
 #
 #   DBC.EnforceItemAttributes
@@ -2539,14 +2539,14 @@ Arena.QueueAnnouncer.Enable = 0
 
 #
 #    Arena.ArenaSeason.ID
-#        Description: Current area season id shown in clients.
+#        Description: Current arena season id shown in clients.
 #        Default:     8
 
 Arena.ArenaSeason.ID = 8
 
 #
 #    Arena.ArenaSeason.InProgress
-#        Description: State of current area season.
+#        Description: State of current arena season.
 #        Default:     1 - (Active)
 #                     0 - (Finished)
 

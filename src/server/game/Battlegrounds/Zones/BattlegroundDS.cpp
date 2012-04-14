@@ -49,7 +49,7 @@ void BattlegroundDS::PostUpdateImpl(uint32 diff)
 {
     if (GetStatus() != STATUS_IN_PROGRESS)
         return;
-    
+
     if (getPipeKnockBackCount() < BG_DS_PIPE_KNOCKBACK_TOTAL_COUNT)
     {
         if (getPipeKnockBackTimer() < diff)
@@ -65,8 +65,19 @@ void BattlegroundDS::PostUpdateImpl(uint32 diff)
             setPipeKnockBackTimer(getPipeKnockBackTimer() - diff);
     }
 
+    if (getWaterFallStatus() == BG_DS_WATERFALL_STATUS_ON) // Repeat knockback while the waterfall still active
+    {
+        if (getWaterFallKnockbackTimer() < diff)
+        {
+            if (Creature* waterSpout = GetBgMap()->GetCreature(BgCreatures[BG_DS_NPC_WATERFALL_KNOCKBACK]))
+                waterSpout->CastSpell(waterSpout, BG_DS_SPELL_WATER_SPOUT, true);
 
- 
+            setWaterFallKnockbackTimer(BG_DS_WATERFALL_KNOCKBACK_TIMER);
+        }
+        else
+            setWaterFallKnockbackTimer(getWaterFallKnockbackTimer() - diff);
+    }
+
     if (getWaterFallTimer() < diff)
     {
         if (getWaterFallStatus() == BG_DS_WATERFALL_STATUS_OFF) // Add the water
@@ -77,7 +88,7 @@ void BattlegroundDS::PostUpdateImpl(uint32 diff)
         }
         else if (getWaterFallStatus() == BG_DS_WATERFALL_STATUS_WARNING) // Active collision and perform knockback
         {
-	     if (Creature* waterSpout = GetBgMap()->GetCreature(BgCreatures[BG_DS_NPC_WATERFALL_KNOCKBACK]))
+            if (Creature* waterSpout = GetBgMap()->GetCreature(BgCreatures[BG_DS_NPC_WATERFALL_KNOCKBACK]))
                 waterSpout->CastSpell(waterSpout, BG_DS_SPELL_WATER_SPOUT, true);
 
             if (GameObject* gob = GetBgMap()->GetGameObject(BgObjects[BG_DS_OBJECT_WATER_1]))
@@ -85,14 +96,14 @@ void BattlegroundDS::PostUpdateImpl(uint32 diff)
 
             setWaterFallTimer(BG_DS_WATERFALL_DURATION);
             setWaterFallStatus(BG_DS_WATERFALL_STATUS_ON);
-	     
+            setWaterFallKnockbackTimer(BG_DS_WATERFALL_KNOCKBACK_TIMER);
         }
         else //if (getWaterFallStatus() == BG_DS_WATERFALL_STATUS_ON) // Remove collision and water
         {
             // turn off collision
             if (GameObject* gob = GetBgMap()->GetGameObject(BgObjects[BG_DS_OBJECT_WATER_1]))
                 gob->SetGoState(GO_STATE_ACTIVE);
-		
+
             DoorOpen(BG_DS_OBJECT_WATER_2);
             setWaterFallTimer(urand(BG_DS_WATERFALL_TIMER_MIN, BG_DS_WATERFALL_TIMER_MAX));
             setWaterFallStatus(BG_DS_WATERFALL_STATUS_OFF);
@@ -129,12 +140,11 @@ void BattlegroundDS::StartingEventOpenDoors()
     if (GameObject* gob = GetBgMap()->GetGameObject(BgObjects[BG_DS_OBJECT_WATER_1]))
         gob->SetGoState(GO_STATE_ACTIVE);
 
-	     // Remove effects of Demonic Circle Summon
-    		 for (BattlegroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
-                    if (Player* player = ObjectAccessor::FindPlayer(itr->first))
-            		   if (player->HasAura(48018))
-                            player->RemoveAurasDueToSpell(48018);
-
+    // Remove effects of Demonic Circle Summon
+    for (BattlegroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
+        if (Player* player = ObjectAccessor::FindPlayer(itr->first))
+            if (player->HasAura(48018))
+                player->RemoveAurasDueToSpell(48018);
 }
 
 void BattlegroundDS::AddPlayer(Player* player)
@@ -183,11 +193,11 @@ void BattlegroundDS::HandleAreaTrigger(Player* Source, uint32 Trigger)
     {
         case 5347:
         case 5348:
-	     // Remove effects of Demonic Circle Summon
+            // Remove effects of Demonic Circle Summon
             if (Source->HasAura(48018))
                 Source->RemoveAurasDueToSpell(48018);
 
-	     // Someone has get back into the pipes and the knockback has already been performed,
+            // Someone has get back into the pipes and the knockback has already been performed,
             // so we reset the knockback count for kicking the player again into the arena.
             if (getPipeKnockBackCount() >= BG_DS_PIPE_KNOCKBACK_TOTAL_COUNT)
                 setPipeKnockBackCount(0);
@@ -201,7 +211,7 @@ void BattlegroundDS::HandleAreaTrigger(Player* Source, uint32 Trigger)
 
 bool BattlegroundDS::HandlePlayerUnderMap(Player* player)
 {
-    player->TeleportTo(GetMapId(), 1287.132324f, 824.385742f, 9.338f, 2.422f, false);
+    player->TeleportTo(GetMapId(), 1299.046f, 784.825f, 9.338f, 2.422f, false);
     return true;
 }
 

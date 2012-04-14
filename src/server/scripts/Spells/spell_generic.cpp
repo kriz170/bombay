@@ -196,7 +196,7 @@ class spell_gen_cannibalize : public SpellScriptLoader
                 float max_range = GetSpellInfo()->GetMaxRange(false);
                 WorldObject* result = NULL;
                 // search for nearby enemy corpse in range
-                Trinity::AnyDeadUnitSpellTargetInRangeCheck check(caster, max_range, GetSpellInfo(), TARGET_SELECT_CHECK_ENEMY);
+                Trinity::AnyDeadUnitSpellTargetInRangeCheck check(caster, max_range, GetSpellInfo(), TARGET_CHECK_ENEMY);
                 Trinity::WorldObjectSearcher<Trinity::AnyDeadUnitSpellTargetInRangeCheck> searcher(caster, result, check);
                 caster->GetMap()->VisitFirstFound(caster->m_positionX, caster->m_positionY, max_range, searcher);
                 if (!result)
@@ -1084,7 +1084,7 @@ class spell_gen_seaforium_blast : public SpellScriptLoader
                 // but in effect handling OriginalCaster can become NULL
                 if (Unit* originalCaster = GetOriginalCaster())
                     if (GameObject* go = GetHitGObj())
-                        if (GetHitGObj()->GetGOInfo()->type == GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING)
+                        if (go->GetGOInfo()->type == GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING)
                             originalCaster->CastSpell(originalCaster, SPELL_PLANT_CHARGES_CREDIT_ACHIEVEMENT, true);
             }
 
@@ -1234,30 +1234,30 @@ class spell_gen_magic_rooster : public SpellScriptLoader
 
 class spell_gen_allow_cast_from_item_only : public SpellScriptLoader
 {
-public:
-    spell_gen_allow_cast_from_item_only() : SpellScriptLoader("spell_gen_allow_cast_from_item_only") { }
+    public:
+        spell_gen_allow_cast_from_item_only() : SpellScriptLoader("spell_gen_allow_cast_from_item_only") { }
 
-    class spell_gen_allow_cast_from_item_only_SpellScript : public SpellScript
-    {
-        PrepareSpellScript(spell_gen_allow_cast_from_item_only_SpellScript);
-
-        SpellCastResult CheckRequirement()
+        class spell_gen_allow_cast_from_item_only_SpellScript : public SpellScript
         {
-            if (!GetCastItem())
-                return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
-            return SPELL_CAST_OK;
-        }
+            PrepareSpellScript(spell_gen_allow_cast_from_item_only_SpellScript);
 
-        void Register()
+            SpellCastResult CheckRequirement()
+            {
+                if (!GetCastItem())
+                    return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+                return SPELL_CAST_OK;
+            }
+
+            void Register()
+            {
+                OnCheckCast += SpellCheckCastFn(spell_gen_allow_cast_from_item_only_SpellScript::CheckRequirement);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
         {
-            OnCheckCast += SpellCheckCastFn(spell_gen_allow_cast_from_item_only_SpellScript::CheckRequirement);
+            return new spell_gen_allow_cast_from_item_only_SpellScript();
         }
-    };
-
-    SpellScript* GetSpellScript() const
-    {
-        return new spell_gen_allow_cast_from_item_only_SpellScript();
-    }
 };
 
 enum Launch
@@ -1312,6 +1312,11 @@ class spell_gen_launch : public SpellScriptLoader
         }
 };
 
+enum VehicleScaling
+{
+    SPELL_GEAR_SCALING      = 66668,
+};
+
 class spell_gen_vehicle_scaling : public SpellScriptLoader
 {
     public:
@@ -1323,7 +1328,7 @@ class spell_gen_vehicle_scaling : public SpellScriptLoader
 
             bool Load()
             {
-                return GetCaster()->GetTypeId() == TYPEID_PLAYER;
+                return GetCaster() && GetCaster()->GetTypeId() == TYPEID_PLAYER;
             }
 
             void CalculateAmount(AuraEffect const* /*aurEff*/, int32& amount, bool& /*canBeRecalculated*/)
@@ -1335,7 +1340,7 @@ class spell_gen_vehicle_scaling : public SpellScriptLoader
                 // TODO: Reserach coeffs for different vehicles
                 switch (GetId())
                 {
-                    case 66668:
+                    case SPELL_GEAR_SCALING:
                         factor = 1.0f;
                         baseItemLevel = 205;
                         break;
@@ -1585,19 +1590,17 @@ class spell_gen_spirit_healer_res : public SpellScriptLoader
 
             bool Load()
             {
-                return GetOriginalCaster()->GetTypeId() == TYPEID_PLAYER;
+                return GetOriginalCaster() && GetOriginalCaster()->GetTypeId() == TYPEID_PLAYER;
             }
 
             void HandleDummy(SpellEffIndex /* effIndex */)
             {
-                if (Player* originalCaster = GetOriginalCaster()->ToPlayer())
+                Player* originalCaster = GetOriginalCaster()->ToPlayer();
+                if (Unit* target = GetHitUnit())
                 {
-                    if (Unit* target = GetHitUnit())
-                    {
-                        WorldPacket data(SMSG_SPIRIT_HEALER_CONFIRM, 8);
-                        data << uint64(target->GetGUID());
-                        originalCaster->GetSession()->SendPacket(&data);
-                    }
+                    WorldPacket data(SMSG_SPIRIT_HEALER_CONFIRM, 8);
+                    data << uint64(target->GetGUID());
+                    originalCaster->GetSession()->SendPacket(&data);
                 }
             }
 
@@ -2921,6 +2924,7 @@ void AddSC_generic_spell_scripts()
     new spell_gen_chaos_blast();
     new spell_gen_pet_calculate();
     new spell_gen_ds_flush_knockback();
+    new spell_gen_wg_water();
     new spell_gen_apexis_buff();
     new spell_gen_apexis_swiftness();
 }

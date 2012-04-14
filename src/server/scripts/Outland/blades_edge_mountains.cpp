@@ -60,7 +60,7 @@ public:
 
     struct mobs_bladespire_ogreAI : public ScriptedAI
     {
-        mobs_bladespire_ogreAI(Creature* c) : ScriptedAI(c) {}
+        mobs_bladespire_ogreAI(Creature* creature) : ScriptedAI(creature) {}
 
         void Reset() { }
 
@@ -72,7 +72,6 @@ public:
             DoMeleeAttackIfReady();
         }
     };
-
 };
 
 /*######
@@ -112,7 +111,7 @@ public:
 
     struct mobs_nether_drakeAI : public ScriptedAI
     {
-        mobs_nether_drakeAI(Creature* c) : ScriptedAI(c) {}
+        mobs_nether_drakeAI(Creature* creature) : ScriptedAI(creature) {}
 
         bool IsNihil;
         uint32 NihilSpeech_Timer;
@@ -252,7 +251,6 @@ public:
             DoMeleeAttackIfReady();
         }
     };
-
 };
 
 /*######
@@ -277,7 +275,7 @@ public:
 
     struct npc_daranelleAI : public ScriptedAI
     {
-        npc_daranelleAI(Creature* c) : ScriptedAI(c) {}
+        npc_daranelleAI(Creature* creature) : ScriptedAI(creature) {}
 
         void Reset() { }
 
@@ -298,7 +296,6 @@ public:
             ScriptedAI::MoveInLineOfSight(who);
         }
     };
-
 };
 
 /*######
@@ -312,10 +309,10 @@ class npc_overseer_nuaar : public CreatureScript
 public:
     npc_overseer_nuaar() : CreatureScript("npc_overseer_nuaar") { }
 
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 uiAction)
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
     {
         player->PlayerTalkClass->ClearMenus();
-        if (uiAction == GOSSIP_ACTION_INFO_DEF+1)
+        if (action == GOSSIP_ACTION_INFO_DEF+1)
         {
             player->SEND_GOSSIP_MENU(10533, creature->GetGUID());
             player->AreaExploredOrEventHappens(10682);
@@ -332,7 +329,6 @@ public:
 
         return true;
     }
-
 };
 
 /*######
@@ -347,10 +343,10 @@ class npc_saikkal_the_elder : public CreatureScript
 public:
     npc_saikkal_the_elder() : CreatureScript("npc_saikkal_the_elder") { }
 
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 uiAction)
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
     {
         player->PlayerTalkClass->ClearMenus();
-        switch (uiAction)
+        switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF+1:
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SELECT_STE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
@@ -373,7 +369,6 @@ public:
 
         return true;
     }
-
 };
 
 /*######
@@ -422,7 +417,6 @@ public:
 
         return true;
     }
-
 };
 
 /*######
@@ -468,7 +462,6 @@ public:
 
         void UpdateAI(const uint32 /*uiDiff*/) {}
     };
-
 };
 
 /*######
@@ -498,7 +491,8 @@ public:
 
         void MoveInLineOfSight(Unit* who)
         {
-            if (!who || (!who->isAlive())) return;
+            if (!who || (!who->isAlive()))
+                return;
 
             if (me->IsWithinDistInMap(who, 50.0f))
             {
@@ -522,7 +516,7 @@ public:
                 me->GetMotionMaster()->MoveTargetedHome();
                 Creature* Credit = me->FindNearestCreature(NPC_QUEST_CREDIT, 50, true);
                 if (player && Credit)
-                    player->KilledMonster(Credit->GetCreatureInfo(), Credit->GetGUID());
+                    player->KilledMonster(Credit->GetCreatureTemplate(), Credit->GetGUID());
             }
         }
 
@@ -533,7 +527,6 @@ public:
             DoMeleeAttackIfReady();
         }
     };
-
 };
 
 enum SimonGame
@@ -733,7 +726,7 @@ class npc_simon_bunny : public CreatureScript
             // Used for getting involved player guid. Parameter id is used for defining if is a large(Monument) or small(Relic) node
             void SetGUID(uint64 guid, int32 id)
             {
-                me->SetFlying(true);
+                me->SetCanFly(true);
 
                 large = (bool)id;
                 playerGUID = guid;
@@ -755,7 +748,7 @@ class npc_simon_bunny : public CreatureScript
                 colorSequence.clear();
                 playableSequence.clear();
                 playerSequence.clear();
-                me->SetFloatValue(OBJECT_FIELD_SCALE_X, large ? 2 : 1);
+                me->SetFloatValue(OBJECT_FIELD_SCALE_X, large ? 2.0f : 1.0f);
 
                 std::list<WorldObject*> ClusterList;
                 Trinity::AllWorldObjectsInRange objects(me, searchDistance);
@@ -771,20 +764,42 @@ class npc_simon_bunny : public CreatureScript
                         {
                             switch (go->GetGOInfo()->displayId)
                             {
-                                case GO_BLUE_CLUSTER_DISPLAY_LARGE: clusterIds[SIMON_BLUE] = go->GetEntry(); break;
-                                case GO_RED_CLUSTER_DISPLAY_LARGE: clusterIds[SIMON_RED] = go->GetEntry(); break;
-                                case GO_GREEN_CLUSTER_DISPLAY_LARGE: clusterIds[SIMON_GREEN] = go->GetEntry(); break;
-                                case GO_YELLOW_CLUSTER_DISPLAY_LARGE: clusterIds[SIMON_YELLOW] = go->GetEntry(); break;
+                                case GO_BLUE_CLUSTER_DISPLAY_LARGE:
+                                    clusterIds[SIMON_BLUE] = go->GetEntry();
+                                    break;
+
+                                case GO_RED_CLUSTER_DISPLAY_LARGE:
+                                    clusterIds[SIMON_RED] = go->GetEntry();
+                                    break;
+
+                                case GO_GREEN_CLUSTER_DISPLAY_LARGE:
+                                    clusterIds[SIMON_GREEN] = go->GetEntry();
+                                    break;
+
+                                case GO_YELLOW_CLUSTER_DISPLAY_LARGE:
+                                    clusterIds[SIMON_YELLOW] = go->GetEntry();
+                                    break;
                             }
                         }
                         else
                         {
                             switch (go->GetGOInfo()->displayId)
                             {
-                                case GO_BLUE_CLUSTER_DISPLAY: clusterIds[SIMON_BLUE] = go->GetEntry(); break;
-                                case GO_RED_CLUSTER_DISPLAY: clusterIds[SIMON_RED] = go->GetEntry(); break;
-                                case GO_GREEN_CLUSTER_DISPLAY: clusterIds[SIMON_GREEN] = go->GetEntry(); break;
-                                case GO_YELLOW_CLUSTER_DISPLAY: clusterIds[SIMON_YELLOW] = go->GetEntry(); break;
+                                case GO_BLUE_CLUSTER_DISPLAY:
+                                    clusterIds[SIMON_BLUE] = go->GetEntry();
+                                    break;
+
+                                case GO_RED_CLUSTER_DISPLAY:
+                                    clusterIds[SIMON_RED] = go->GetEntry();
+                                    break;
+
+                                case GO_GREEN_CLUSTER_DISPLAY:
+                                    clusterIds[SIMON_GREEN] = go->GetEntry();
+                                    break;
+
+                                case GO_YELLOW_CLUSTER_DISPLAY:
+                                    clusterIds[SIMON_YELLOW] = go->GetEntry();
+                                    break;
                             }
                         }
                     }

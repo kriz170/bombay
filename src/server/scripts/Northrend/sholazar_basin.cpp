@@ -58,7 +58,7 @@ public:
 
     struct npc_injured_rainspeaker_oracleAI : public npc_escortAI
     {
-        npc_injured_rainspeaker_oracleAI(Creature* c) : npc_escortAI(c) { c_guid = c->GetGUID(); }
+        npc_injured_rainspeaker_oracleAI(Creature* creature) : npc_escortAI(creature) { c_guid = creature->GetGUID(); }
 
         uint64 c_guid;
 
@@ -67,40 +67,41 @@ public:
             me->RestoreFaction();
         }
 
-        void WaypointReached(uint32 i)
+        void WaypointReached(uint32 waypointId)
         {
             Player* player = GetPlayerForEscort();
-
             if (!player)
                 return;
 
-            switch (i)
+            switch (waypointId)
             {
-            case 1: SetRun(); break;
-            case 10:
-            case 11:
-            case 12:
-            case 13:
-            case 14:
-            case 15:
-            case 16:
-            case 17:
-            case 18:
-                me->RemoveUnitMovementFlag(MOVEMENTFLAG_SWIMMING);
-                me->RemoveUnitMovementFlag(MOVEMENTFLAG_JUMPING);
-                me->SetSpeed(MOVE_SWIM, 0.85f, true);
-                me->AddUnitMovementFlag(MOVEMENTFLAG_SWIMMING | MOVEMENTFLAG_LEVITATING);
-                break;
-            case 19:
-                me->SetUnitMovementFlags(MOVEMENTFLAG_JUMPING);
-                break;
-            case 28:
+                case 1:
+                    SetRun();
+                    break;
+                case 10:
+                case 11:
+                case 12:
+                case 13:
+                case 14:
+                case 15:
+                case 16:
+                case 17:
+                case 18:
+                    me->RemoveUnitMovementFlag(MOVEMENTFLAG_SWIMMING);
+                    me->RemoveUnitMovementFlag(MOVEMENTFLAG_FALLING);
+                    me->SetSpeed(MOVE_SWIM, 0.85f, true);
+                    me->AddUnitMovementFlag(MOVEMENTFLAG_SWIMMING | MOVEMENTFLAG_DISABLE_GRAVITY);
+                    break;
+                case 19:
+                    me->SetUnitMovementFlags(MOVEMENTFLAG_FALLING);
+                    break;
+                case 28:
                 if (Player* player = GetPlayerForEscort())
                     player->GroupEventHappens(QUEST_FORTUNATE_MISUNDERSTANDINGS, me);
-                //me->RestoreFaction();
-                DoScriptText(SAY_END_IRO, me);
-                SetRun(false);
-                break;
+                    // me->RestoreFaction();
+                    DoScriptText(SAY_END_IRO, me);
+                    SetRun(false);
+                    break;
             }
         }
 
@@ -132,14 +133,14 @@ public:
         return true;
     }
 
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 uiAction)
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
     {
         player->PlayerTalkClass->ClearMenus();
-        if (uiAction == GOSSIP_ACTION_INFO_DEF+1)
+        if (action == GOSSIP_ACTION_INFO_DEF+1)
         {
             CAST_AI(npc_escortAI, (creature->AI()))->Start(true, false, player->GetGUID());
             CAST_AI(npc_escortAI, (creature->AI()))->SetMaxPlayerDistance(35.0f);
-            creature->SetUnitMovementFlags(MOVEMENTFLAG_JUMPING);
+            creature->SetUnitMovementFlags(MOVEMENTFLAG_FALLING);
             DoScriptText(SAY_START_IRO, creature);
 
             switch (player->GetTeam()){
@@ -211,10 +212,10 @@ public:
         return true;
     }
 
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 uiAction)
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
     {
         player->PlayerTalkClass->ClearMenus();
-        switch (uiAction)
+        switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF+1:
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_VEKJIK_ITEM2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
@@ -269,10 +270,10 @@ public:
         return true;
     }
 
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 uiAction)
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
     {
         player->PlayerTalkClass->ClearMenus();
-        switch (uiAction)
+        switch (action)
         {
         case GOSSIP_ACTION_INFO_DEF+1:
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_AOF2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
@@ -311,10 +312,9 @@ public:
             if (me->isDead())
                 return;
 
-            if (me->isSummon())
-                if (Unit* summoner = me->ToTempSummon()->GetSummoner())
-                    if (summoner)
-                        me->GetMotionMaster()->MovePoint(0, summoner->GetPositionX(), summoner->GetPositionY(), summoner->GetPositionZ());
+            if (TempSummon* summ = me->ToTempSummon())
+                if (Unit* summoner = summ->GetSummoner())
+                    me->GetMotionMaster()->MovePoint(0, summoner->GetPositionX(), summoner->GetPositionY(), summoner->GetPositionZ());
 
             Reset();
         }
@@ -365,10 +365,11 @@ public:
 
         uint32 m_uiChatTimer;
 
-        void WaypointReached(uint32 i)
+        void WaypointReached(uint32 waypointId)
         {
             Player* player = GetPlayerForEscort();
-            switch (i)
+
+            switch (waypointId)
             {
                 case 0:
                     DoScriptText(SAY_WP_2, me);
@@ -407,12 +408,12 @@ public:
         {
             m_uiChatTimer = 4000;
         }
+
         void JustDied(Unit* /*killer*/)
         {
-            Player* player = GetPlayerForEscort();
             if (HasEscortState(STATE_ESCORT_ESCORTING))
             {
-                if (player)
+                if (Player* player = GetPlayerForEscort())
                     player->FailQuest(QUEST_DISASTER);
             }
         }
@@ -653,11 +654,11 @@ public:
         return true;
     }
 
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 uiAction)
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
     {
         player->PlayerTalkClass->ClearMenus();
         uint32 spellId = 0;
-        switch (uiAction)
+        switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF + 1: spellId = SPELL_ADD_ORANGE;     break;
             case GOSSIP_ACTION_INFO_DEF + 2: spellId = SPELL_ADD_BANANAS;    break;

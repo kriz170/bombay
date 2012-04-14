@@ -796,7 +796,7 @@ class boss_sister_svalna : public CreatureScript
             {
                 _JustReachedHome();
                 me->SetReactState(REACT_PASSIVE);
-                me->SetFlying(false);
+                me->SetCanFly(false);
             }
 
             void DoAction(int32 const action)
@@ -844,7 +844,7 @@ class boss_sister_svalna : public CreatureScript
                 _isEventInProgress = false;
                 me->setActive(false);
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
-                me->SetFlying(false);
+                me->SetCanFly(false);
             }
 
             void SpellHitTarget(Unit* target, SpellInfo const* spell)
@@ -1204,7 +1204,7 @@ class npc_crok_scourgebane : public CreatureScript
 struct npc_argent_captainAI : public ScriptedAI
 {
     public:
-        npc_argent_captainAI(Creature* creature) : ScriptedAI(creature), Instance(creature->GetInstanceScript()), _firstDeath(true)
+        npc_argent_captainAI(Creature* creature) : ScriptedAI(creature), instance(creature->GetInstanceScript()), _firstDeath(true)
         {
             FollowAngle = PET_FOLLOW_ANGLE;
             FollowDist = PET_FOLLOW_DIST;
@@ -1232,7 +1232,7 @@ struct npc_argent_captainAI : public ScriptedAI
         {
             if (action == ACTION_START_GAUNTLET)
             {
-                if (Creature* crok = ObjectAccessor::GetCreature(*me, Instance->GetData64(DATA_CROK_SCOURGEBANE)))
+                if (Creature* crok = ObjectAccessor::GetCreature(*me, instance->GetData64(DATA_CROK_SCOURGEBANE)))
                 {
                     me->SetReactState(REACT_DEFENSIVE);
                     FollowAngle = me->GetAngle(crok) + me->GetOrientation();
@@ -1276,7 +1276,7 @@ struct npc_argent_captainAI : public ScriptedAI
             if (!me->GetVehicle())
             {
                 me->GetMotionMaster()->Clear(false);
-                if (Creature* crok = ObjectAccessor::GetCreature(*me, Instance->GetData64(DATA_CROK_SCOURGEBANE)))
+                if (Creature* crok = ObjectAccessor::GetCreature(*me, instance->GetData64(DATA_CROK_SCOURGEBANE)))
                     me->GetMotionMaster()->MoveFollow(crok, FollowDist, FollowAngle, MOTION_SLOT_IDLE);
             }
 
@@ -1309,14 +1309,14 @@ struct npc_argent_captainAI : public ScriptedAI
                 }
 
                 Talk(SAY_CAPTAIN_RESURRECTED);
-                me->UpdateEntry(newEntry, Instance->GetData(DATA_TEAM_IN_INSTANCE), me->GetCreatureData());
+                me->UpdateEntry(newEntry, instance->GetData(DATA_TEAM_IN_INSTANCE), me->GetCreatureData());
                 DoCast(me, SPELL_UNDEATH, true);
             }
         }
 
     protected:
         EventMap Events;
-        InstanceScript* Instance;
+        InstanceScript* instance;
         float FollowAngle;
         float FollowDist;
         bool IsUndead;
@@ -1368,7 +1368,7 @@ class npc_captain_arnath : public CreatureScript
                         case EVENT_ARNATH_PW_SHIELD:
                         {
                             std::list<Creature*> targets = DoFindFriendlyMissingBuff(40.0f, SPELL_POWER_WORD_SHIELD);
-                            DoCast(SelectRandomContainerElement(targets), SPELL_POWER_WORD_SHIELD);
+                            DoCast(Trinity::Containers::SelectRandomContainerElement(targets), SPELL_POWER_WORD_SHIELD);
                             Events.ScheduleEvent(EVENT_ARNATH_PW_SHIELD, urand(15000, 20000));
                             break;
                         }
@@ -1822,7 +1822,7 @@ class spell_frost_giant_death_plague : public SpellScriptLoader
                 unitList.remove_if (DeathPlagueTargetSelector(GetCaster()));
                 if (!unitList.empty())
                 {
-                    Unit* target = SelectRandomContainerElement(unitList);
+                    Unit* target = Trinity::Containers::SelectRandomContainerElement(unitList);
                     unitList.clear();
                     unitList.push_back(target);
                 }
@@ -1909,7 +1909,7 @@ class spell_svalna_revive_champion : public SpellScriptLoader
             void RemoveAliveTarget(std::list<Unit*>& unitList)
             {
                 unitList.remove_if(AliveCheck());
-                Trinity::RandomResizeList(unitList, 2);
+                Trinity::Containers::RandomResizeList(unitList, 2);
             }
 
             void Land(SpellEffIndex /*effIndex*/)

@@ -323,7 +323,7 @@ SpellInfo const* SpellScript::GetSpellInfo()
 WorldLocation const* SpellScript::GetTargetDest()
 {
     if (m_spell->m_targets.HasDst())
-        return m_spell->m_targets.GetDst();
+        return m_spell->m_targets.GetDstPos();
     return NULL;
 }
 
@@ -403,6 +403,16 @@ GameObject* SpellScript::GetHitGObj()
     return m_spell->gameObjTarget;
 }
 
+WorldLocation const* SpellScript::GetHitDest()
+{
+    if (!IsInEffectHook())
+    {
+        sLog->outError("TSCR: Script: `%s` Spell: `%u`: function SpellScript::GetHitGObj was called, but function has no effect in current hook!", m_scriptName->c_str(), m_scriptSpellId);
+        return NULL;
+    }
+    return m_spell->destTarget;
+}
+
 int32 SpellScript::GetHitDamage()
 {
     if (!IsInTargetHook())
@@ -466,16 +476,6 @@ void SpellScript::PreventHitAura()
     }
     if (m_spell->m_spellAura)
         m_spell->m_spellAura->Remove();
-}
-
-void SpellScript::GetSummonPosition(uint32 i, Position &pos, float radius = 0.0f, uint32 count = 0)
-{
-    m_spell->GetSummonPosition(i, pos, radius, count);
-}
-
-void SpellScript::SearchAreaTarget(std::list<Unit*> &TagUnitMap, float radius, SpellNotifyPushType type, SpellTargets TargetType, uint32 entry)
-{
-    m_spell->SearchAreaTarget(TagUnitMap, radius, type, TargetType, entry);
 }
 
 void SpellScript::PreventHitEffect(SpellEffIndex effIndex)
@@ -773,6 +773,7 @@ bool AuraScript::_IsDefaultActionPrevented()
         case AURA_SCRIPT_HOOK_EFFECT_APPLY:
         case AURA_SCRIPT_HOOK_EFFECT_REMOVE:
         case AURA_SCRIPT_HOOK_EFFECT_PERIODIC:
+        case AURA_SCRIPT_HOOK_EFFECT_ABSORB:
             return m_defaultActionPrevented;
         default:
             ASSERT(false && "AuraScript::_IsDefaultActionPrevented is called in a wrong place");
@@ -787,6 +788,7 @@ void AuraScript::PreventDefaultAction()
         case AURA_SCRIPT_HOOK_EFFECT_APPLY:
         case AURA_SCRIPT_HOOK_EFFECT_REMOVE:
         case AURA_SCRIPT_HOOK_EFFECT_PERIODIC:
+        case AURA_SCRIPT_HOOK_EFFECT_ABSORB:
             m_defaultActionPrevented = true;
             break;
         default:
