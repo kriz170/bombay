@@ -1528,7 +1528,7 @@ class npc_valkyr_shadowguard : public CreatureScript
                 {
                     case POINT_DROP_PLAYER:
                         me->GetPosition(&_current);
-                        if (_current.GetExactDist(&_dropPoint) != 0)
+                        if (_current.GetPositionX() != _dropPoint.GetPositionX() || _current.GetPositionY() != _dropPoint.GetPositionY() )
                         {
                             _events.ScheduleEvent(EVENT_MOVE_TO_DROP_POS, 0);
                             break;
