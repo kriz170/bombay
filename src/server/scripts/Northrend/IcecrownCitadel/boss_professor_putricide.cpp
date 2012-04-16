@@ -294,9 +294,6 @@ class boss_professor_putricide : public CreatureScript
                     case NPC_GAS_CLOUD:
                         // no possible aura seen in sniff adding the aurastate
                         summon->ModifyAuraState(AURA_STATE_UNKNOWN22, true);
-                        summon->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK, true);
-                        summon->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK_DEST, true);
-                        summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                         summon->CastSpell(summon, SPELL_GASEOUS_BLOAT_PROC, true);
                         summon->CastCustomSpell(SPELL_GASEOUS_BLOAT, SPELLVALUE_AURA_STACK, 10, summon, false);
                         summon->SetReactState(REACT_PASSIVE);
@@ -304,9 +301,6 @@ class boss_professor_putricide : public CreatureScript
                     case NPC_VOLATILE_OOZE:
                         // no possible aura seen in sniff adding the aurastate
                         summon->ModifyAuraState(AURA_STATE_UNKNOWN19, true);
-                        summon->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK, true);
-                        summon->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK_DEST, true);
-                        summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                         summon->CastSpell(summon, SPELL_OOZE_ERUPTION_SEARCH_PERIODIC, true);
                         summon->CastSpell(summon, SPELL_VOLATILE_OOZE_ADHESIVE, false);
                         summon->SetReactState(REACT_PASSIVE);
@@ -716,6 +710,10 @@ class npc_volatile_ooze : public CreatureScript
             npc_putricide_oozeAI(Creature* creature) : ScriptedAI(creature)
             {
                 _newTargetSelectTimer = 0;
+                me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK, true);
+                me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK_DEST, true);
+                me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, true);
+                me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_ATTACK_ME, true);
             }
 
             void SpellHitTarget(Unit* /*target*/, SpellInfo const* spell)
@@ -770,6 +768,10 @@ class npc_gas_cloud : public CreatureScript
             npc_gas_cloudAI(Creature* creature) : ScriptedAI(creature)
             {
                 _newTargetSelectTimer = 0;
+                me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK, true);
+                me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK_DEST, true);
+                me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, true);
+                me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_ATTACK_ME, true);
             }
 
             void SpellHitTarget(Unit* /*target*/, SpellInfo const* spell)
@@ -902,7 +904,6 @@ class spell_putricide_ooze_channel : public SpellScriptLoader
                 GetCaster()->DeleteThreatList();
                 GetCaster()->ToCreature()->AI()->AttackStart(GetHitUnit());
                 GetCaster()->AddThreat(GetHitUnit(), 500000000.0f);    // value seen in sniff
-                GetCaster()->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
             }
 
             // temporary, until SelectTarget are not called on empty lists

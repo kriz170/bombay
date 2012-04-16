@@ -3041,6 +3041,10 @@ void Spell::cancel()
     if (m_spellState == SPELL_STATE_FINISHED)
         return;
 
+    // Really bad hack fix, make spell casted by Gas Cloud (37562) and Volatile Ooze (37697) uncancelable
+    if (m_caster->GetEntry() == 37562 || m_caster->GetEntry() == 37697)
+        return;
+
     uint32 oldState = m_spellState;
     m_spellState = SPELL_STATE_FINISHED;
 
