@@ -43,6 +43,7 @@ enum HunterSpells
     HUNTER_SPELL_CHIMERA_SHOT_SERPENT            = 53353,
     HUNTER_SPELL_CHIMERA_SHOT_VIPER              = 53358,
     HUNTER_SPELL_CHIMERA_SHOT_SCORPID            = 53359,
+    HUNTER_SPELL_ASPECT_OF_THE_BEAST             = 13161,
     HUNTER_SPELL_ASPECT_OF_THE_BEAST_PET         = 61669,
 };
 
@@ -92,6 +93,42 @@ class spell_hun_aspect_of_the_beast : public SpellScriptLoader
         AuraScript* GetAuraScript() const
         {
             return new spell_hun_aspect_of_the_beast_AuraScript();
+        }
+};
+
+// 61669 Aspect of the Beast Pet
+class spell_hun_pet_aspect_of_the_beast : public SpellScriptLoader
+{
+    public:
+        spell_hun_pet_aspect_of_the_beast() : SpellScriptLoader("spell_hun_pet_aspect_of_the_beast") { }
+
+        class spell_hun_pet_aspect_of_the_beast_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_hun_pet_aspect_of_the_beast_AuraScript);
+
+            bool Validate(SpellInfo const* /*entry*/)
+            {
+                if (!sSpellMgr->GetSpellInfo(HUNTER_SPELL_ASPECT_OF_THE_BEAST))
+                    return false;
+                return true;
+            }
+
+            void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+            {
+                if (Unit* owner = GetTarget()->GetOwner())
+                    if (!owner->HasAura(HUNTER_SPELL_ASPECT_OF_THE_BEAST))
+                        GetTarget()->RemoveAurasDueToSpell(HUNTER_SPELL_ASPECT_OF_THE_BEAST_PET);
+            }
+
+            void Register()
+            {
+                AfterEffectApply += AuraEffectApplyFn(spell_hun_pet_aspect_of_the_beast_AuraScript::OnApply, EFFECT_0, SPELL_AURA_UNTRACKABLE, AURA_EFFECT_HANDLE_REAL);
+            }
+        };
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_hun_pet_aspect_of_the_beast_AuraScript();
         }
 };
 
@@ -621,6 +658,7 @@ class spell_hun_misdirection_proc : public SpellScriptLoader
 void AddSC_hunter_spell_scripts()
 {
     new spell_hun_aspect_of_the_beast();
+    new spell_hun_pet_aspect_of_the_beast();
     new spell_hun_chimera_shot();
     new spell_hun_invigoration();
     new spell_hun_last_stand_pet();
