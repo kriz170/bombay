@@ -1585,6 +1585,7 @@ class Unit : public WorldObject
 
         virtual bool IsInWater() const;
         virtual bool IsUnderWater() const;
+        virtual void UpdateUnderwaterState(Map* m, float x, float y, float z);
         bool isInAccessiblePlaceFor(Creature const* c) const;
 
         void SendHealSpellLog(Unit* victim, uint32 SpellID, uint32 Damage, uint32 OverHeal, uint32 Absorb, bool critical = false);
@@ -2324,6 +2325,7 @@ class Unit : public WorldObject
         Vehicle* m_vehicleKit;
 
         uint32 m_unitTypeMask;
+        LiquidTypeEntry const* _lastLiquid;
 
         bool IsAlwaysVisibleFor(WorldObject const* seer) const;
         bool IsAlwaysDetectableFor(WorldObject const* seer) const;
