@@ -309,6 +309,22 @@ class boss_deathbringer_saurfang : public CreatureScript
 
             void JustDied(Unit* /*killer*/)
             {
+                if (!_dead)
+                {
+                    _dead = true;
+                    _JustDied();
+                    _EnterEvadeMode();
+                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE);
+
+                    DoCastAOE(SPELL_REMOVE_MARKS_OF_THE_FALLEN_CHAMPION);
+                    DoCast(me, SPELL_ACHIEVEMENT, true);
+                    Talk(SAY_DEATH);
+
+                    //instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_MARK_OF_THE_FALLEN_CHAMPION);
+                    DoCast(me, SPELL_PERMANENT_FEIGN_DEATH);
+                    if (Creature* creature = ObjectAccessor::GetCreature(*me, instance->GetData64(DATA_SAURFANG_EVENT_NPC)))
+                        creature->AI()->DoAction(ACTION_START_OUTRO);
+                }
             }
 
             void AttackStart(Unit* victim)
