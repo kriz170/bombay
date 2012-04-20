@@ -61,7 +61,7 @@ UPDATE `creature_template` SET `InhabitType`=7,`modelid1`=11686,`modelid2`=169,`
 UPDATE `creature_template` SET `scale`=1,`flags_extra`=130,`exp`=2,`baseattacktime`=2000,`unit_flags`=33554432 WHERE `entry` IN(40001, 40135); -- 40001 & 40135 - Combustion & Consumption
 
 -- 40469, 40468, 40083 & 40100 - Shadow Orb
-UPDATE `creature_template` SET `InhabitType`=7,`flags_extra`=2,`unit_flags`=33554432,`baseattacktime`=2000,`speed_walk`=2.4,`speed_run`=0.85714,`faction_A`=14,`faction_H`=14,`exp`=2,`maxlevel`=80,`minlevel`=80, `ScriptName`= '' WHERE `entry` IN (40469, 40468, 40083, 40100);
+UPDATE `creature_template` SET `InhabitType`=7,`flags_extra`=2,`unit_flags`=33554432,`baseattacktime`=2000,`speed_walk`=2.4,`speed_run`=0.85714,`faction_A`=14,`faction_H`=14,`exp`=2,`maxlevel`=80,`minlevel`=80, `type`=4, `HoverHeight`=0, `ScriptName`= '' WHERE `entry` IN (40469, 40468, 40083, 40100);
 
 -- Script Names
 UPDATE `creature_template` SET `ScriptName`= 'boss_twilight_halion' WHERE `entry`=40142; -- Twilight Halion
@@ -73,16 +73,11 @@ UPDATE `creature_template` SET `ScriptName`= 'npc_meteor_strike' WHERE `entry` I
 -- Model info update
 UPDATE `creature_model_info` SET `bounding_radius`=3.8,`combat_reach`=7.6,`gender`=2 WHERE `modelid`=16946;
 
--- Template addon updates
-DELETE FROM `creature_template_addon` WHERE `entry` IN (39863, 40142);
-INSERT INTO `creature_template_addon` (`entry`,`path_id`,`mount`,`bytes1`,`bytes2`,`emote`,`auras`) VALUES
-(40142,0,0,0,0,0, '75476 78243'), -- Twilight Halion: Twilight Precision + Dusk Shroud
-(39863,0,0,0,0,0, '78243');       -- Halion: Twilight Precision
-
 -- Spell 75074 cannot be found in any DBC file and is not found in sniffs.
 -- thus leaving us with no other choice than editing a WDB field (kids, do not try this at home)
 UPDATE `gameobject_template` SET `data10`=74807,`WDBVerified`=-12340 WHERE `entry` IN (202794, 202795);
--- UPDATE `gameobject_template` SET `ScriptName`="go_exit_twilight_realm",`flags`=`flags`|32, WHERE `entry`=202796;
+UPDATE `gameobject_template` SET `flags`=`flags`|32 WHERE `entry`=202794;
+UPDATE `gameobject_template` SET `faction`=35, `flags`=`flags`|32,`ScriptName`='go_exit_twilight_realm',`WDBVerified`=-12340 WHERE `entry`=202796;
 
 -- Spell scripts
 DELETE FROM `spell_script_names` WHERE `ScriptName`= 'spell_halion_meteor_strike_marker';
@@ -204,13 +199,10 @@ INSERT INTO `npc_spellclick_spells` (`npc_entry`,`spell_id`,`cast_flags`,`user_t
 
 -- Conditions
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=13 AND `SourceEntry`=74758;
-DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=13 AND `SourceEntry`=75509;
-DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=13 AND `SourceEntry`=75866;
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=13 AND `SourceEntry`=75886;
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES
 (13,1,75886,0,0,31,0,3,40683,0,0,0, "", "Blazing Aura can only target Living Embers"),
-(13,1,75886,0,0,31,0,3,40684,0,0,0, "", "Blazing Aura can only target Living Embers"),
-(13,3,75509,0,0,31,0,3,40142,0,0,0, "", "Twilight Mending can only target Halion"),
-(13,3,75509,0,0,31,0,3,39863,0,0,0, "", "Twilight Mending can only target Halion"),
+(13,1,75886,0,1,31,0,3,40684,0,0,0, "", "Blazing Aura can only target Living Embers"),
 (13,1,74758,0,0,31,0,3,40091,0,0,0, "", "Track Rotation can only target Orb Rotation Focus");
 
 -- Not applicable for now (until merge), just found this randomly while re-parsing sniffs
