@@ -143,9 +143,9 @@ INSERT INTO `gameobject` (`guid`,`id`,`map`,`spawnMask`,`phaseMask`,`position_x`
 SET @GUID = 240111; -- Set guid (3 required)
 DELETE FROM `creature` WHERE `id` IN (40081,40091,40151);
 INSERT INTO `creature` (`guid`,`id`,`map`,`spawnMask`,`phaseMask`,`modelid`,`equipment_id`,`position_x`,`position_y`,`position_z`,`orientation`,`spawntimesecs`,`spawndist`,`currentwaypoint`,`curhealth`,`curmana`,`MovementType`,`npcflag`,`unit_flags`,`dynamicflags`) VALUES
-(@GUID,40091,724,1,0x20,0,0,3113.711,533.5382,72.96869,1.936719,300,0,0,1,0,0,0,0,0), -- Orb Rotation Focus
-(@GUID+1,40081,724,1,0x20,0,0,3153.75,533.1875,72.97205,0,300,0,0,1,0,0,0,0,0), -- Orb Carrier
-(@GUID+2,40151,724,1,0x21,0,0,3153.75,533.1875,72.97205,0,300,0,0,1,0,0,0,0,0); -- Combat Stalker
+(@GUID,40091,724,15,0x20,0,0,3113.711,533.5382,72.96869,1.936719,300,0,0,1,0,0,0,0,0), -- Orb Rotation Focus
+(@GUID+1,40081,724,15,0x20,0,0,3153.75,533.1875,72.97205,0,300,0,0,1,0,0,0,0,0), -- Orb Carrier
+(@GUID+2,40151,724,15,0x21,0,0,3153.75,533.1875,72.97205,0,300,0,0,1,0,0,0,0,0); -- Combat Stalker
 
 -- Pathing for Orb Rotation Focus Entry: 40091
 SET @PATH = @GUID * 10;

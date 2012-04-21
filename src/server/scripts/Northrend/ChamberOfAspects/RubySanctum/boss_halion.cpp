@@ -1249,9 +1249,9 @@ class npc_orb_carrier : public CreatureScript
 
                             eastOrb->CastSpell(westOrb, SPELL_TWILIGHT_CUTTER, false); 
                             me->GetNearPoint2D(x, y, RING_RADIUS, me->GetOrientation() + M_PI/2);
-                            Unit* orb3 = me->SummonCreature(NPC_SHADOW_ORB_N,x,y,me->GetPositionZ(),0,TEMPSUMMON_TIMED_DESPAWN,9000);
+                            Unit* orb3 = me->SummonCreature(NPC_SHADOW_ORB_E,x,y,me->GetPositionZ(),0,TEMPSUMMON_TIMED_DESPAWN,9000);
                             me->GetNearPoint2D(x, y, RING_RADIUS, me->GetOrientation() + M_PI*1.5);
-                            Unit* orb4 = me->SummonCreature(NPC_SHADOW_ORB_S,x,y,me->GetPositionZ(),0,TEMPSUMMON_TIMED_DESPAWN,9000);
+                            Unit* orb4 = me->SummonCreature(NPC_SHADOW_ORB_W,x,y,me->GetPositionZ(),0,TEMPSUMMON_TIMED_DESPAWN,9000);
                             if (orb3 && orb4)
                             {
                                 orb3->SetPhaseMask(0x20, true);
