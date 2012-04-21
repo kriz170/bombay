@@ -2777,6 +2777,44 @@ class spell_gen_wg_water : public SpellScriptLoader
         }
 };
 
+class spell_gen_count_pct_from_max_hp : public SpellScriptLoader
+{
+    public:
+        spell_gen_count_pct_from_max_hp(char const* name, int32 damagePct = 0) : SpellScriptLoader(name), _damagePct(damagePct) { }
+
+        class spell_gen_count_pct_from_max_hp_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_gen_count_pct_from_max_hp_SpellScript)
+
+        public:
+            spell_gen_count_pct_from_max_hp_SpellScript(int32 damagePct) : SpellScript(), _damagePct(damagePct) { }
+
+            void RecalculateDamage()
+            {
+                if (!_damagePct)
+                    _damagePct = GetHitDamage();
+
+                SetHitDamage(GetHitUnit()->CountPctFromMaxHealth(_damagePct));
+            }
+
+            void Register()
+            {
+                OnHit += SpellHitFn(spell_gen_count_pct_from_max_hp_SpellScript::RecalculateDamage);
+            }
+
+        private:
+            int32 _damagePct;
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_gen_count_pct_from_max_hp_SpellScript(_damagePct);
+        }
+
+    private:
+        int32 _damagePct;
+};
+
 // 40623 apexis vibrations      -> 40624 swiftness
 // 40625 apexis emanations      -> 40627 swiftness
 // 40626 apexis enlightenment   -> 40628 swiftness
@@ -2953,6 +2991,8 @@ void AddSC_generic_spell_scripts()
     new spell_gen_pet_calculate();
     new spell_gen_ds_flush_knockback();
     new spell_gen_wg_water();
+    new spell_gen_count_pct_from_max_hp("spell_gen_default_count_pct_from_max_hp");
+    new spell_gen_count_pct_from_max_hp("spell_gen_50pct_count_pct_from_max_hp", 50);
     new spell_gen_apexis_buff();
     new spell_gen_apexis_swiftness();
 }
