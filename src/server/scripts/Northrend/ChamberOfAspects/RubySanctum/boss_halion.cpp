@@ -473,8 +473,6 @@ class boss_twilight_halion : public CreatureScript
                 me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK_DEST, true);
                 me->SetPhaseMask(0x20, true); // Should not be visible with phasemask 0x21, so only 0x20
                 events.SetPhase(PHASE_ONE);
-                if (Creature* halion = ObjectAccessor::GetCreature(*me, _instance->GetData64(DATA_HALION)))
-                    me->SetMaxHealth(halion->GetMaxHealth());
             }
 
             void Reset()
@@ -1221,19 +1219,21 @@ class npc_orb_carrier : public CreatureScript
                             if (northOrb->GetTypeId() != TYPEID_UNIT || southOrb->GetTypeId() != TYPEID_UNIT)
                                 return;
 
-                            northOrb->CastSpell(southOrb, SPELL_TWILIGHT_CUTTER, false); 
                             me->GetNearPoint2D(x, y, RING_RADIUS, me->GetOrientation() + M_PI/2);
-                            Unit* orb1 = me->SummonCreature(NPC_SHADOW_ORB_N,x,y,me->GetPositionZ(),0,TEMPSUMMON_TIMED_DESPAWN,9000);
+                            Creature* orb1 = me->SummonCreature(NPC_SHADOW_ORB_N,x,y,me->GetPositionZ(),0,TEMPSUMMON_TIMED_DESPAWN,9000);
                             me->GetNearPoint2D(x, y, RING_RADIUS, me->GetOrientation() + M_PI*1.5);
-                            Unit* orb2 = me->SummonCreature(NPC_SHADOW_ORB_S,x,y,me->GetPositionZ(),0,TEMPSUMMON_TIMED_DESPAWN,9000);
+                            Creature* orb2 = me->SummonCreature(NPC_SHADOW_ORB_S,x,y,me->GetPositionZ(),0,TEMPSUMMON_TIMED_DESPAWN,9000);
                             if (orb1 && orb2)
                             {
-                                orb1->SetPhaseMask(0x20, true);
-                                orb2->SetPhaseMask(0x20, true);
-                                orb1->ToCreature()->AI()->Talk(EMOTE_WARN_LASER);
+                                // set in combat and passive, because it will stop spell if deals damage in middle of channeling
+                                orb1->SetReactState(REACT_PASSIVE);
+                                orb2->SetReactState(REACT_PASSIVE);
+                                orb1->AI()->DoZoneInCombat();
+                                orb2->AI()->DoZoneInCombat();
+                                orb1->AI()->Talk(EMOTE_WARN_LASER);
                                 orb1->CastSpell(orb1, SPELL_TWILIGHT_PULSE_PERIODIC, true);
                                 orb2->CastSpell(orb2, SPELL_TWILIGHT_PULSE_PERIODIC, true);
-                                orb1->CastSpell(orb2, SPELL_TWILIGHT_CUTTER, true);
+                                orb1->CastSpell(orb2, SPELL_TWILIGHT_CUTTER, false);
                             }
                         }
 
@@ -1247,19 +1247,20 @@ class npc_orb_carrier : public CreatureScript
                             if (eastOrb->GetTypeId() != TYPEID_UNIT || westOrb->GetTypeId() != TYPEID_UNIT)
                                 return;
 
-                            eastOrb->CastSpell(westOrb, SPELL_TWILIGHT_CUTTER, false); 
                             me->GetNearPoint2D(x, y, RING_RADIUS, me->GetOrientation() + M_PI);
-                            Unit* orb3 = me->SummonCreature(NPC_SHADOW_ORB_E,x,y,me->GetPositionZ(),0,TEMPSUMMON_TIMED_DESPAWN,9000);
+                            Creature* orb3 = me->SummonCreature(NPC_SHADOW_ORB_E,x,y,me->GetPositionZ(),0,TEMPSUMMON_TIMED_DESPAWN,9000);
                             me->GetNearPoint2D(x, y, RING_RADIUS, me->GetOrientation());
-                            Unit* orb4 = me->SummonCreature(NPC_SHADOW_ORB_W,x,y,me->GetPositionZ(),0,TEMPSUMMON_TIMED_DESPAWN,9000);
+                            Creature* orb4 = me->SummonCreature(NPC_SHADOW_ORB_W,x,y,me->GetPositionZ(),0,TEMPSUMMON_TIMED_DESPAWN,9000);
                             if (orb3 && orb4)
                             {
-                                orb3->SetPhaseMask(0x20, true);
-                                orb4->SetPhaseMask(0x20, true);
+                                orb3->SetReactState(REACT_PASSIVE);
+                                orb4->SetReactState(REACT_PASSIVE);
+                                orb3->AI()->DoZoneInCombat();
+                                orb4->AI()->DoZoneInCombat();
                                 orb3->ToCreature()->AI()->Talk(EMOTE_WARN_LASER);
                                 orb3->CastSpell(orb3, SPELL_TWILIGHT_PULSE_PERIODIC, true);
                                 orb4->CastSpell(orb4, SPELL_TWILIGHT_PULSE_PERIODIC, true);
-                                orb3->CastSpell(orb4, SPELL_TWILIGHT_CUTTER, true);
+                                orb3->CastSpell(orb4, SPELL_TWILIGHT_CUTTER, false);
                             }
                         }
                         break;

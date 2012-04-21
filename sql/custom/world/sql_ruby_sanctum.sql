@@ -61,7 +61,7 @@ UPDATE `creature_template` SET `InhabitType`=7,`modelid1`=11686,`modelid2`=169,`
 UPDATE `creature_template` SET `scale`=1,`flags_extra`=130,`exp`=2,`baseattacktime`=2000,`unit_flags`=33554432 WHERE `entry` IN(40001, 40135); -- 40001 & 40135 - Combustion & Consumption
 
 -- 40469, 40468, 40083 & 40100 - Shadow Orb
-UPDATE `creature_template` SET `InhabitType`=7,`flags_extra`=2,`unit_flags`=33554432,`baseattacktime`=2000,`speed_walk`=2.4,`speed_run`=0.85714,`faction_A`=14,`faction_H`=14,`exp`=2,`maxlevel`=80,`minlevel`=80, `type`=4, `HoverHeight`=0, `ScriptName`= '' WHERE `entry` IN (40469, 40468, 40083, 40100);
+UPDATE `creature_template` SET `InhabitType`=7,`flags_extra`=2,`unit_flags`=33554432,`baseattacktime`=2000,`speed_walk`=2.4,`speed_run`=0.85714,`faction_A`=14,`faction_H`=14,`exp`=2,`maxlevel`=80,`minlevel`=80, unit_flags = unit_flags | 4 | 512, `type`=4, `HoverHeight`=0, `ScriptName`= '' WHERE `entry` IN (40469, 40468, 40083, 40100);
 
 -- Script Names
 UPDATE `creature_template` SET `ScriptName`= 'boss_twilight_halion' WHERE `entry`=40142; -- Twilight Halion
@@ -91,6 +91,7 @@ DELETE FROM `spell_script_names` WHERE `ScriptName`= 'spell_halion_enter_twiligh
 DELETE FROM `spell_script_names` WHERE `ScriptName`= 'spell_halion_twilight_phasing';
 DELETE FROM `spell_script_names` WHERE `ScriptName`= 'spell_halion_twilight_cutter';
 DELETE FROM `spell_script_names` WHERE `ScriptName`= 'spell_halion_clear_debuffs';
+DELETE FROM `spell_script_names` WHERE `ScriptName`= 'spell_halion_track_rotation';
 INSERT INTO `spell_script_names` (`spell_id`,`ScriptName`) VALUES
 (74641, 'spell_halion_meteor_strike_marker'),
 (74562, 'spell_halion_fiery_combustion'),
@@ -106,7 +107,8 @@ INSERT INTO `spell_script_names` (`spell_id`,`ScriptName`) VALUES
 (77844, 'spell_halion_twilight_cutter'),
 (77845, 'spell_halion_twilight_cutter'),
 (75396, 'spell_halion_clear_debuffs'),
-(77846, 'spell_halion_twilight_cutter');
+(77846, 'spell_halion_twilight_cutter'),
+(74758, 'spell_halion_track_rotation');
 
 -- Texts
 DELETE FROM `creature` WHERE `id`=40146;
@@ -207,3 +209,90 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 
 -- Not applicable for now (until merge), just found this randomly while re-parsing sniffs
 -- UPDATE creature_template SET HoverHeight=1.6 WHERE entry=40421;
+
+
+-- ------------------ Guessed Data (only to make it as close as blizzlike) ------------------ --
+
+-- Halion and Twilight Halion
+-- Damage modifier
+UPDATE `creature_template` SET `dmg_multiplier`=95, `baseattacktime`=1500 WHERE `entry` IN (39863,40142);
+UPDATE `creature_template` SET `dmg_multiplier`=145, `baseattacktime`=1500 WHERE `entry` IN (39864,40143);
+UPDATE `creature_template` SET `dmg_multiplier`=145, `baseattacktime`=1500 WHERE `entry` IN (39944,40144);
+UPDATE `creature_template` SET `dmg_multiplier`=215, `baseattacktime`=1500 WHERE `entry` IN (39945,40145);
+
+-- Other Stat
+UPDATE `creature_template` SET `speed_walk`=1.6, `speed_run`= 1.42857, `unit_flags` = 32832 WHERE `entry` IN (39864,39944,39945);
+UPDATE `creature_template` SET `minlevel`= 83, `maxlevel`=83, `speed_walk`=1.6, `speed_run`= 1.42857, `unit_flags` = 559168 WHERE `entry` IN (40143,40144,40145);
+
+-- Immunity
+UPDATE `creature_template` SET `mechanic_immune_mask` = `mechanic_immune_mask` | 
+1|          -- charm
+2|          -- disorient
+4|          -- disarm
+8|          -- distract
+16|         -- fear
+32|         -- grip
+64|         -- root
+256|        -- silence
+512|        -- sleep
+1024|       -- snare
+2048|       -- stun
+4096|       -- freeze
+8192|       -- knockout
+65536|      -- polymorph
+131072|     -- banish
+524288|     -- shackle
+1048576|    -- mount
+4194304|    -- turn
+8388608|    -- horror
+33554432|   -- interrupt
+67108864|   -- daze
+536870912   -- sapped
+where `entry` IN (39863,40142,39864,40143,39944,40144,39945,40145);
+
+-- Mini Boss
+-- Baltharus the Warborn
+UPDATE `creature_template` SET `dmg_multiplier`=75 WHERE `entry`=39751;
+UPDATE `creature_template` SET `dmg_multiplier`=110, `lootid`=39947, `speed_walk`=2.8, `scale`=1.5 WHERE `entry`=39920;
+-- Clone
+UPDATE `creature_template` SET `mindmg`=509, `maxdmg`=683, `attackpower`=805, `dmg_multiplier`=75 WHERE `entry`=39899;
+UPDATE `creature_template` SET `mindmg`=509, `maxdmg`=683, `attackpower`=805, `dmg_multiplier`=110, `baseattacktime`=2000, `unit_flags`=64, `flags_extra`=1 WHERE `entry`=39922;
+
+-- Saviana Ragefire
+UPDATE `creature_template` SET `dmg_multiplier`=75 WHERE `entry`=39747;
+UPDATE `creature_template` SET `dmg_multiplier`=110, `exp`=2, `speed_walk`=2, `speed_run`=2.14286, `scale`=1.2, `lootid`=39948, `flags_extra`=1 WHERE `entry`=39823;
+
+-- General Zarithrian
+UPDATE `creature_template` SET `dmg_multiplier`=75 WHERE `entry`=39746;
+UPDATE `creature_template` SET `dmg_multiplier`=110, `lootid`=39946, `exp`=2, `flags_extra`=1 WHERE `entry`=39805;
+
+-- Immunity
+UPDATE `creature_template` SET `mechanic_immune_mask` = `mechanic_immune_mask` | 
+1|          -- charm
+2|          -- disorient
+4|          -- disarm
+8|          -- distract
+16|         -- fear
+32|         -- grip
+64|         -- root
+256|        -- silence
+512|        -- sleep
+1024|       -- snare
+2048|       -- stun
+4096|       -- freeze
+8192|       -- knockout
+65536|      -- polymorph
+131072|     -- banish
+524288|     -- shackle
+1048576|    -- mount
+4194304|    -- turn
+8388608|    -- horror
+33554432|   -- interrupt
+67108864|   -- daze
+536870912   -- sapped
+where `entry` IN (
+39751, 39920,   -- Baltharus the Warborn
+39899, 39922,   -- Baltharus the Warborn Clone
+39747, 39823,   -- Saviana Ragefire
+39746, 39805    -- General Zarithrian
+);
