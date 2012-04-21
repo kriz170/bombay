@@ -121,6 +121,9 @@ void AnticheatMgr::StartHackDetection(Player* player, MovementInfo movementInfo,
     if (player->isGameMaster())
         return;
 
+    if (!(player->GetMap()) || player->GetMap()->IsBattleground())
+        return;
+
     uint32 key = player->GetGUIDLow();
 
     if (player->isInFlight() || player->GetTransport() || player->GetVehicle())
