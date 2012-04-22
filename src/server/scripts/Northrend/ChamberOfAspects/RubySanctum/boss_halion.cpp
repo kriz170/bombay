@@ -288,6 +288,12 @@ class boss_halion : public CreatureScript
                         twilightHalion->Kill(twilightHalion);
             }
 
+            void KilledUnit(Unit* victim)
+            {
+                if (victim->GetTypeId() == TYPEID_PLAYER)
+                    Talk(SAY_KILL);
+            }
+
             void JustReachedHome()
             {
                 instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
