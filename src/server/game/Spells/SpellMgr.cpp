@@ -3569,6 +3569,9 @@ void SpellMgr::LoadDbcDataCorrections()
             case 36032: // Arcane Blast - buff
                 spellInfo->speed = 80;
                 break;
+            case 23881: // Bloodthirst
+                spellInfo->EffectImplicitTargetA[EFFECT_1] = TARGET_UNIT_CASTER;
+                break;
             default:
                 break;
         }
