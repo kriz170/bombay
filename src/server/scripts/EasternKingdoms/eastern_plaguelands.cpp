@@ -548,7 +548,7 @@ public:
                 return;
             
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-            me->ForcedDespawn(10000);
+            me->DespawnOrUnsummon(10000);
             if (!urand(0, 9))  // make it say saved with 10% chance
                 Talk(SAY_PEASANT_SAVED);
 

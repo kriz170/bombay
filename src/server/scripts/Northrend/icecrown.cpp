@@ -237,7 +237,7 @@ public:
                         pDoneBy->ToPlayer()->KilledMonsterCredit(NPC_ARGENT_VALIANT_CREDIT,0);
 
                     me->setFaction(35);
-                    me->ForcedDespawn(5000);
+                    me->DespawnOrUnsummon(5000);
                     me->SetHomePosition(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
                     EnterEvadeMode();
                 }
@@ -247,7 +247,7 @@ public:
         void KilledUnit(Unit* /*victim*/)
         {
             me->setFaction(35);
-            me->ForcedDespawn(5000);
+            me->DespawnOrUnsummon(5000);
             DoScriptText(NPC_ARGENT_VALIANT_TEXT_SAY_LOOSE, me);
             me->CombatStop(true);
         }
@@ -1212,7 +1212,7 @@ public:
                         pDoneBy->ToPlayer()->KilledMonsterCredit(NPC_ARGENT_CHAMPION_CREDIT,0);
 
                     me->setFaction(35);
-                    me->ForcedDespawn(5000);
+                    me->DespawnOrUnsummon(5000);
                     me->SetHomePosition(me->GetPositionX(),me->GetPositionY(),me->GetPositionZ(),me->GetOrientation());
                     EnterEvadeMode();
                 }
@@ -1222,7 +1222,7 @@ public:
         void KilledUnit(Unit* /*victim*/)
         {
             me->setFaction(35);
-            me->ForcedDespawn(5000);
+            me->DespawnOrUnsummon(5000);
             DoScriptText(NPC_ARGENT_CHAMPION_TEXT_SAY_LOOSE, me);
             me->CombatStop(true);
         }
