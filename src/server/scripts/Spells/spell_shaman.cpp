@@ -611,6 +611,73 @@ class spell_sha_chain_heal : public SpellScriptLoader
         }
 };
 
+enum TotemOfWrath
+{
+    SPELL_GLYPH_OF_TOTEM_OF_WRATH         = 63280,
+    SPELL_GLYPH_OF_TOTEM_OF_WRATH_PROC    = 63283,
+};
+
+class spell_sha_totem_of_wrath : public SpellScriptLoader
+{
+    public:
+        spell_sha_totem_of_wrath() : SpellScriptLoader("spell_sha_totem_of_wrath") { }
+
+        class spell_sha_totem_of_wrath_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_sha_totem_of_wrath_SpellScript);
+
+            bool Validate(SpellInfo const* /*SpellEntry*/)
+            {
+                if (!sSpellMgr->GetSpellInfo(SPELL_GLYPH_OF_TOTEM_OF_WRATH) || !sSpellMgr->GetSpellInfo(SPELL_GLYPH_OF_TOTEM_OF_WRATH_PROC))
+                    return false;
+                return true;
+            }
+
+            void Cast()
+            {
+                Unit* caster = GetCaster();
+                if (caster->HasAura(SPELL_GLYPH_OF_TOTEM_OF_WRATH))
+                {
+                    int32 bp = 0;
+                    switch (GetSpellInfo()->GetRank())
+                    {
+                        case 1:
+                            bp = 100;
+                            break;
+                        case 2:
+                            bp = 120;
+                            break;
+                        case 3:
+                            bp = 140;
+                            break;
+                        case 4:
+                            bp = 280;
+                            break;
+                        default:
+                            break;
+                    }
+                    if (bp != 0)
+                    {
+                        int32 bp1 = bp * sSpellMgr->GetSpellInfo(SPELL_GLYPH_OF_TOTEM_OF_WRATH_PROC)->Effects[EFFECT_1].CalcValue() / 100;
+                        bp = bp * sSpellMgr->GetSpellInfo(SPELL_GLYPH_OF_TOTEM_OF_WRATH_PROC)->Effects[EFFECT_0].CalcValue() / 100;
+                        caster->CastCustomSpell(caster, SPELL_GLYPH_OF_TOTEM_OF_WRATH_PROC, &bp, &bp1, NULL, true);
+                    }
+                }
+            }
+
+            void Register()
+            {
+                AfterCast += SpellCastFn(spell_sha_totem_of_wrath_SpellScript::Cast);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_sha_totem_of_wrath_SpellScript();
+        }
+};
+
+
 void AddSC_shaman_spell_scripts()
 {
     new spell_sha_astral_shift();
@@ -625,4 +692,5 @@ void AddSC_shaman_spell_scripts()
     new spell_sha_mana_spring_totem();
     new spell_sha_lava_lash();
     new spell_sha_chain_heal();
+    new spell_sha_totem_of_wrath();
 }
