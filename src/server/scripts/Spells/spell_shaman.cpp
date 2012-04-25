@@ -652,8 +652,8 @@ class spell_sha_chain_heal : public SpellScriptLoader
 
 enum TotemOfWrath
 {
-    SPELL_GLYPH_OF_TOTEM_OF_WRATH         = 63280,
-    SPELL_GLYPH_OF_TOTEM_OF_WRATH_PROC    = 63283,
+    SPELL_GLYPH_OF_TOTEM_OF_WRATH           = 63280,
+    SPELL_GLYPH_OF_TOTEM_OF_WRATH_TRIGGERED = 63283,
 };
 
 class spell_sha_totem_of_wrath : public SpellScriptLoader
@@ -667,46 +667,31 @@ class spell_sha_totem_of_wrath : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*SpellEntry*/)
             {
-                if (!sSpellMgr->GetSpellInfo(SPELL_GLYPH_OF_TOTEM_OF_WRATH) || !sSpellMgr->GetSpellInfo(SPELL_GLYPH_OF_TOTEM_OF_WRATH_PROC))
+                if (!sSpellMgr->GetSpellInfo(SPELL_GLYPH_OF_TOTEM_OF_WRATH) || !sSpellMgr->GetSpellInfo(SPELL_GLYPH_OF_TOTEM_OF_WRATH_TRIGGERED))
                     return false;
                 return true;
             }
 
-            void Cast()
+            void ApplyGlyph()
             {
                 Unit* caster = GetCaster();
                 if (caster->HasAura(SPELL_GLYPH_OF_TOTEM_OF_WRATH))
                 {
-                    int32 bp = 0;
-                    switch (GetSpellInfo()->GetRank())
-                    {
-                        case 1:
-                            bp = 100;
-                            break;
-                        case 2:
-                            bp = 120;
-                            break;
-                        case 3:
-                            bp = 140;
-                            break;
-                        case 4:
-                            bp = 280;
-                            break;
-                        default:
-                            break;
-                    }
-                    if (bp != 0)
-                    {
-                        int32 bp1 = bp * sSpellMgr->GetSpellInfo(SPELL_GLYPH_OF_TOTEM_OF_WRATH_PROC)->Effects[EFFECT_1].CalcValue() / 100;
-                        bp = bp * sSpellMgr->GetSpellInfo(SPELL_GLYPH_OF_TOTEM_OF_WRATH_PROC)->Effects[EFFECT_0].CalcValue() / 100;
-                        caster->CastCustomSpell(caster, SPELL_GLYPH_OF_TOTEM_OF_WRATH_PROC, &bp, &bp1, NULL, true);
-                    }
+                    if (Creature* totem = caster->GetMap()->GetCreature(caster->m_SummonSlot[1]))   // Fire totem summon slot
+                        if (SpellInfo const* totemSpell = sSpellMgr->GetSpellInfo(totem->m_spells[0]))    
+                        {
+                            int32 bp0 = totemSpell->Effects[EFFECT_0].CalcValue();
+                            int32 bp1 = totemSpell->Effects[EFFECT_1].CalcValue();
+                            bp0 = bp0 * sSpellMgr->GetSpellInfo(SPELL_GLYPH_OF_TOTEM_OF_WRATH_TRIGGERED)->Effects[EFFECT_0].CalcValue() / 100;
+                            bp1 = bp1 * sSpellMgr->GetSpellInfo(SPELL_GLYPH_OF_TOTEM_OF_WRATH_TRIGGERED)->Effects[EFFECT_1].CalcValue() / 100;
+                            caster->CastCustomSpell(caster, SPELL_GLYPH_OF_TOTEM_OF_WRATH_TRIGGERED, &bp0, &bp1, NULL, true);
+                        }
                 }
             }
 
             void Register()
             {
-                AfterCast += SpellCastFn(spell_sha_totem_of_wrath_SpellScript::Cast);
+                AfterCast += SpellCastFn(spell_sha_totem_of_wrath_SpellScript::ApplyGlyph);
             }
         };
 
