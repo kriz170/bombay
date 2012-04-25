@@ -682,8 +682,8 @@ class spell_sha_totem_of_wrath : public SpellScriptLoader
                         {
                             int32 bp0 = totemSpell->Effects[EFFECT_0].CalcValue();
                             int32 bp1 = totemSpell->Effects[EFFECT_1].CalcValue();
-                            bp0 = bp0 * sSpellMgr->GetSpellInfo(SPELL_GLYPH_OF_TOTEM_OF_WRATH_TRIGGERED)->Effects[EFFECT_0].CalcValue() / 100;
-                            bp1 = bp1 * sSpellMgr->GetSpellInfo(SPELL_GLYPH_OF_TOTEM_OF_WRATH_TRIGGERED)->Effects[EFFECT_1].CalcValue() / 100;
+                            bp0 = CalculatePctN(bp0, sSpellMgr->GetSpellInfo(SPELL_GLYPH_OF_TOTEM_OF_WRATH_TRIGGERED)->Effects[EFFECT_0].CalcValue());
+                            bp1 = CalculatePctN(bp1, sSpellMgr->GetSpellInfo(SPELL_GLYPH_OF_TOTEM_OF_WRATH_TRIGGERED)->Effects[EFFECT_1].CalcValue());
                             caster->CastCustomSpell(caster, SPELL_GLYPH_OF_TOTEM_OF_WRATH_TRIGGERED, &bp0, &bp1, NULL, true);
                         }
                 }
