@@ -341,8 +341,6 @@ class boss_halion : public CreatureScript
 
                     Talk(SAY_PHASE_TWO);
                     DoCast(me, SPELL_TWILIGHT_PHASING);
-                    if (Creature* controller = ObjectAccessor::GetCreature(*me, instance->GetData64(DATA_HALION_CONTROLLER)))
-                        controller->AI()->DoAction(ACTION_PHASE_TWO);
                 }
 
                 if ((events.GetPhaseMask() & PHASE_THREE_MASK) && attacker->GetEntry() != NPC_TWILIGHT_HALION)
@@ -506,6 +504,8 @@ class boss_twilight_halion : public CreatureScript
                 events.SetPhase(PHASE_TWO);
                 if (Creature* halion = ObjectAccessor::GetCreature(*me, _instance->GetData64(DATA_HALION)))
                     me->SetHealth(halion->GetHealth());
+                if (Creature* controller = ObjectAccessor::GetCreature(*me, instance->GetData64(DATA_HALION_CONTROLLER)))
+                    controller->AI()->DoAction(ACTION_PHASE_TWO);
                 //! All of Twilight Halion's abilities are not phase dependant as he is never on Phase One.
                 //! However, phasemasks are "needed" so that we know on which phase we are when Halion takes
                 //! damage, causing corporeality not to tick in phase two.
