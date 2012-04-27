@@ -1,41 +1,3 @@
--- Chicken Escapee
-SET @CreGuid := 250120; -- custom butuh 20
-SET @ENTRY := 28161;
-SET @LIFE := 900000;
-SET @PARTY := 12702;
-SET @COOP := 12532;
-DELETE FROM `creature` WHERE id=@ENTRY;
-INSERT INTO `creature` VALUES 
-(@CreGuid,@ENTRY,571,1,1,0,0, '5163.8', '4393.75', '-95.4105', '2.5767',60,0.0,0,42,0,0,0,0,0),
-(@CreGuid+1,@ENTRY,571,1,1,0,0, '5221.38', '4323.37', '-96.9265', '1.8502',60,0.0,0,42,0,0,0,0,0),
-(@CreGuid+2,@ENTRY,571,1,1,0,0, '5228.56', '4448.21', '-96.869', '4.81902',60,0.0,0,42,0,0,0,0,0),
-(@CreGuid+3,@ENTRY,571,1,1,0,0, '5214.53', '4627.71', '-131.786', '4.37448',60,0.0,0,42,0,0,0,0,0),
-(@CreGuid+4,@ENTRY,571,1,1,0,0, '5216.78', '4584.31', '-103.654', '0.877885',60,0.0,0,42,0,0,0,0,0),
-(@CreGuid+5,@ENTRY,571,1,1,0,0, '5258.21', '4446.61', '-89.6398', '3.61107',60,0.0,0,42,0,0,0,0,0),
-(@CreGuid+6,@ENTRY,571,1,1,0,0, '5283.34', '4454.62', '-95.912', '4.44359',60,0.0,0,42,0,0,0,0,0),
-(@CreGuid+7,@ENTRY,571,1,1,0,0, '5239.56', '4529.82', '-85.7337', '5.58242',60,0.0,0,42,0,0,0,0,0),
-(@CreGuid+8,@ENTRY,571,1,1,0,0, '5237.91', '4548.49', '-89.346', '0.528376',60,0.0,0,42,0,0,0,0,0),
-(@CreGuid+9,@ENTRY,571,1,1,0,0, '5219.39', '4539.67', '-90.8103', '0.387005',60,0.0,0,42,0,0,0,0,0),
-(@CreGuid+10,@ENTRY,571,1,1,0,0, '5195.31', '4523.06', '-89.8844', '1.51012',60,0.0,0,42,0,0,0,0,0),
-(@CreGuid+11,@ENTRY,571,1,1,0,0, '5199.51', '4500.45', '-90.0671', '1.64757',60,0.0,0,42,0,0,0,0,0),
-(@CreGuid+12,@ENTRY,571,1,1,0,0, '5252.57', '4483.53', '-84.0754', '2.57827',60,0.0,0,42,0,0,0,0,0),
-(@CreGuid+13,@ENTRY,571,1,1,0,0, '5294.33', '4482.28', '-93.2836', '3.96843',60,0.0,0,42,0,0,0,0,0),
-(@CreGuid+14,@ENTRY,571,1,1,0,0, '5318.23', '4532.05', '-97.8817', '5.13865',60,0.0,0,42,0,0,0,0,0),
-(@CreGuid+15,@ENTRY,571,1,1,0,0, '5289.54', '4547.26', '-78.9633', '0.367355',60,0.0,0,42,0,0,0,0,0),
-(@CreGuid+16,@ENTRY,571,1,1,0,0, '5268.93', '4551.49', '-85.0375', '5.1308',60,0.0,0,42,0,0,0,0,0),
-(@CreGuid+17,@ENTRY,571,1,1,0,0, '5262.45', '4588.19', '-99.4172', '6.02222',60,0.0,0,42,0,0,0,0,0),
-(@CreGuid+18,@ENTRY,571,1,1,0,0, '5242.83', '4582.27', '-98.3819', '5.20147',60,0.0,0,42,0,0,0,0,0),
-(@CreGuid+19,@ENTRY,571,1,1,0,0, '5173.58', '4539.49', '-97.6117', '4.3195',60,0.0,0,42,0,0,0,0,0);
-
-DELETE FROM `npc_spellclick_spells` WHERE `npc_entry`=@ENTRY;
-INSERT INTO `npc_spellclick_spells` (`npc_entry`,`spell_id`,`quest_start`,`quest_start_active`,`quest_end`,`cast_flags`,`aura_required`,`aura_forbidden`,`user_type`) VALUES 
--- quest 12702 chicken party!
-(@ENTRY,39996,@PARTY,1,@PARTY,1,0,0,0), -- cover spell (dummy)
-(@ENTRY,51037,@PARTY,1,@PARTY,2,0,0,0), -- creates item in players back pack
--- quest 12532 flown the coop!
-(@ENTRY,51037,@COOP,1,@COOP,2,0,0,0), -- creates item in players back pack
-(@ENTRY,39996,@COOP,1,@COOP,1,0,0,0); -- cover spell (dummy)
-
 -- The Mosswalker Savior
 SET @ENTRY := 28113;
 SET @SCRIPT1 := 2811301;
@@ -88,30 +50,7 @@ INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`link`,`event_type
 -- A hero's burden
 UPDATE `creature_template` SET `ScriptName` = 'npc_artruis_the_heartless' WHERE `entry` = 28659;
 DELETE FROM `creature_ai_scripts` WHERE creature_id = 28659;
-/* creature_ai_scripts yg lama
-INSERT INTO `creature_ai_scripts` (`id`, `creature_id`, `event_type`, `event_inverse_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action1_type`, `action1_param1`, `action1_param2`, `action1_param3`, `action2_type`, `action2_param1`, `action2_param2`, `action2_param3`, `action3_type`, `action3_param1`, `action3_param2`, `action3_param3`, `comment`) VALUES 
-(2865901, 28659, 1, 0, 100, 0, 0, 0, 0, 0, 21, 0, 0, 0, 22, 0, 0, 0, 0, 0, 0, 0, 'Artruis the Heartless - Prevent Combat Movement and Set Phase to 0 on Spawn'),
-(2865902, 28659, 4, 0, 100, 0, 0, 0, 0, 0, 11, 15530, 1, 0, 23, 1, 0, 0, 0, 0, 0, 0, 'Artruis the Heartless - Cast Frostbolt and Set Phase 1 on Aggro'),
-(2865903, 28659, 9, 13, 100, 1, 0, 40, 3400, 4800, 11, 15530, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Artruis the Heartless - Cast Frostbolt (Phase 1)'),
-(2865904, 28659, 9, 13, 100, 1, 0, 35, 7000, 9000, 11, 54261, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 'Artruis the Heartless - Cast Ice Lance (Phase 1)'),
-(2865905, 28659, 9, 13, 100, 1, 0, 10, 14000, 18000, 11, 11831, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 'Artruis the Heartless - Cast Frost Nova (Phase 1)'),
-(2865906, 28659, 0, 13, 100, 1, 2000, 3000, 25000, 35000, 11, 54792, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 'Artruis the Heartless - Cast Icy Veins (Phase 1)'),
-(2865907, 28659, 3, 13, 100, 0, 7, 0, 0, 0, 21, 1, 0, 0, 23, 1, 0, 0, 0, 0, 0, 0, 'Artruis the Heartless - Start Combat Movement and Set Phase 2 when Mana is at 7% (Phase 1)'),
-(2865908, 28659, 9, 13, 100, 0, 35, 80, 0, 0, 21, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Artruis the Heartless - Start Combat Movement at 35 Yards (Phase 1)'),
-(2865909, 28659, 9, 13, 100, 0, 5, 15, 0, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Artruis the Heartless - Prevent Combat Movement at 15 Yards (Phase 1)'),
-(2865910, 28659, 9, 13, 100, 0, 0, 5, 0, 0, 21, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Artruis the Heartless - Start Combat Movement Below 5 Yards (Phase 1)'),
-(2865911, 28659, 3, 11, 100, 1, 100, 15, 100, 100, 23, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Artruis the Heartless - Set Phase 1 when Mana is above 15% (Phase 2)'),
-(2865912, 28659, 2, 0, 100, 0, 30, 0, 0, 0, 22, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Artruis the Heartless - Set Phase 3 at 30% HP'),
-(2865913, 28659, 2, 7, 100, 0, 30, 0, 0, 0, 11, 52185, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 'Artruis the Heartless - Cast Bindings of Submission at 30% HP (Phase 3)'),
-(2865914, 28659, 7, 0, 100, 0, 0, 0, 0, 0, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Artruis the Heartless - Set Phase to 0 on Evade');
-*/
-
 DELETE FROM `creature` WHERE `Id` IN (28667,28668);
-/* creature yg lama
-INSERT INTO `creature` (`guid`, `id`, `map`, `spawnMask`, `phaseMask`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`) VALUES 
-(202969, 28667, 571, 1, 1, 0, 0, 5616.92, 3772.68, -94.258, 1.78024, 120, 0, 0, 1, 0, 0, 0, 0, 0),
-(202970, 28668, 571, 1, 1, 0, 0, 5631.63, 3794.36, -92.2367, 3.45575, 120, 0, 0, 1, 0, 0, 0, 0, 0);
-*/
 
 -- Hand of the Oracles
 DELETE FROM `creature_involvedrelation` WHERE `quest`=12689;
@@ -187,12 +126,10 @@ UPDATE `creature_template` SET `AIName`='SmartAI' WHERE `entry`=@HERKEK;
 
 DELETE FROM `smart_scripts` WHERE `entryorguid`=@HERKEK AND `source_type`=0;
 INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES
-(@HERKEK, 0, 0, 0, 62, 0, 100, 0, @GOSSIP, 1, 0, 0, 56, @GOREGEK, 1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Elder Herkek - On Gossip Select - Give item'),
-(@HERKEK, 0, 1, 0, 62, 0, 100, 0, @GOSSIP, 2, 0, 0, 56, @DAJIK, 1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Elder Herkek - On Gossip Select - Give item'),
-(@HERKEK, 0, 2, 0, 62, 0, 100, 0, @GOSSIP, 3, 0, 0, 56, @ZEPIK, 1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Elder Herkek - On Gossip Select - Give item'),
-(@HERKEK, 0, 3, 0, 62, 0, 100, 0, @GOSSIP, 1, 0, 0, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Elder Herkek - On Gossip Select - Close Gossip'),
-(@HERKEK, 0, 4, 0, 62, 0, 100, 0, @GOSSIP, 2, 0, 0, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Elder Herkek - On Gossip Select - Close Gossip'),
-(@HERKEK, 0, 5, 0, 62, 0, 100, 0, @GOSSIP, 3, 0, 0, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Elder Herkek - On Gossip Select - Close Gossip');
+(@HERKEK, 0, 0, 3, 62, 0, 100, 0, @GOSSIP, 1, 0, 0, 56, @GOREGEK, 1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Elder Herkek - On Gossip Select - Give item'),
+(@HERKEK, 0, 1, 4, 62, 0, 100, 0, @GOSSIP, 2, 0, 0, 56, @DAJIK, 1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Elder Herkek - On Gossip Select - Give item'),
+(@HERKEK, 0, 2, 3, 62, 0, 100, 0, @GOSSIP, 3, 0, 0, 56, @ZEPIK, 1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'Elder Herkek - On Gossip Select - Give item'),
+(@HERKEK, 0, 3, 0, 61, 0, 100, 0, 0, 0, 0, 0, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Elder Herkek - On Gossip Select - Close Gossip');
 
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=15 AND `SourceGroup`=@GOSSIP;
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`,`SourceGroup`,`SourceEntry`,`ElseGroup`,`ConditionTypeOrReference`,`ConditionValue1`,`ConditionValue2`,`ConditionValue3`,`NegativeCondition`,`ErrorTextId`,`ScriptName`,`Comment`) VALUES
@@ -216,13 +153,11 @@ UPDATE `creature_template` SET `AIName`='SmartAI' WHERE `entry`=@SOOSAY;
 
 DELETE FROM `smart_scripts` WHERE `entryorguid`=@SOOSAY AND `source_type`=0;
 INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES
-(@SOOSAY, 0, 0, 0, 62, 0, 100, 0, @GOSSIP, 1, 0, 0, 56, @LAFOO, 1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'High-Oracle Soo-Say - On Gossip Select - Give item'),
-(@SOOSAY, 0, 1, 0, 62, 0, 100, 0, @GOSSIP, 2, 0, 0, 56, @JALOOT, 1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'High-Oracle Soo-Say - On Gossip Select - Give item'),
-(@SOOSAY, 0, 2, 0, 62, 0, 100, 0, @GOSSIP, 3, 0, 0, 56, @MOODLE, 1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'High-Oracle Soo-Say - On Gossip Select - Give item'),
-(@SOOSAY, 0, 3, 0, 62, 0, 100, 0, @GOSSIP, 1, 0, 0, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'High-Oracle Soo-Say - On Gossip Select - Close Gossip'),
-(@SOOSAY, 0, 4, 1, 62, 0, 100, 0, @GOSSIP, 2, 0, 0, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'High-Oracle Soo-Say - On Gossip Select - Close Gossip'),
-(@SOOSAY, 0, 5, 2, 62, 0, 100, 0, @GOSSIP, 3, 0, 0, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'High-Oracle Soo-Say - On Gossip Select - Close Gossip'),
-(@SOOSAY, 0, 6, 0, 1, 0, 100, 0, 5000, 10000, 12000, 16000, 11, 53071, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 'High-Oracle Soo-Say - On Gossip Select - Close Gossip');
+(@SOOSAY, 0, 0, 3, 62, 0, 100, 0, @GOSSIP, 1, 0, 0, 56, @LAFOO, 1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'High-Oracle Soo-Say - On Gossip Select - Give item'),
+(@SOOSAY, 0, 1, 3, 62, 0, 100, 0, @GOSSIP, 2, 0, 0, 56, @JALOOT, 1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'High-Oracle Soo-Say - On Gossip Select - Give item'),
+(@SOOSAY, 0, 2, 3, 62, 0, 100, 0, @GOSSIP, 3, 0, 0, 56, @MOODLE, 1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'High-Oracle Soo-Say - On Gossip Select - Give item'),
+(@SOOSAY, 0, 3, 0, 61, 0, 100, 0, 0, 0, 0, 0, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'High-Oracle Soo-Say - On Gossip Select - Close Gossip'),
+(@SOOSAY, 0, 4, 0, 1, 0, 100, 0, 5000, 10000, 12000, 16000, 11, 53071, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 'High-Oracle Soo-Say - In Combar - Cast Thunderstorm');
 
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=15 AND `SourceGroup`=@GOSSIP;
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`,`SourceGroup`,`SourceEntry`,`ElseGroup`,`ConditionTypeOrReference`,`ConditionValue1`,`ConditionValue2`,`ConditionValue3`,`NegativeCondition`,`ErrorTextId`,`ScriptName`,`Comment`) VALUES
@@ -339,9 +274,9 @@ UPDATE `creature_template` SET
 WHERE `entry`=@HAIPHOON_A;
 
 DELETE FROM `npc_spellclick_spells` WHERE `npc_entry` IN (@HAIPHOON_W,@HAIPHOON_A);
-INSERT INTO `npc_spellclick_spells` (`npc_entry`,`spell_id`,`quest_start`,`quest_start_active`,`quest_end`,`cast_flags`,`aura_required`,`aura_forbidden`,`user_type`) VALUES
-(@HAIPHOON_W,46598,12726,1,12726,1,0,0,0),
-(@HAIPHOON_A,46598,12726,1,12726,1,0,0,0);
+INSERT INTO `npc_spellclick_spells` (`npc_entry`, `spell_id`, `cast_flags`, `user_type`) VALUES 
+(@HAIPHOON_W, 46598, 1, 0),
+(@HAIPHOON_A, 46598, 1, 0);
 
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=17 AND `SourceEntry` IN (@SPELL_W_3,@SPELL_A_3);
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES

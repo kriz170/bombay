@@ -1448,7 +1448,6 @@ void Spell::SelectImplicitCasterDestTargets(SpellEffIndex effIndex, SpellImplici
     }
     m_targets.SetDst(*m_caster);
     m_targets.ModDst(pos);
-    break;
 }
 
 void Spell::SelectImplicitTargetDestTargets(SpellEffIndex effIndex, SpellImplicitTargetInfo const& targetType)
