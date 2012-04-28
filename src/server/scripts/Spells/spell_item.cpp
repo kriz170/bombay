@@ -2117,6 +2117,120 @@ class spell_item_chime_of_cleansing : public SpellScriptLoader
         }
 };
 
+enum WickedStrongFetish
+{
+    AREA_BLADESPIRE_HOLD            = 3773,
+    AREA_BLOODMAUL_OUTPOST          = 3776,
+
+    NPC_BLADESPIRE_EVIL_SPIRIT      = 21446,
+    NPC_BLOODMAUL_EVIL_SPIRIT       = 21452,
+};
+
+class spell_item_wicked_strong_fetish : public SpellScriptLoader
+{
+    public:
+        spell_item_wicked_strong_fetish() : SpellScriptLoader("spell_item_wicked_strong_fetish") { }
+
+        class spell_item_wicked_strong_fetish_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_item_wicked_strong_fetish_SpellScript);
+
+            bool Load()
+            {
+               return GetCaster()->GetTypeId() == TYPEID_PLAYER;
+            }
+
+            void HandleScript(SpellEffIndex /* effIndex */)
+            {
+                Unit* player = GetCaster();
+                switch (player->GetAreaId())
+                {
+                    case AREA_BLADESPIRE_HOLD:
+                        player->SummonCreature(NPC_BLADESPIRE_EVIL_SPIRIT,*player,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,30000);
+                        break;
+                    case AREA_BLOODMAUL_OUTPOST:
+                        player->SummonCreature(NPC_BLOODMAUL_EVIL_SPIRIT,*player,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,30000);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            void Register()
+            {
+                OnEffectHitTarget += SpellEffectFn(spell_item_wicked_strong_fetish_SpellScript::HandleScript, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_item_wicked_strong_fetish_SpellScript();
+        }
+};
+
+enum SkyguardBombs
+{
+    AREA_FORGE_CAMP_TERROR  = 3784,
+    AREA_FORGE_CAMP_WRATH   = 3785,
+
+    GO_CANNONBALL           = 185861,
+    NPC_TARGET_BUNNY        = 23118,
+    NPC_DUMMY               = 23119,
+};
+
+class spell_item_skyguard_bombs : public SpellScriptLoader
+{
+    public:
+        spell_item_skyguard_bombs() : SpellScriptLoader("spell_item_skyguard_bombs") { }
+
+        class spell_item_skyguard_bombs_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_item_skyguard_bombs_SpellScript);
+
+            bool Load()
+            {
+               return GetCaster()->GetTypeId() == TYPEID_PLAYER;
+            }
+
+            void HandleDummy(SpellEffIndex /* effIndex */)
+            {
+                Player* player = GetCaster()->ToPlayer();
+                if (WorldLocation const* loc = GetTargetDest())
+                {
+                    if (Creature* dummy = player->SummonCreature(NPC_DUMMY,*loc,TEMPSUMMON_TIMED_DESPAWN,1000))
+                    {
+                        if(GameObject* cannonball = dummy->FindNearestGameObject(GO_CANNONBALL,5.0f))
+                        {
+                            cannonball->DestroyForPlayer(player);
+                            player->KilledMonsterCredit(NPC_TARGET_BUNNY,0);
+                        }
+                    }
+                }
+            }
+
+            SpellCastResult CheckRequirement()
+            {
+                Player* player = GetCaster()->ToPlayer();
+                if (player->GetAreaId() != AREA_FORGE_CAMP_TERROR && player->GetAreaId() != AREA_FORGE_CAMP_WRATH)
+                    return SPELL_FAILED_NOT_HERE;
+                if (!player->IsFlying())
+                    return SPELL_FAILED_NOT_ON_GROUND;
+                return SPELL_CAST_OK;
+            }
+
+            void Register()
+            {
+                OnEffectHit += SpellEffectFn(spell_item_skyguard_bombs_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+                OnCheckCast += SpellCheckCastFn(spell_item_skyguard_bombs_SpellScript::CheckRequirement);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_item_skyguard_bombs_SpellScript();
+        }
+};
+
 void AddSC_item_spell_scripts()
 {
     // 23074 Arcanite Dragonling
@@ -2171,4 +2285,6 @@ void AddSC_item_spell_scripts()
     new spell_item_muisek_vessel();
     new spell_item_greatmothers_soulcatcher();
     new spell_item_chime_of_cleansing();
+    new spell_item_wicked_strong_fetish();
+    new spell_item_skyguard_bombs();
 }
