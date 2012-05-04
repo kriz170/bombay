@@ -2195,7 +2195,7 @@ class spell_item_skyguard_bombs : public SpellScriptLoader
             void HandleDummy(SpellEffIndex /* effIndex */)
             {
                 Player* player = GetCaster()->ToPlayer();
-                if (WorldLocation const* loc = GetTargetDest())
+                if (WorldLocation const* loc = GetExplTargetDest())
                 {
                     if (Creature* dummy = player->SummonCreature(NPC_DUMMY,*loc,TEMPSUMMON_TIMED_DESPAWN,1000))
                     {
