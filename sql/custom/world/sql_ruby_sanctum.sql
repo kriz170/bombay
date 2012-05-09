@@ -267,6 +267,9 @@ UPDATE `creature_template` SET `dmg_multiplier`=110, `exp`=2, `speed_walk`=2, `s
 UPDATE `creature_template` SET `dmg_multiplier`=75 WHERE `entry`=39746;
 UPDATE `creature_template` SET `dmg_multiplier`=110, `lootid`=39946, `exp`=2, `flags_extra`=1 WHERE `entry`=39805;
 
+-- Hitbox
+UPDATE `creature_model_info` SET `combat_reach`=18.75 WHERE `modelid`=31952;
+
 -- Immunity
 UPDATE `creature_template` SET `mechanic_immune_mask` = `mechanic_immune_mask` | 
 1|          -- charm
@@ -297,3 +300,12 @@ where `entry` IN (
 39747, 39823,   -- Saviana Ragefire
 39746, 39805    -- General Zarithrian
 );
+
+-- add 4 Shadow orb to orb carrier
+UPDATE `creature_template` SET `VehicleId`=746 WHERE `entry` IN (40081,40470);
+DELETE FROM `vehicle_template_accessory` WHERE `entry`=40081;
+INSERT INTO `vehicle_template_accessory` (`entry`,`accessory_entry`,`seat_id`,`minion`,`description`,`summontype`,`summontimer`) VALUES
+(40081,40083,0,1, 'Orb Carrier',6,30000),
+(40081,40100,1,1, 'Orb Carrier',6,30000),
+(40081,40468,2,1, 'Orb Carrier (seat guessed)',6,30000),
+(40081,40469,3,1, 'Orb Carrier (seat guessed)',6,30000);

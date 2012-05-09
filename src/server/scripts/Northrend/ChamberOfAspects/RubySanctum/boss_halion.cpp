@@ -1211,6 +1211,7 @@ class npc_orb_carrier : public CreatureScript
                 {
                     me->CastSpell((Unit*)NULL, SPELL_TRACK_ROTATION, false);
                     _events.ScheduleEvent(EVENT_TRACK_ROTATION, 500);
+
                     // Update Orb Position
                     Vehicle* vehicle = me->GetVehicleKit();
                     Unit* southOrb = vehicle->GetPassenger(SEAT_SOUTH);
@@ -1281,7 +1282,23 @@ class npc_orb_carrier : public CreatureScript
                         break;
                     }
                     case ACTION_ROTATE:
-                        _events.ScheduleEvent(EVENT_TRACK_ROTATION, 2000);
+                        _events.ScheduleEvent(EVENT_TRACK_ROTATION, 500);
+
+                        // Hide east and west orb if not in heroic mode
+                        if (!IsHeroic())
+                        {
+                            Vehicle* vehicle = me->GetVehicleKit();
+                            Unit* eastOrb = vehicle->GetPassenger(SEAT_EAST);
+                            Unit* westOrb = vehicle->GetPassenger(SEAT_WEST);
+                            if (eastOrb && westOrb)
+                            {
+                                if (eastOrb->GetTypeId() != TYPEID_UNIT || westOrb->GetTypeId() != TYPEID_UNIT)
+                                    return;
+
+                                eastOrb->SetVisible(false);
+                                westOrb->SetVisible(false);
+                            }
+                        }
                         break;
                     case ACTION_STOP_ROTATE:
                         _events.CancelEvent(EVENT_TRACK_ROTATION);
