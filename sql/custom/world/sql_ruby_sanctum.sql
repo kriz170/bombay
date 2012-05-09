@@ -77,6 +77,7 @@ UPDATE `creature_model_info` SET `bounding_radius`=3.8,`combat_reach`=7.6,`gende
 -- thus leaving us with no other choice than editing a WDB field (kids, do not try this at home)
 UPDATE `gameobject_template` SET `data10`=74807,`WDBVerified`=-12340 WHERE `entry` IN (202794, 202795);
 UPDATE `gameobject_template` SET `flags`=`flags`|32 WHERE `entry`=202794;
+UPDATE `gameobject_template` SET `faction`=35, `flags`=`flags`|32,`ScriptName`='go_enter_twilight_realm',`WDBVerified`=-12340 WHERE `entry`=202795;
 UPDATE `gameobject_template` SET `faction`=35, `flags`=`flags`|32,`ScriptName`='go_exit_twilight_realm',`WDBVerified`=-12340 WHERE `entry`=202796;
 
 -- Spell scripts

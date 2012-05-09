@@ -487,6 +487,10 @@ class boss_twilight_halion : public CreatureScript
                     go->RemoveFromWorld();
                 if(GameObject* go = ObjectAccessor::GetGameObject(*me,_portal2))
                     go->RemoveFromWorld();
+                if(GameObject* go = ObjectAccessor::GetGameObject(*me,_portal3))
+                    go->RemoveFromWorld();
+                if(GameObject* go = ObjectAccessor::GetGameObject(*me,_portal4))
+                    go->RemoveFromWorld();
                 if (Creature* orbCarrier = ObjectAccessor::GetCreature(*me, _instance->GetData64(DATA_ORB_CARRIER)))
                     orbCarrier->AI()->DoAction(ACTION_STOP_ROTATE);
             }
@@ -506,6 +510,8 @@ class boss_twilight_halion : public CreatureScript
                     me->SetHealth(halion->GetHealth());
                 if (Creature* controller = ObjectAccessor::GetCreature(*me, _instance->GetData64(DATA_HALION_CONTROLLER)))
                     controller->AI()->DoAction(ACTION_PHASE_TWO);
+                if (Creature* orbCarrier = ObjectAccessor::GetCreature(*me, _instance->GetData64(DATA_ORB_CARRIER)))
+                    orbCarrier->AI()->DoAction(ACTION_ROTATE);
                 //! All of Twilight Halion's abilities are not phase dependant as he is never on Phase One.
                 //! However, phasemasks are "needed" so that we know on which phase we are when Halion takes
                 //! damage, causing corporeality not to tick in phase two.
@@ -513,8 +519,6 @@ class boss_twilight_halion : public CreatureScript
                 events.ScheduleEvent(EVENT_SOUL_CONSUMPTION, 20000);
                 events.ScheduleEvent(EVENT_CLEAVE, urand(8000, 10000));
                 events.ScheduleEvent(EVENT_TAIL_LASH, 10000);
-                if (Creature* orbCarrier = ObjectAccessor::GetCreature(*me, _instance->GetData64(DATA_ORB_CARRIER)))
-                    orbCarrier->AI()->DoAction(ACTION_ROTATE);
             }
 
             void KilledUnit(Unit* victim)
@@ -599,15 +603,25 @@ class boss_twilight_halion : public CreatureScript
                     halion->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                     if (GameObject* go = halion->FindNearestGameObject(GO_HALION_PORTAL_1,200.0f))
                         go->RemoveFromWorld();
-                    if (GameObject* go = halion->SummonGameObject(GO_HALION_PORTAL_EXIT,HalionSpawnPos.GetPositionX()+40,HalionSpawnPos.GetPositionY(),HalionSpawnPos.GetPositionZ(),0.0f,0.0f,0.0f,0.0f,0.0f,0))
+                    if (GameObject* go = halion->SummonGameObject(GO_HALION_PORTAL_EXIT,HalionSpawnPos.GetPositionX()+30,HalionSpawnPos.GetPositionY(),HalionSpawnPos.GetPositionZ(),0.0f,0.0f,0.0f,0.0f,0.0f,0))
                     {
                         go->SetPhaseMask(0x20,true);
                         _portal1 = go->GetGUID();
                     }
-                    if (GameObject* go = halion->SummonGameObject(GO_HALION_PORTAL_EXIT,HalionSpawnPos.GetPositionX()-40,HalionSpawnPos.GetPositionY(),HalionSpawnPos.GetPositionZ(),0.0f,0.0f,0.0f,0.0f,0.0f,0))
+                    if (GameObject* go = halion->SummonGameObject(GO_HALION_PORTAL_EXIT,HalionSpawnPos.GetPositionX()-30,HalionSpawnPos.GetPositionY(),HalionSpawnPos.GetPositionZ(),0.0f,0.0f,0.0f,0.0f,0.0f,0))
                     {
                         go->SetPhaseMask(0x20,true);
                         _portal2 = go->GetGUID();
+                    }
+                    if (GameObject* go = me->SummonGameObject(GO_HALION_PORTAL_2,HalionSpawnPos.GetPositionX(),HalionSpawnPos.GetPositionY()+30,HalionSpawnPos.GetPositionZ(),0.0f,0.0f,0.0f,0.0f,0.0f,0))
+                    {
+                        go->SetPhaseMask(0x01,true);
+                        _portal3 = go->GetGUID();
+                    }
+                    if (GameObject* go = me->SummonGameObject(GO_HALION_PORTAL_2,HalionSpawnPos.GetPositionX(),HalionSpawnPos.GetPositionY()-30,HalionSpawnPos.GetPositionZ(),0.0f,0.0f,0.0f,0.0f,0.0f,0))
+                    {
+                        go->SetPhaseMask(0x01,true);
+                        _portal4 = go->GetGUID();
                     }
                 }
                 events.ScheduleEvent(EVENT_PHASE_THREE, 10000);
@@ -693,6 +707,8 @@ class boss_twilight_halion : public CreatureScript
             EventMap events;
             uint64 _portal1;
             uint64 _portal2;
+            uint64 _portal3;
+            uint64 _portal4;
         };
 
         CreatureAI* GetAI(Creature* creature) const
@@ -1186,23 +1202,45 @@ class npc_orb_carrier : public CreatureScript
             {
                 ASSERT(creature->GetVehicleKit());
                 me->setActive(true);
-                _shoot = false;
             }
 
             void UpdateAI(uint32 const diff)
             {
-                if (_shoot)
-                {
-                    _events.RescheduleEvent(EVENT_TRACK_ROTATION, 10000);
-                    _shoot = false;
-                    return;
-                }
-
                 _events.Update(diff);
                 if (_events.ExecuteEvent() == EVENT_TRACK_ROTATION)
                 {
                     me->CastSpell((Unit*)NULL, SPELL_TRACK_ROTATION, false);
                     _events.ScheduleEvent(EVENT_TRACK_ROTATION, 500);
+                    // Update Orb Position
+                    Vehicle* vehicle = me->GetVehicleKit();
+                    Unit* southOrb = vehicle->GetPassenger(SEAT_SOUTH);
+                    Unit* northOrb = vehicle->GetPassenger(SEAT_NORTH);
+                    if (southOrb && northOrb)
+                    {
+                        if (northOrb->GetTypeId() != TYPEID_UNIT || southOrb->GetTypeId() != TYPEID_UNIT)
+                            return;
+
+                        me->GetNearPoint2D(x, y, RING_RADIUS, me->GetOrientation() + M_PI/2);
+                        northOrb->Relocate(x,y);
+                        me->GetNearPoint2D(x, y, RING_RADIUS, me->GetOrientation() + M_PI*1.5);
+                        southOrb->Relocate(x,y);
+                    }
+
+                    if (!IsHeroic())
+                        return;
+
+                    Unit* eastOrb = vehicle->GetPassenger(SEAT_EAST);
+                    Unit* westOrb = vehicle->GetPassenger(SEAT_WEST);
+                    if (eastOrb && westOrb)
+                    {
+                        if (eastOrb->GetTypeId() != TYPEID_UNIT || westOrb->GetTypeId() != TYPEID_UNIT)
+                            return;
+
+                        me->GetNearPoint2D(x, y, RING_RADIUS, me->GetOrientation() + M_PI);
+                        eastOrb->Relocate(x,y);
+                        me->GetNearPoint2D(x, y, RING_RADIUS, me->GetOrientation());
+                        westOrb->Relocate(x,y);
+                    }
                 }
             }
 
@@ -1212,35 +1250,18 @@ class npc_orb_carrier : public CreatureScript
                 {
                     case ACTION_SHOOT:
                     {
-                        _shoot = true;
-                        float x, y;
                         Vehicle* vehicle = me->GetVehicleKit();
                         Unit* southOrb = vehicle->GetPassenger(SEAT_SOUTH);
                         Unit* northOrb = vehicle->GetPassenger(SEAT_NORTH);
-
-                        // for some reason, passenger location always in same position with vehicle location
-                        // workaround, summon another orb to do spell damage
                         if (southOrb && northOrb)
                         {
                             if (northOrb->GetTypeId() != TYPEID_UNIT || southOrb->GetTypeId() != TYPEID_UNIT)
                                 return;
 
-                            me->GetNearPoint2D(x, y, RING_RADIUS, me->GetOrientation() + M_PI/2);
-                            Creature* orb1 = me->SummonCreature(NPC_SHADOW_ORB_N,x,y,me->GetPositionZ(),0,TEMPSUMMON_TIMED_DESPAWN,9000);
-                            me->GetNearPoint2D(x, y, RING_RADIUS, me->GetOrientation() + M_PI*1.5);
-                            Creature* orb2 = me->SummonCreature(NPC_SHADOW_ORB_S,x,y,me->GetPositionZ(),0,TEMPSUMMON_TIMED_DESPAWN,9000);
-                            if (orb1 && orb2)
-                            {
-                                // set in combat and passive, because it will stop spell if deals damage in middle of channeling
-                                orb1->SetReactState(REACT_PASSIVE);
-                                orb2->SetReactState(REACT_PASSIVE);
-                                orb1->AI()->DoZoneInCombat();
-                                orb2->AI()->DoZoneInCombat();
-                                orb1->AI()->Talk(EMOTE_WARN_LASER);
-                                orb1->CastSpell(orb1, SPELL_TWILIGHT_PULSE_PERIODIC, true);
-                                orb2->CastSpell(orb2, SPELL_TWILIGHT_PULSE_PERIODIC, true);
-                                orb1->CastSpell(orb2, SPELL_TWILIGHT_CUTTER, false);
-                            }
+                            northOrb->ToCreature()->AI()->Talk(EMOTE_WARN_LASER);
+                            northOrb->CastSpell(northOrb, SPELL_TWILIGHT_PULSE_PERIODIC, true);
+                            southOrb->CastSpell(southOrb, SPELL_TWILIGHT_PULSE_PERIODIC, true);
+                            northOrb->CastSpell(southOrb, SPELL_TWILIGHT_CUTTER, false);
                         }
 
                         if (!IsHeroic())
@@ -1253,21 +1274,9 @@ class npc_orb_carrier : public CreatureScript
                             if (eastOrb->GetTypeId() != TYPEID_UNIT || westOrb->GetTypeId() != TYPEID_UNIT)
                                 return;
 
-                            me->GetNearPoint2D(x, y, RING_RADIUS, me->GetOrientation() + M_PI);
-                            Creature* orb3 = me->SummonCreature(NPC_SHADOW_ORB_E,x,y,me->GetPositionZ(),0,TEMPSUMMON_TIMED_DESPAWN,9000);
-                            me->GetNearPoint2D(x, y, RING_RADIUS, me->GetOrientation());
-                            Creature* orb4 = me->SummonCreature(NPC_SHADOW_ORB_W,x,y,me->GetPositionZ(),0,TEMPSUMMON_TIMED_DESPAWN,9000);
-                            if (orb3 && orb4)
-                            {
-                                orb3->SetReactState(REACT_PASSIVE);
-                                orb4->SetReactState(REACT_PASSIVE);
-                                orb3->AI()->DoZoneInCombat();
-                                orb4->AI()->DoZoneInCombat();
-                                orb3->ToCreature()->AI()->Talk(EMOTE_WARN_LASER);
-                                orb3->CastSpell(orb3, SPELL_TWILIGHT_PULSE_PERIODIC, true);
-                                orb4->CastSpell(orb4, SPELL_TWILIGHT_PULSE_PERIODIC, true);
-                                orb3->CastSpell(orb4, SPELL_TWILIGHT_CUTTER, false);
-                            }
+                            eastOrb->CastSpell(eastOrb, SPELL_TWILIGHT_PULSE_PERIODIC, true);
+                            westOrb->CastSpell(westOrb, SPELL_TWILIGHT_PULSE_PERIODIC, true);
+                            eastOrb->CastSpell(westOrb, SPELL_TWILIGHT_CUTTER, false);
                         }
                         break;
                     }
@@ -1283,8 +1292,8 @@ class npc_orb_carrier : public CreatureScript
             }
 
         private:
-            bool _shoot;
             EventMap _events;
+            float x, y;
         };
 
         CreatureAI* GetAI(Creature* creature) const
@@ -1968,6 +1977,18 @@ class go_exit_twilight_realm : public GameObjectScript
     }
 };
 
+class go_enter_twilight_realm : public GameObjectScript
+{
+    public:
+    go_enter_twilight_realm() : GameObjectScript("go_enter_twilight_realm") { }
+
+    bool OnGossipHello(Player* player, GameObject* /*go*/)
+    {
+        player->CastSpell(player,SPELL_TWILIGHT_REALM,true);
+        return true;
+    }
+};
+
 void AddSC_boss_halion()
 {
     new boss_halion();
@@ -1991,5 +2012,6 @@ void AddSC_boss_halion()
     new spell_halion_twilight_cutter();
     new spell_halion_clear_debuffs();
     new go_exit_twilight_realm();
+    new go_enter_twilight_realm();
     new spell_halion_track_rotation();
 }
