@@ -194,7 +194,7 @@ class spell_warr_deep_wounds : public SpellScriptLoader
 
                         damage = damage / ticks;
 
-                        damage = target->SpellDamageBonusTaken(GetSpellInfo(), damage, SPELL_DIRECT_DAMAGE);
+                        damage = target->SpellDamageBonusTaken(caster, GetSpellInfo(), damage, SPELL_DIRECT_DAMAGE);
 
                         // prevent deep wound tick exceed 20000 damage, temp fix for really high damage when server has high diff
                         damage = damage > 1 ? (damage < 20000 ? damage : 20000) : 1;
