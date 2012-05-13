@@ -427,6 +427,75 @@ public:
     }
 };
 
+enum AllianceBanner
+{
+    QUEST_DROP_IT_ROCK_IT       = 11429,
+    NPC_WINTERSKORN_DEFENDER    = 24015,
+};
+
+class npc_alliance_banner : public CreatureScript
+{
+public:
+    npc_alliance_banner() : CreatureScript("npc_alliance_banner") { }
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_alliance_bannerAI(creature);
+    }
+
+    struct npc_alliance_bannerAI : public ScriptedAI
+    {
+        npc_alliance_bannerAI(Creature* c) : ScriptedAI(c) { }
+
+        uint32 uiWaveTimer;
+        uint8 killCounter;
+
+        void Reset()
+        {
+            killCounter = 0;
+            uiWaveTimer = 2000;
+            me->SetReactState(REACT_PASSIVE);
+            me->GetMotionMaster()->MoveIdle();
+        }
+
+        void JustDied(Unit* /*killer*/)
+        {
+            if (Player* player = me->GetOwner()->ToPlayer())
+                player->FailQuest(QUEST_DROP_IT_ROCK_IT);
+        }
+
+        void UpdateAI(const uint32 diff)
+        {
+            if(uiWaveTimer < diff)
+            {
+                if(Creature* vrykul = me->SummonCreature(NPC_WINTERSKORN_DEFENDER, (1476.85f + rand()%20), (-5327.56f + rand()%20), (194.8f  + rand()%2), 0.0f, TEMPSUMMON_CORPSE_DESPAWN))
+                {
+                    vrykul->AI()->AttackStart(me);
+                    vrykul->GetMotionMaster()->Clear();
+                    vrykul->GetMotionMaster()->MoveChase(me);
+                }
+                uiWaveTimer = urand(8000, 16000);
+            }
+            else
+                uiWaveTimer -= diff;
+        }
+
+        void SummonedCreatureDespawn(Creature* summon)
+        {
+            if (summon->GetEntry() == NPC_WINTERSKORN_DEFENDER)
+                killCounter++;
+
+            if(killCounter >= 3)
+            {
+                if (Player* player = me->GetOwner()->ToPlayer())
+                    player->GroupEventHappens(QUEST_DROP_IT_ROCK_IT, me);
+
+                me->DespawnOrUnsummon(2000);
+            }
+        }
+    };
+};
+
 void AddSC_howling_fjord()
 {
     new npc_apothecary_hanes;
@@ -434,4 +503,5 @@ void AddSC_howling_fjord()
     new npc_razael_and_lyana;
     new npc_mcgoyver;
     new npc_daegarn;
- }
+    new npc_alliance_banner;
+}
