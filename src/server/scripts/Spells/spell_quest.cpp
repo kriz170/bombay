@@ -217,7 +217,7 @@ class spell_q10255_administer_antidote : public SpellScriptLoader
 enum Quest11396_11399Data
 {
     SPELL_FORCE_SHIELD_ARCANE_PURPLE_X3 = 43874,
-    SPELL_SCOURGING_CRYSTAL_CONTROLLER = 43878
+    SPELL_SCOURGING_CRYSTAL_CONTROLLER  = 43878,
 };
 
 // 43874 Scourge Mur'gul Camp: Force Shield Arcane Purple x3
@@ -233,13 +233,13 @@ class spell_q11396_11399_force_shield_arcane_purple_x3 : public SpellScriptLoade
             void HandleEffectApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
             {
                 Unit* target = GetTarget();
-            target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
-            target->AddUnitState(UNIT_STATE_ROOT);
+                target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                target->AddUnitState(UNIT_STATE_ROOT);
             }
 
             void HandleEffectRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
             {
-            GetTarget()->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                GetTarget()->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
             }
 
             void Register()
@@ -275,8 +275,8 @@ class spell_q11396_11399_scourging_crystal_controller : public SpellScriptLoader
 
             void HandleDummy(SpellEffIndex /*effIndex*/)
             {
-                if (Unit* target = GetExplTargetUnit())
-                    if (target->GetTypeId() == TYPEID_UNIT && target->HasAura(SPELL_FORCE_SHIELD_ARCANE_PURPLE_X3))
+                if (Creature* target = GetHitCreature())
+                    if (target->HasAura(SPELL_FORCE_SHIELD_ARCANE_PURPLE_X3))
                         // Make sure nobody else is channeling the same target
                         if (!target->HasAura(SPELL_SCOURGING_CRYSTAL_CONTROLLER))
                             GetCaster()->CastSpell(target, SPELL_SCOURGING_CRYSTAL_CONTROLLER, true, GetCastItem());
