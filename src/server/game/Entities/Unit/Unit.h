@@ -1578,7 +1578,7 @@ class Unit : public WorldObject
         bool isTargetableForAttack(bool checkFakeDeath = true) const;
 
         bool IsValidAttackTarget(Unit const* target) const;
-        bool _IsValidAttackTarget(Unit const* target, SpellInfo const* bySpell) const;
+        bool _IsValidAttackTarget(Unit const* target, SpellInfo const* bySpell, WorldObject const* obj = NULL) const;
 
         bool IsValidAssistTarget(Unit const* target) const;
         bool _IsValidAssistTarget(Unit const* target, SpellInfo const* bySpell) const;

@@ -177,30 +177,30 @@ class spell_warr_deep_wounds : public SpellScriptLoader
             void HandleDummy(SpellEffIndex /* effIndex */)
             {
                 int32 damage = GetEffectValue();
+                Unit* caster = GetCaster();
                 if (Unit* target = GetHitUnit())
-                    if (Unit* caster = GetCaster())
-                    {
-                        // apply percent damage mods
-                        damage = caster->SpellDamageBonusDone(target, GetSpellInfo(), damage, SPELL_DIRECT_DAMAGE);
+                {
+                    // apply percent damage mods
+                    damage = caster->SpellDamageBonusDone(target, GetSpellInfo(), damage, SPELL_DIRECT_DAMAGE);
 
-                        ApplyPctN(damage, 16 * sSpellMgr->GetSpellRank(GetSpellInfo()->Id));
+                    ApplyPctN(damage, 16 * sSpellMgr->GetSpellRank(GetSpellInfo()->Id));
+                    
+                    damage = target->SpellDamageBonusTaken(caster, GetSpellInfo(), damage, SPELL_DIRECT_DAMAGE);
+                    
+                    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_DEEP_WOUNDS_RANK_PERIODIC);
+                    uint32 ticks = spellInfo->GetDuration() / spellInfo->Effects[EFFECT_0].Amplitude;
 
-                        SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_DEEP_WOUNDS_RANK_PERIODIC);
-                        uint32 ticks = spellInfo->GetDuration() / spellInfo->Effects[EFFECT_0].Amplitude;
+                    // Add remaining ticks to damage done
+                    if (AuraEffect const* aurEff = target->GetAuraEffect(SPELL_DEEP_WOUNDS_RANK_PERIODIC, EFFECT_0, caster->GetGUID()))
+                        damage += aurEff->GetAmount() * (ticks - aurEff->GetTickNumber());
 
-                        // Add remaining ticks to damage done
-                        if (AuraEffect const* aurEff = target->GetAuraEffect(SPELL_DEEP_WOUNDS_RANK_PERIODIC, EFFECT_0, caster->GetGUID()))
-                            damage += aurEff->GetAmount() * (ticks - aurEff->GetTickNumber());
+                    damage = damage / ticks;
 
-                        damage = damage / ticks;
+                    // prevent deep wound tick exceed 20000 damage, temp fix for really high damage when server has high diff
+                    damage = damage > 1 ? (damage < 20000 ? damage : 20000) : 1;
 
-                        damage = target->SpellDamageBonusTaken(caster, GetSpellInfo(), damage, SPELL_DIRECT_DAMAGE);
-
-                        // prevent deep wound tick exceed 20000 damage, temp fix for really high damage when server has high diff
-                        damage = damage > 1 ? (damage < 20000 ? damage : 20000) : 1;
-
-                        caster->CastCustomSpell(target, SPELL_DEEP_WOUNDS_RANK_PERIODIC, &damage, NULL, NULL, true);
-                    }
+                    caster->CastCustomSpell(target, SPELL_DEEP_WOUNDS_RANK_PERIODIC, &damage, NULL, NULL, true);
+                }
             }
 
             void Register()
