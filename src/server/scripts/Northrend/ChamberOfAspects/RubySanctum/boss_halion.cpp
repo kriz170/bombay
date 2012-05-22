@@ -336,7 +336,7 @@ class boss_halion : public CreatureScript
                         controller->AI()->DoAction(ACTION_PHASE_THREE);
                 }
 
-                if (me->HealthBelowPctDamaged(75, damage) && (events.GetPhaseMask() & PHASE_ONE_MASK))
+                if (HealthBelowPct(75) && (events.GetPhaseMask() & PHASE_ONE_MASK))
                 {
                     events.SetPhase(PHASE_TWO);
                     events.DelayEvents(2600); // 2.5 sec + 0.1 sec lag
