@@ -754,8 +754,13 @@ class npc_halion_controller : public CreatureScript
                     who->AI()->DoZoneInCombat();
                     uint8 maxSpawn = urand(8,10);
                     for (uint8 i = 0; i < maxSpawn; i++)
+                    {
                         if (Creature* ember = me->SummonCreature(NPC_LIVING_EMBER,*who,TEMPSUMMON_CORPSE_DESPAWN))
+                        {
+                            ember->SetPhaseMask(0x01,true);
                             ember->AI()->DoZoneInCombat();
+                        }
+                    }
                 }
             }
 
