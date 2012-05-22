@@ -743,6 +743,15 @@ class npc_halion_controller : public CreatureScript
             void JustSummoned(Creature* who)
             {
                 _summons.Summon(who);
+                if (who->GetEntry() == NPC_LIVING_INFERNO)
+                {
+                    who->CastSpell(who,SPELL_BLAZING_AURA,true);
+                    who->AI()->DoZoneInCombat();
+                    uint8 maxSpawn = urand(8,10);
+                    for (uint8 i = 0; i < maxSpawn; i++)
+                        if (Creature* ember = me->SummonCreature(NPC_LIVING_EMBER,*who,TEMPSUMMON_CORPSE_DESPAWN))
+                            ember->AI()->DoZoneInCombat();
+                }
             }
 
             void EnterCombat(Unit* who)
@@ -1403,13 +1412,20 @@ class npc_living_inferno : public CreatureScript
 
         struct npc_living_infernoAI : public ScriptedAI
         {
-            npc_living_infernoAI(Creature* creature) : ScriptedAI(creature) { }
+            npc_living_infernoAI(Creature* creature) : ScriptedAI(creature), 
+                _instance(creature->GetInstanceScript()) { }
 
-            void JustSummoned(Creature* /*summoner*/)
+            void IsSummonedBy(Unit* /*summoner*/)
             {
-                me->SetInCombatWithZone();
-                DoCast(me, SPELL_BLAZING_AURA);
+                // Let Halion Controller count as summoner.
+                if (Creature* controller = ObjectAccessor::GetCreature(*me, _instance->GetData64(DATA_HALION_CONTROLLER)))
+                    controller->AI()->JustSummoned(me);
             }
+
+            bool CanAIAttack(Unit const* victim) { return !victim->HasAura(SPELL_TWILIGHT_REALM); }
+
+        private:
+            InstanceScript* _instance;
         };
 
         CreatureAI* GetAI(Creature* creature) const
@@ -1438,6 +1454,8 @@ class npc_living_ember : public CreatureScript
                 _events.Reset();
                 _events.ScheduleEvent(EVENT_EMBER_ENRAGE, 20000);
             }
+
+            bool CanAIAttack(Unit const* victim) { return !victim->HasAura(SPELL_TWILIGHT_REALM); }
 
             void UpdateAI(uint32 const diff)
             {
