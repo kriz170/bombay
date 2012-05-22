@@ -88,6 +88,9 @@ enum Spells
     // Living Inferno
     SPELL_BLAZING_AURA                  = 75885,
 
+    // Living Ember
+    SPELL_AWAKEN_FLAMES                 = 75889,
+
     // Halion Controller
     SPELL_COSMETIC_FIRE_PILLAR          = 76006,
     SPELL_FIERY_EXPLOSION               = 76010,
@@ -126,36 +129,38 @@ enum Events
     EVENT_METEOR_STRIKE         = 4,
     EVENT_FIERY_COMBUSTION      = 5,
     EVENT_TAIL_LASH             = 6,
+    EVENT_TWILIGHT_MENDING      = 7,
+    EVENT_PHASE_THREE           = 8,
 
     // Halion Controller
-    EVENT_START_INTRO           = 7,
-    EVENT_INTRO_PROGRESS_1      = 8,
-    EVENT_INTRO_PROGRESS_2      = 9,
-    EVENT_INTRO_PROGRESS_3      = 10,
-    EVENT_CHECK_CORPOREALITY    = 11,
-    EVENT_SHADOW_PULSARS_SHOOT  = 12,
-    EVENT_BERSERK               = 13,
+    EVENT_START_INTRO           = 9,
+    EVENT_INTRO_PROGRESS_1      = 10,
+    EVENT_INTRO_PROGRESS_2      = 11,
+    EVENT_INTRO_PROGRESS_3      = 12,
+    EVENT_CHECK_CORPOREALITY    = 13,
+    EVENT_SHADOW_PULSARS_SHOOT  = 14,
+    EVENT_BERSERK               = 15,
 
     // Meteor Strike
-    EVENT_SPAWN_METEOR_FLAME    = 14,
+    EVENT_SPAWN_METEOR_FLAME    = 16,
 
     // Twilight Halion
-    EVENT_DARK_BREATH           = 15,
-    EVENT_SOUL_CONSUMPTION      = 16,
+    EVENT_DARK_BREATH           = 17,
+    EVENT_SOUL_CONSUMPTION      = 18,
 
     // Living Ember
-    EVENT_EMBER_ENRAGE          = 17,
+    EVENT_EMBER_ENRAGE          = 19,
+    EVENT_EMBER_CHECK_AURA      = 20,
+
+    // Orb Carrier
+    EVENT_TRACK_ROTATION        = 21,
 
     // Misc
-    EVENT_CHECK_THREAT          = 18,
+    EVENT_CHECK_THREAT          = 22,
     // This is all shitty for now. Halion, Twilight Halion, and Halion Controller will check their threat list
     // every two seconds and if they find out that either one of the NPCs lost aggro on any player, that would
     // mean that the encounter has to reset. Not yet implemented, this comment block is rather some way for me
     // to brain a bit about this fubarish stuff.
-
-    EVENT_TWILIGHT_MENDING      = 19,
-    EVENT_PHASE_THREE           = 20,
-    EVENT_TRACK_ROTATION        = 21,
 };
 
 enum Actions
@@ -1444,15 +1449,11 @@ class npc_living_ember : public CreatureScript
         {
             npc_living_emberAI(Creature* creature) : ScriptedAI(creature) { }
 
-            void Reset()
-            {
-                _hasEnraged = false;
-            }
-
             void EnterCombat(Unit* /*who*/)
             {
                 _events.Reset();
-                _events.ScheduleEvent(EVENT_EMBER_ENRAGE, 20000);
+                _events.ScheduleEvent(EVENT_EMBER_ENRAGE, 120000);
+                _events.ScheduleEvent(EVENT_EMBER_CHECK_AURA, 2000);
             }
 
             bool CanAIAttack(Unit const* victim) { return !victim->HasAura(SPELL_TWILIGHT_REALM); }
@@ -1464,13 +1465,21 @@ class npc_living_ember : public CreatureScript
 
                 _events.Update(diff);
 
-                if (!me->HasUnitState(UNIT_STATE_CASTING))
-                    return;
-
-                if (!_hasEnraged && _events.ExecuteEvent() == EVENT_EMBER_ENRAGE)
+                while (uint32 eventId = _events.ExecuteEvent())
                 {
-                    _hasEnraged = true;
-                    DoCast(me, SPELL_BERSERK);
+                    switch (eventId)
+                    {
+                        case EVENT_EMBER_ENRAGE:
+                            DoCast(me, SPELL_BERSERK);
+                            break;
+                        case EVENT_EMBER_CHECK_AURA:    // Temp hack
+                            if (me->FindNearestCreature(NPC_LIVING_INFERNO,15.0f))
+                                DoCast(SPELL_AWAKEN_FLAMES);
+                            _events.ScheduleEvent(EVENT_EMBER_CHECK_AURA, 2000);
+                            break;
+                        default:
+                            break;
+                    }
                 }
 
                 DoMeleeAttackIfReady();
@@ -1478,7 +1487,6 @@ class npc_living_ember : public CreatureScript
 
         private:
             EventMap _events;
-            bool _hasEnraged;
         };
 
         CreatureAI* GetAI(Creature* creature) const

@@ -69,8 +69,8 @@ UPDATE `creature_template` SET `ScriptName`= 'npc_orb_carrier' WHERE `entry`=400
 UPDATE `creature_template` SET `ScriptName`= 'npc_combustion_consumption' WHERE `entry` IN(40001, 40135);
 UPDATE `creature_template` SET `ScriptName`= 'npc_meteor_strike_initial' WHERE `entry`=40029;
 UPDATE `creature_template` SET `ScriptName`= 'npc_meteor_strike' WHERE `entry` IN (40041, 40042, 40043, 40044);
-UPDATE `creature_template` SET `ScriptName`='npc_living_inferno' WHERE `entry`=40681;
-UPDATE `creature_template` SET `ScriptName`='npc_living_ember' WHERE `entry`=40683;
+UPDATE `creature_template` SET `ScriptName`= 'npc_living_inferno' WHERE `entry`=40681;
+UPDATE `creature_template` SET `ScriptName`= 'npc_living_ember' WHERE `entry`=40683;
 
 -- Model info update
 UPDATE `creature_model_info` SET `bounding_radius`=3.8,`combat_reach`=7.6,`gender`=2 WHERE `modelid`=16946;
@@ -126,6 +126,7 @@ INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`language`,`pr
 (39863,3,0, 'You will find only suffering within the realm of twilight! Enter if you dare!',14,0,100,0,0,17507, 'Halion'),
 (39863,4,0, 'Relish this victory, mortals, for it will be your last! This world will burn with the master''s return!',14,0,100,0,0,17503, 'Halion'),
 (39863,5,0, 'Another "hero" falls.',14,0,100,0,0,17501, 'Halion'),
+(39863,5,1, 'Ha Ha Ha!',14,0,100,0,0,17502, 'Halion'),
 (39863,6,0, 'Not good enough.',14,0,100,0,0,17504, 'Halion'),
 
 (40142,0,0, 'Beware the shadow!',14,0,100,0,0,17506, 'Halion'),
@@ -271,8 +272,8 @@ UPDATE `creature_template` SET `dmg_multiplier`=75 WHERE `entry`=39746;
 UPDATE `creature_template` SET `dmg_multiplier`=110, `lootid`=39946, `exp`=2, `flags_extra`=1 WHERE `entry`=39805;
 
 -- Hitbox
-UPDATE `creature_model_info` SET `combat_reach`=18 WHERE `modelid`=31952;
-UPDATE `creature_model_info` SET `combat_reach`=12.25 WHERE `modelid`=32179;
+UPDATE `creature_model_info` SET `combat_reach`=18 WHERE `modelid`=31952;       -- Halion
+UPDATE `creature_model_info` SET `combat_reach`=12.25 WHERE `modelid`=32179;    -- General Zarithrian
 
 -- Immunity
 UPDATE `creature_template` SET `mechanic_immune_mask` = `mechanic_immune_mask` | 
@@ -315,7 +316,7 @@ INSERT INTO `vehicle_template_accessory` (`entry`,`accessory_entry`,`seat_id`,`m
 (40081,40469,3,1, 'Orb Carrier (seat guessed)',6,30000);
 
 -- Halion Heroic Trash Mob damage
-UPDATE `creature_template` SET `mindmg`=422, `maxdmg`=586, `attackpower`=642, `dmg_multiplier`=75 WHERE `entry`=40681; -- Living Inferno
-UPDATE `creature_template` SET `mindmg`=422, `maxdmg`=586, `attackpower`=642, `dmg_multiplier`=110 WHERE `entry`=40682; -- Living Inferno (1)
-UPDATE `creature_template` SET `mindmg`=422, `maxdmg`=586, `attackpower`=642, `dmg_multiplier`=10 WHERE `entry`=40683; -- Living Ember
-UPDATE `creature_template` SET `mindmg`=422, `maxdmg`=586, `attackpower`=642, `dmg_multiplier`=15 WHERE `entry`=40684; -- Living Ember (1)
+UPDATE `creature_template` SET `dmgschool`=2, `mindmg`=422, `maxdmg`=586, `attackpower`=642, `dmg_multiplier`=75, `baseattacktime`=2000, `flags_extra`=`flags_extra`|0x100 WHERE `entry`=40681; -- Living Inferno
+UPDATE `creature_template` SET `dmgschool`=2, `mindmg`=422, `maxdmg`=586, `attackpower`=642, `dmg_multiplier`=110, `baseattacktime`=2000, `flags_extra`=`flags_extra`|0x100 WHERE `entry`=40682; -- Living Inferno (1)
+UPDATE `creature_template` SET `dmgschool`=2, `mindmg`=422, `maxdmg`=586, `attackpower`=642, `dmg_multiplier`=10, `baseattacktime`=2000 WHERE `entry`=40683; -- Living Ember
+UPDATE `creature_template` SET `dmgschool`=2, `mindmg`=422, `maxdmg`=586, `attackpower`=642, `dmg_multiplier`=15, `baseattacktime`=2000 WHERE `entry`=40684; -- Living Ember (1)
