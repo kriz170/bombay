@@ -464,8 +464,6 @@ bool CalendarMgr::RemoveEvent(uint64 eventId)
         return false;
     }
 
-    _events.erase(itr);
-
     bool val = true;
 
     CalendarInviteIdList const& invites = itr->second.GetInviteIdList();
@@ -475,6 +473,8 @@ bool CalendarMgr::RemoveEvent(uint64 eventId)
         if (!invite || !RemovePlayerEvent(invite->GetInvitee(), eventId))
             val = false;
     }
+
+    _events.erase(itr);
 
     return val;
 }
