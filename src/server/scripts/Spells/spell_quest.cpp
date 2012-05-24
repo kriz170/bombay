@@ -1162,6 +1162,83 @@ class spell_q12277_wintergarde_mine_explosion : public SpellScriptLoader
         }
 };
 
+enum itRollsDownhill
+{
+    NPC_BLIGHT_CRYSTAL_CREDIT       = 28740,
+
+    GO_CRYSTALLIZED_BLIGHT_1        = 190716,
+    GO_CRYSTALLIZED_BLIGHT_2        = 190939,
+    GO_CRYSTALLIZED_BLIGHT_3        = 190940,
+
+    AREA_RELIQUARY_OF_PAIN          = 4315,
+};
+
+Position const VoltarusPortalCoord = {6175.180176f, -2017.310059f, 245.078003f, 0.0f};
+
+class spell_q12673_harvest_blight_crystal : public SpellScriptLoader
+{
+    public:
+        spell_q12673_harvest_blight_crystal() : SpellScriptLoader("spell_q12673_harvest_blight_crystal") { }
+
+        class spell_q12673_harvest_blight_crystal_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_q12673_harvest_blight_crystal_SpellScript);
+
+            bool Load()
+            {
+                return GetCaster()->GetTypeId() == TYPEID_UNIT;
+            }
+
+            void HandleDummy(SpellEffIndex /*effIndex*/)
+            {
+                Creature* caster = GetCaster()->ToCreature();
+                if (Unit* owner = GetCaster()->GetCharmer())
+                {
+                    if (Player* player = owner->ToPlayer())
+                    {
+                        if (GameObject* crystal = caster->FindNearestGameObject(GO_CRYSTALLIZED_BLIGHT_1,5.0f))
+                        {
+                            caster->GetMotionMaster()->MovePoint(1,VoltarusPortalCoord);
+                            caster->DespawnOrUnsummon(5000);
+                            player->KilledMonsterCredit(NPC_BLIGHT_CRYSTAL_CREDIT,0);
+                        }
+                        else if (GameObject* crystal = caster->FindNearestGameObject(GO_CRYSTALLIZED_BLIGHT_2,5.0f))
+                        {
+                            caster->GetMotionMaster()->MovePoint(1,VoltarusPortalCoord);
+                            caster->DespawnOrUnsummon(5000);
+                            player->KilledMonsterCredit(NPC_BLIGHT_CRYSTAL_CREDIT,0);
+                        }
+                        else if (GameObject* crystal = caster->FindNearestGameObject(GO_CRYSTALLIZED_BLIGHT_3,5.0f))
+                        {
+                            caster->GetMotionMaster()->MovePoint(1,VoltarusPortalCoord);
+                            caster->DespawnOrUnsummon(5000);
+                            player->KilledMonsterCredit(NPC_BLIGHT_CRYSTAL_CREDIT,0);
+                        }
+                    }
+                }
+            }
+
+            SpellCastResult CheckRequirement()
+            {
+                if (GetCaster()->GetAreaId() != AREA_RELIQUARY_OF_PAIN)
+                    return SPELL_FAILED_NOT_HERE;
+
+                return SPELL_CAST_OK;
+            }
+
+            void Register()
+            {
+                OnEffectHitTarget += SpellEffectFn(spell_q12673_harvest_blight_crystal_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+                OnCheckCast += SpellCheckCastFn(spell_q12673_harvest_blight_crystal_SpellScript::CheckRequirement);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_q12673_harvest_blight_crystal_SpellScript();
+        }
+};
+
 void AddSC_quest_spell_scripts()
 {
     new spell_q55_sacred_cleansing();
@@ -1189,4 +1266,5 @@ void AddSC_quest_spell_scripts()
     new spell_q9452_cast_net();
     new spell_q12987_read_pronouncement();
     new spell_q12277_wintergarde_mine_explosion();
+    new spell_q12673_harvest_blight_crystal();
 }
