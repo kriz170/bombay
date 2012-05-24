@@ -2241,6 +2241,108 @@ class spell_item_skyguard_bombs : public SpellScriptLoader
         }
 };
 
+enum DrakuruElixir
+{
+    AREA_RUINS_OF_DRAKZIN                   = 4255,
+    AREA_ZEBHALAK                           = 4209,
+    AREA_DRAKATAL_PASSAGE                   = 4270,
+    AREA_DRAKILJIN_RUINS                    = 4216,
+    AREA_DRAKTHARON_KEEP                    = 4196,
+
+    SPELL_ENVISION_DRAKURU_FROZEN_MOJO      = 47118,
+    SPELL_ENVISION_DRAKURU_ZIMBO_S_MOJO     = 47150,
+    SPELL_ENVISION_DRAKURU_DESPERATE_MOJO   = 47317,
+    SPELL_ENVISION_DRAKURU_SACRED_MOJO      = 47406,
+    SPELL_ENVISION_DRAKURU_ENDURING_MOJO    = 50440,
+
+    NPC_DRAKURU_DRAKTHARON_KEEP             = 28016,
+};
+
+class spell_item_drakuru_s_elixir : public SpellScriptLoader
+{
+    public:
+        spell_item_drakuru_s_elixir() : SpellScriptLoader("spell_item_drakuru_s_elixir") { }
+
+        class spell_item_drakuru_s_elixir_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_item_drakuru_s_elixir_SpellScript);
+
+            bool Load()
+            {
+               return GetCaster()->GetTypeId() == TYPEID_PLAYER;
+            }
+
+            void HandleDummy(SpellEffIndex /* effIndex */)
+            {
+                Player* player = GetCaster()->ToPlayer();
+                switch (player->GetAreaId())
+                {
+                    case AREA_RUINS_OF_DRAKZIN:
+                        player->CastSpell(player,SPELL_ENVISION_DRAKURU_FROZEN_MOJO);
+                        break;
+                    case AREA_ZEBHALAK:
+                        player->CastSpell(player,SPELL_ENVISION_DRAKURU_ZIMBO_S_MOJO);
+                        break;
+                    case AREA_DRAKATAL_PASSAGE:
+                        player->CastSpell(player,SPELL_ENVISION_DRAKURU_DESPERATE_MOJO);
+                        break;
+                    case AREA_DRAKILJIN_RUINS:
+                        player->CastSpell(player,SPELL_ENVISION_DRAKURU_SACRED_MOJO);
+                        break;
+                    case AREA_DRAKTHARON_KEEP:
+                        player->CastSpell(player,SPELL_ENVISION_DRAKURU_ENDURING_MOJO);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            void Register()
+            {
+                OnEffectHit += SpellEffectFn(spell_item_drakuru_s_elixir_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_item_drakuru_s_elixir_SpellScript();
+        }
+};
+
+class spell_item_drakuru_s_elixir_enduring : public SpellScriptLoader
+{
+    public:
+        spell_item_drakuru_s_elixir_enduring() : SpellScriptLoader("spell_item_drakuru_s_elixir_enduring") { }
+
+        class spell_item_drakuru_s_elixir_enduring_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_item_drakuru_s_elixir_enduring_SpellScript);
+
+            bool Load()
+            {
+               return GetCaster()->GetTypeId() == TYPEID_PLAYER;
+            }
+
+            void HandleDummy(SpellEffIndex /* effIndex */)
+            {
+                Player* player = GetCaster()->ToPlayer();
+                // TODO: Create event between Drakuru and Lich King
+                if (player->GetAreaId() == AREA_DRAKTHARON_KEEP)
+                    player->SummonCreature(NPC_DRAKURU_DRAKTHARON_KEEP, -231.483f, -616.512f, 116.483f, 4.42292f, TEMPSUMMON_TIMED_DESPAWN, 60000);
+            }
+
+            void Register()
+            {
+                OnEffectHit += SpellEffectFn(spell_item_drakuru_s_elixir_enduring_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_item_drakuru_s_elixir_enduring_SpellScript();
+        }
+};
+
 void AddSC_item_spell_scripts()
 {
     // 23074 Arcanite Dragonling
@@ -2297,4 +2399,6 @@ void AddSC_item_spell_scripts()
     new spell_item_chime_of_cleansing();
     new spell_item_wicked_strong_fetish();
     new spell_item_skyguard_bombs();
+    new spell_item_drakuru_s_elixir();
+    new spell_item_drakuru_s_elixir_enduring();
 }
