@@ -336,8 +336,8 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
         plrMover->SetInWater(!plrMover->IsInWater() || plrMover->GetBaseMap()->IsUnderWater(movementInfo.pos.GetPositionX(), movementInfo.pos.GetPositionY(), movementInfo.pos.GetPositionZ()));
     }
 
-    if (plMover)
-        sAnticheatMgr->StartHackDetection(plMover, movementInfo, opcode);
+    if (plrMover)
+        sAnticheatMgr->StartHackDetection(plrMover, movementInfo, opcode);
 
     /*----------------------*/
 
@@ -364,7 +364,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
         plrMover->UpdateFallInformationIfNeed(movementInfo, opcode);
 		
 		float underMapValueZ;
-        switch (plMover->GetMapId())
+        switch (plrMover->GetMapId())
         {
             case 617: underMapValueZ = 3.0f; break; // Dalaran Sewers
             case 618: underMapValueZ = 28.0f; break; // Ring of Valor
@@ -389,12 +389,13 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                 }
             }
         }
-                // new port up system
-		if (plMover->InBattleground())
+
+        // new port up system
+		if (plrMover->InBattleground())
 		{
-			if (plMover->GetBattleground()->IsPlayerUnderMap(_player, movementInfo.pos.GetPositionX(), movementInfo.pos.GetPositionY(), movementInfo.pos.GetPositionZ()))
+			if (plrMover->GetBattleground()->IsPlayerUnderMap(_player, movementInfo.pos.GetPositionX(), movementInfo.pos.GetPositionY(), movementInfo.pos.GetPositionZ()))
 			{
-				plMover->GetBattleground()->HandlePlayerUnderMap(_player);
+				plrMover->GetBattleground()->HandlePlayerUnderMap(_player);
 			}
 		}
     }
