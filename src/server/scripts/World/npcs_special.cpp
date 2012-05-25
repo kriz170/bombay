@@ -2988,6 +2988,363 @@ public:
     };
 };
 
+enum DrakuruDrakTharon
+{
+    // Drakuru Text
+    SAY_DRAKURU_1                   = 0,
+    SAY_DRAKURU_2                   = 1,
+    SAY_DRAKURU_3                   = 2,
+    SAY_DRAKURU_4                   = 3,
+    SAY_DRAKURU_5                   = 4,
+    SAY_DRAKURU_6                   = 5,
+    SAY_DRAKURU_7                   = 6,
+    SAY_DRAKURU_8                   = 7,
+    SAY_DRAKURU_9                   = 8,
+    SAY_DRAKURU_10                  = 9,
+    SAY_DRAKURU_11                  = 10,
+    SAY_DRAKURU_12                  = 11,
+    SAY_DRAKURU_13                  = 12,
+    SAY_DRAKURU_14                  = 13,
+    SAY_DRAKURU_15                  = 14,
+
+    // Lich King Text
+    SAY_LICH_KING_1                 = 0,
+    SAY_LICH_KING_2                 = 1,
+    SAY_LICH_KING_3                 = 2,
+    SAY_LICH_KING_4                 = 3,
+    SAY_LICH_KING_5                 = 4,
+    SAY_LICH_KING_6                 = 5,
+    SAY_LICH_KING_7                 = 6,
+
+    NPC_LICH_KING                   = 28498,
+    NPC_DRAKURU_EVENT_INVISMAN      = 28492,
+
+    GO_ANCIENT_DRAKKARI_TABLETS     = 190595,
+    GO_HEART_OF_THE_ANCIENTS        = 190596,
+    GO_EYE_OF_THE_PROPHET           = 190597,
+
+    SPELL_ARTHAS_PORTAL             = 51807,
+    SPELL_RED_LIGHTNING_BOLT        = 51802,
+    SPELL_ARTHAS_SCOURGE_DRAKURU    = 51825,
+    SPELL_DRAKURU_TRANSFORM         = 51834,
+};
+
+Position const DrakuruPos[7] =
+{
+    {-240.492416f, -629.497009f, 116.497353f, 0.0f},
+    {-237.091278f, -653.029785f, 131.093445f, 0.0f},
+    {-265.565887f, -667.627319f, 131.177109f, 0.0f},
+    {-242.939224f, -674.985718f, 131.841660f, 0.0f},
+    {-237.307404f, -679.223633f, 131.853745f, 0.0f},
+    {-234.888382f, -674.346069f, 131.855499f, 0.0f},
+    {-237.192352f, -676.079773f, 131.866745f, 0.0f},
+};
+
+Position const LichKingPos[2] =
+{
+    {-237.185150f, -700.386719f, 130.431168f, 0.0f},
+    {-237.228745f, -686.059998f, 132.176102f, 0.0f},
+};
+
+class npc_drakuru_draktharon : public CreatureScript
+{
+public:
+    npc_drakuru_draktharon() : CreatureScript("npc_drakuru_draktharon") { }
+
+    struct npc_drakuru_draktharonAI : public ScriptedAI
+    {
+        npc_drakuru_draktharonAI(Creature* creature) : ScriptedAI(creature) { }
+
+        void Reset()
+        {
+            LichKingGUID = 0;
+            eventBunny1 = 0;
+            eventBunny2 = 0;
+            eventBunny3 = 0;
+            eventBunny4 = 0;
+        }
+
+        void DoAction(int32 const action)
+        {
+            if (action == 1)
+            {
+                me->SetWalk(true);
+                _events.ScheduleEvent(1, 1000);
+            }
+        }
+
+        void MovementInform(uint32 type, uint32 id)
+        {
+            if (type != POINT_MOTION_TYPE)
+                return;
+
+            switch (id)
+            {
+                case 1:
+                    _events.ScheduleEvent(2, 500);
+                    break;
+                case 2:
+                    _events.ScheduleEvent(4, 0);
+                    break;
+                case 3:
+                    _events.ScheduleEvent(5, 500);
+                    break;
+                case 4:
+                    _events.ScheduleEvent(7, 500);
+                    break;
+                case 5:
+                    _events.ScheduleEvent(9, 500);
+                    break;
+                case 6:
+                    _events.ScheduleEvent(11, 500);
+                    break;
+                case 7:
+                    _events.ScheduleEvent(13, 500);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        void UpdateAI(const uint32 diff)
+        {
+            _events.Update(diff);
+
+            while (uint32 eventId = _events.ExecuteEvent())
+            {
+                switch (eventId)
+                {
+                    case 1:
+                        me->GetMotionMaster()->MovePoint(1,DrakuruPos[0]);
+                        break;
+                    case 2:
+                        Talk(SAY_DRAKURU_1);
+                        _events.ScheduleEvent(3, 5000);
+                        break;
+                    case 3:
+                        me->GetMotionMaster()->MovePoint(2,DrakuruPos[1]);
+                        break;
+                    case 4:
+                        me->GetMotionMaster()->MovePoint(3,DrakuruPos[2]);
+                        break;
+                    case 5:
+                        me->SetFacingTo(M_PI);
+                        Talk(SAY_DRAKURU_2);
+                        _events.ScheduleEvent(6, 6000);
+                        break;
+                    case 6:
+                        Talk(SAY_DRAKURU_3);
+                        me->GetMotionMaster()->MovePoint(4,DrakuruPos[3]);
+                        break;
+                    case 7:
+                        Talk(SAY_DRAKURU_4);
+                        me->HandleEmoteCommand(EMOTE_ONESHOT_KNEEL);
+                        if (Creature* bunny = me->FindNearestCreature(NPC_DRAKURU_EVENT_INVISMAN,2.0f))
+                        {
+                            eventBunny1 = bunny->GetGUID();
+                            me->SummonGameObject(GO_EYE_OF_THE_PROPHET, bunny->GetPositionX(), bunny->GetPositionY(), bunny->GetPositionZ(), 0.0f, 0, 0, 0, 0 ,0);
+                        }
+                        _events.ScheduleEvent(8, 3000);
+                        break;
+                    case 8:
+                        me->GetMotionMaster()->MovePoint(5,DrakuruPos[4]);
+                        break;
+                    case 9:
+                        me->HandleEmoteCommand(EMOTE_ONESHOT_KNEEL);
+                        if (Creature* bunny = me->FindNearestCreature(NPC_DRAKURU_EVENT_INVISMAN,2.0f))
+                        {
+                            eventBunny2 = bunny->GetGUID();
+                            me->SummonGameObject(GO_HEART_OF_THE_ANCIENTS, bunny->GetPositionX(), bunny->GetPositionY(), bunny->GetPositionZ(), 0.0f, 0, 0, 0, 0 ,0);
+                        }
+                        _events.ScheduleEvent(10, 2000);
+                        break;
+                    case 10:
+                        me->GetMotionMaster()->MovePoint(6,DrakuruPos[5]);
+                        break;
+                    case 11:
+                        Talk(SAY_DRAKURU_5);
+                        me->HandleEmoteCommand(EMOTE_ONESHOT_KNEEL);
+                        if (Creature* bunny = me->FindNearestCreature(NPC_DRAKURU_EVENT_INVISMAN,2.0f))
+                        {
+                            eventBunny3 = bunny->GetGUID();
+                            me->SummonGameObject(GO_ANCIENT_DRAKKARI_TABLETS, bunny->GetPositionX(), bunny->GetPositionY(), bunny->GetPositionZ(), 0.0f, 0, 0, 0, 0 ,0);
+                        }
+                        _events.ScheduleEvent(12, 3000);
+                        break;
+                    case 12:
+                        me->GetMotionMaster()->MovePoint(7,DrakuruPos[6]);
+                        break;
+                    case 13:
+                        me->SetFacingTo(M_PI*3/2);
+                        Talk(SAY_DRAKURU_6);
+                        _events.ScheduleEvent(14, 1500);
+                        break;
+                    case 14:
+                        DoCast(49824);  // TODO: Find correct spells
+                        _events.ScheduleEvent(15, 5000);
+                        break;
+                    case 15:            // and here
+                        if (Creature* bunny = Unit::GetCreature(*me, eventBunny1))
+                            bunny->CastSpell(bunny,SPELL_RED_LIGHTNING_BOLT);
+                        if (Creature* bunny = Unit::GetCreature(*me, eventBunny2))
+                            bunny->CastSpell(bunny,SPELL_RED_LIGHTNING_BOLT);
+                        if (Creature* bunny = Unit::GetCreature(*me, eventBunny3))
+                            bunny->CastSpell(bunny,SPELL_RED_LIGHTNING_BOLT);
+                        if (GameObject* go = me->FindNearestGameObject(GO_EYE_OF_THE_PROPHET,5.0f))
+                            go->RemoveFromWorld();
+                        if (GameObject* go = me->FindNearestGameObject(GO_HEART_OF_THE_ANCIENTS,5.0f))
+                            go->RemoveFromWorld();
+                        if (GameObject* go = me->FindNearestGameObject(GO_ANCIENT_DRAKKARI_TABLETS,5.0f))
+                            go->RemoveFromWorld();
+                        if (Creature* LK = me->SummonCreature(NPC_LICH_KING,LichKingPos[0]))
+                        {
+                            LK->SetVisible(false);
+                            LichKingGUID = LK->GetGUID();
+                            if (Creature* bunny = LK->FindNearestCreature(NPC_DRAKURU_EVENT_INVISMAN,3.0f))
+                            {
+                                eventBunny4 = bunny->GetGUID();
+                                bunny->CastSpell(bunny,SPELL_ARTHAS_PORTAL);
+                            }
+                        }
+                        _events.ScheduleEvent(16, 5000);
+                        break;
+                    case 16:            // and find music id when Lich King summoned
+                        Talk(SAY_DRAKURU_7);
+                        _events.ScheduleEvent(17, 4000);
+                        break;
+                    case 17:
+                        if (Creature* LichKing = Unit::GetCreature(*me, LichKingGUID))
+                        {
+                            LichKing->SetVisible(true);
+                            LichKing->SetWalk(true);
+                            LichKing->GetMotionMaster()->MovePoint(1,LichKingPos[1]);
+                        }
+                        _events.ScheduleEvent(18, 7000);
+                        break;
+                    case 18:
+                        if (Creature* LichKing = Unit::GetCreature(*me, LichKingGUID))
+                            LichKing->SetFacingTo(M_PI/2);
+                        me->SetStandState(UNIT_STAND_STATE_KNEEL);
+                        _events.ScheduleEvent(19, 2000);
+                        break;
+                    case 19:
+                        Talk(SAY_DRAKURU_8);
+                        _events.ScheduleEvent(20, 5000);
+                        break;
+                    case 20:
+                        Talk(SAY_DRAKURU_9);
+                        _events.ScheduleEvent(21, 7000);
+                        break;
+                    case 21:
+                        if (Creature* LichKing = Unit::GetCreature(*me, LichKingGUID))
+                            LichKing->AI()->Talk(SAY_LICH_KING_1);
+                        _events.ScheduleEvent(22, 7000);
+                        break;
+                    case 22:
+                        if (Creature* LichKing = Unit::GetCreature(*me, LichKingGUID))
+                            LichKing->AI()->Talk(SAY_LICH_KING_2);
+                        _events.ScheduleEvent(23, 10000);
+                        break;
+                    case 23:
+                        if (Creature* LichKing = Unit::GetCreature(*me, LichKingGUID))
+                            LichKing->AI()->Talk(SAY_LICH_KING_3);
+                        _events.ScheduleEvent(24, 5000);
+                        break;
+                    case 24:
+                        if (Creature* LichKing = Unit::GetCreature(*me, LichKingGUID))
+                            LichKing->AI()->Talk(SAY_LICH_KING_4);
+                        _events.ScheduleEvent(25, 5000);
+                        break;
+                    case 25:
+                        me->SetStandState(UNIT_STAND_STATE_STAND);
+                        if (Creature* LichKing = Unit::GetCreature(*me, LichKingGUID))
+                            LichKing->CastSpell(me,SPELL_ARTHAS_SCOURGE_DRAKURU);
+                        _events.ScheduleEvent(26, 4000);
+                        break;
+                    case 26:
+                        DoCast(SPELL_DRAKURU_TRANSFORM);
+                        _events.ScheduleEvent(27, 1000);
+                        break;
+                    case 27:
+                        me->HandleEmoteCommand(EMOTE_ONESHOT_ROAR);
+                        _events.ScheduleEvent(28, 3000);
+                        break;
+                    case 28:
+                        if (Creature* LichKing = Unit::GetCreature(*me, LichKingGUID))
+                            LichKing->AI()->Talk(SAY_LICH_KING_5);
+                        _events.ScheduleEvent(29, 10000);
+                        break;
+                    case 29:
+                        Talk(SAY_DRAKURU_10);
+                        _events.ScheduleEvent(30, 6000);
+                        break;
+                    case 30:
+                        if (Creature* LichKing = Unit::GetCreature(*me, LichKingGUID))
+                            LichKing->AI()->Talk(SAY_LICH_KING_6);
+                        _events.ScheduleEvent(31, 5500);
+                        break;
+                    case 31:
+                        if (Creature* LichKing = Unit::GetCreature(*me, LichKingGUID))
+                            LichKing->AI()->Talk(SAY_LICH_KING_7);
+                        _events.ScheduleEvent(32, 7000);
+                        break;
+                    case 32:
+                        if (Creature* LichKing = Unit::GetCreature(*me, LichKingGUID))
+                            LichKing->GetMotionMaster()->MovePoint(1,LichKingPos[0]);
+                        _events.ScheduleEvent(33, 6000);
+                        break;
+                    case 33:
+                        if (Creature* LichKing = Unit::GetCreature(*me, LichKingGUID))
+                            LichKing->DespawnOrUnsummon(500);
+                        _events.ScheduleEvent(34, 2000);
+                        break;
+                    case 34:
+                        if (Creature* bunny = Unit::GetCreature(*me, eventBunny4))
+                            bunny->RemoveAurasDueToSpell(SPELL_ARTHAS_PORTAL);
+                        me->SetFacingTo(M_PI);
+                        Talk(SAY_DRAKURU_11);
+                        _events.ScheduleEvent(35, 7000);
+                        break;
+                    case 35:
+                        Talk(SAY_DRAKURU_12);
+                        _events.ScheduleEvent(36, 6000);
+                        break;
+                    case 36:
+                        Talk(SAY_DRAKURU_13);
+                        _events.ScheduleEvent(37, 9000);
+                        break;
+                    case 37:
+                        Talk(SAY_DRAKURU_14);
+                        _events.ScheduleEvent(38, 7000);
+                        break;
+                    case 38:
+                        Talk(SAY_DRAKURU_15);
+                        _events.ScheduleEvent(39, 7000);
+                        break;
+                    case 39:
+                        me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP | UNIT_NPC_FLAG_QUESTGIVER);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private:
+            EventMap _events;
+            uint64 LichKingGUID;
+            uint64 eventBunny1;
+            uint64 eventBunny2;
+            uint64 eventBunny3;
+            uint64 eventBunny4;
+    };
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_drakuru_draktharonAI(creature);
+    }
+};
+
 void AddSC_npcs_special()
 {
     new npc_air_force_bots();
@@ -3020,4 +3377,5 @@ void AddSC_npcs_special()
     new npc_earth_elemental();
     new npc_firework();
     new npc_spring_rabbit();
+    new npc_drakuru_draktharon();
 }

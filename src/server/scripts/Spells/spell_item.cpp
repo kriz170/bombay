@@ -2326,9 +2326,14 @@ class spell_item_drakuru_s_elixir_enduring : public SpellScriptLoader
             void HandleDummy(SpellEffIndex /* effIndex */)
             {
                 Player* player = GetCaster()->ToPlayer();
-                // TODO: Create event between Drakuru and Lich King
-                if (player->GetAreaId() == AREA_DRAKTHARON_KEEP)
-                    player->SummonCreature(NPC_DRAKURU_DRAKTHARON_KEEP, -231.483f, -616.512f, 116.483f, 4.42292f, TEMPSUMMON_TIMED_DESPAWN, 60000);
+                if (player->GetAreaId() == AREA_DRAKTHARON_KEEP && !player->FindNearestCreature(NPC_DRAKURU_DRAKTHARON_KEEP,100.0f))
+                {
+                    if (Creature* drakuru = player->SummonCreature(NPC_DRAKURU_DRAKTHARON_KEEP, -236.782990f, -617.085266f, 116.480286f, 4.754179f))
+                    {
+                        drakuru->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP | UNIT_NPC_FLAG_QUESTGIVER);
+                        drakuru->AI()->DoAction(1);
+                    }
+                }
             }
 
             void Register()
