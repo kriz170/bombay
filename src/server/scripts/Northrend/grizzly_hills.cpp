@@ -743,26 +743,26 @@ public:
             }
         }
 
-        void ReceiveEmote(Player* pPlayer, uint32 emote)
+        void ReceiveEmote(Player* player, uint32 emote)
         {
             if(following) // If the frog has already received a /kiss, nothing happens
                 return;
 
             if(emote==TEXT_EMOTE_KISS) // If player use emote /kiss
             {
-                if(!pPlayer->HasAura(SPELL_WARTSBGONE_LIP_BALM))
-                    pPlayer->AddAura(SPELL_WARTS,pPlayer);
+                if(!player->HasAura(SPELL_WARTSBGONE_LIP_BALM))
+                    player->AddAura(SPELL_WARTS,player);
                 else if(roll_chance_i(10)) // 10% chance spawn Maiden
                 {
-                    pPlayer->SummonCreature(NPC_MAIDEN_OF_ASHWOOD_LAKE,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ(),0,TEMPSUMMON_TIMED_DESPAWN,30000);
+                    player->SummonCreature(NPC_MAIDEN_OF_ASHWOOD_LAKE,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ(),0,TEMPSUMMON_TIMED_DESPAWN,30000);
                     me->DisappearAndDie();		//Despawn
                     me->Respawn(true);
                 }
                 else
                 {
-                    pPlayer->RemoveAura(SPELL_WARTSBGONE_LIP_BALM);	//It removes the buff set by the object of quest
+                    player->RemoveAura(SPELL_WARTSBGONE_LIP_BALM);	//It removes the buff set by the object of quest
                     me->AddAura(SPELL_FROG_LOVE,me); //It adds the aura of a frog (hearts)
-                    StartFollow(pPlayer, 35, NULL); //The frog following the player
+                    StartFollow(player, 35, NULL); //The frog following the player
                     following=true;
                 }
             }
@@ -770,9 +770,9 @@ public:
 
     };
 
-    CreatureAI* GetAI(Creature* pCreature) const
+    CreatureAI* GetAI(Creature* creature) const
     {
-        return new npc_lake_frogAI(pCreature);
+        return new npc_lake_frogAI(creature);
     }
 };
 
@@ -787,27 +787,27 @@ class npc_maiden_of_ashwood_lake : public CreatureScript
 public:
     npc_maiden_of_ashwood_lake(): CreatureScript("npc_maiden_of_ashwood_lake"){}
 
-    bool OnGossipHello(Player* pPlayer, Creature* pCreature)
+    bool OnGossipHello(Player* player, Creature* creature)
     {
-        if(!pPlayer->HasItemCount(44981,1,true))
+        if(!player->HasItemCount(44981,1,true))
         {
-            pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_HELLO_MAIDEN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
-            pPlayer->SEND_GOSSIP_MENU(MAIDEN_DEFAULT_TEXTID, pCreature->GetGUID());
-            pCreature->DespawnOrUnsummon(10000);
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_HELLO_MAIDEN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+            player->SEND_GOSSIP_MENU(MAIDEN_DEFAULT_TEXTID, creature->GetGUID());
+            creature->DespawnOrUnsummon(10000);
             return true;
         }
 
-        pPlayer->SEND_GOSSIP_MENU(MAIDEN_DEFAULT_TEXTID, pCreature->GetGUID());
+        player->SEND_GOSSIP_MENU(MAIDEN_DEFAULT_TEXTID, creature->GetGUID());
         return true;
     }
 
-    bool OnGossipSelect(Player* pPlayer, Creature* pCreature, uint32 /*uiSender*/, uint32 uiAction)
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 uiAction)
     {
         switch(uiAction)
         {
             case GOSSIP_ACTION_INFO_DEF+1:
-                pPlayer->CastSpell(pPlayer,SPELL_SUMMON_ASHWOOD_BRAND,true);
-                pPlayer->SEND_GOSSIP_MENU(MAIDEN_REWARD_TEXTID, pCreature->GetGUID());
+                player->CastSpell(player,SPELL_SUMMON_ASHWOOD_BRAND,true);
+                player->SEND_GOSSIP_MENU(MAIDEN_REWARD_TEXTID, creature->GetGUID());
                 break;
         }
         return true;
@@ -901,9 +901,220 @@ public:
         }
     };
 
-    CreatureAI* GetAI(Creature* pCreature) const
+    CreatureAI* GetAI(Creature* creature) const
     {
-        return new npc_maiden_of_drak_marAI(pCreature);
+        return new npc_maiden_of_drak_marAI(creature);
+    }
+};
+
+enum HarrisonJonesGrizzly
+{
+    JONES_SAY_START             = 0, 
+    JONES_SAY_PROGRESS1         = 1, 
+    JONES_SAY_PROGRESS2         = 2,
+    JONES_SAY_PROGRESS3         = 3,
+    JONES_SAY_PROGRESS4         = 4,
+    JONES_SAY_PROGRESS5         = 5,
+    JONES_SAY_PROGRESS6         = 6,
+    JONES_SAY_PROGRESS7         = 7,
+    JONES_SAY_PROGRESS8         = 8,
+    JONES_SAY_END               = 9,
+
+    SOUND_OPEN_CAGE             = 4674,   // G_CageOpen.wav
+    SOUND_GONG                  = 4654,	  // G_GongTroll01.wav
+
+    SPELL_CAMERA_SHAKE_MED      = 44762,  // Camera Shake - Med
+
+    NPC_ADARRAH                 = 24405,  // when freed run SAI: cheer, kiss, "Thank You!", runs out
+    NPC_TECAHUNA                = 26865,  // SmartAI - cast venom spit and summons mobs every 10sec
+    NPC_ANCIENT_DRAKKARI_KING	= 26871,  // SmartAI - cast Drakkari Curse
+
+    GO_FIREWALL                 = 188480, // firewall that blocks exit
+    GO_CAGE_HARRISON            = 188465, // guid 56996
+    GO_CAGE_ADARRAH             = 188487, // guid 57739
+
+    EQUIP_ID_MAIN_HAND          = 32246,  // Skull Mace
+    EQUIP_ID_OFF_HAND           = 2081,   // Torch
+
+    QUEST_DUN_DA_DUN_TAH        = 12082,
+};
+
+class npc_harrison_jones_grizzly : public CreatureScript
+{
+public:
+    npc_harrison_jones_grizzly(): CreatureScript("npc_harrison_jones_grizzly"){}
+
+    struct npc_harrison_jones_grizzlyAI : public npc_escortAI
+    {
+        npc_harrison_jones_grizzlyAI(Creature *c) : npc_escortAI(c) {}
+
+	    void Reset()
+	    {
+		    SetEquipmentSlots(false, EQUIP_UNEQUIP, EQUIP_ID_OFF_HAND, EQUIP_NO_CHANGE);
+            cageH = 0;
+            cageA = 0;
+            firewallGUID = 0;
+            tecahunaGUID = 0;
+	    }
+
+	    void WaypointReached(uint32 i)
+        {
+            Player* player = GetPlayerForEscort();
+
+            if (!player)
+                return;
+
+            switch(i)
+            {
+                case 0:
+			        me->HandleEmoteCommand(EMOTE_ONESHOT_ATTACK1H);
+			        break;
+		        case 1:
+			        if (GameObject* cage = me->FindNearestGameObject(GO_CAGE_HARRISON, 20))
+				    {
+					    cage->SetGoState(GO_STATE_ACTIVE);
+                        cageH = cage->GetGUID();
+				    }
+                    Talk(JONES_SAY_START);
+			        break;
+		        case 5:
+                    Talk(JONES_SAY_PROGRESS1);
+			        // Summon Adarrah
+			        if (Creature* adarrah = me->SummonCreature(NPC_ADARRAH, 4912.772461f, -4797.773458f, 32.644875f, 3.741192f, TEMPSUMMON_TIMED_DESPAWN,300000))
+                        adarrahGUID = adarrah->GetGUID();
+                    if (GameObject* cage = GameObject::GetGameObject(*me,cageH))
+			            cage->SetGoState(GO_STATE_READY);               // Close Jones's cage
+                    break;
+		        case 6:
+                    Talk(JONES_SAY_PROGRESS2);
+                    break;
+		        case 8:
+			        me->HandleEmoteCommand(EMOTE_ONESHOT_USE_STANDING);  // Jones manipulates cage lock
+			        break;
+		        case 9:
+			        if (GameObject* cage = me->FindNearestGameObject(GO_CAGE_ADARRAH, 20))
+				    {
+					    cage->SetGoState(GO_STATE_ACTIVE);
+                        cageA = cage->GetGUID();
+				    }
+                    Talk(JONES_SAY_PROGRESS3);
+			
+			        // Set Adarrah's data to 1 1
+                    if (Creature* adarrah = Creature::GetCreature(*me,adarrahGUID))
+                        adarrah->AI()->SetData(1,1);
+			        break;
+		        case 13:
+			        me->SetStandState(UNIT_STAND_STATE_KNEEL);  // Kneels and gets skull mace from pile (for gong)
+			        break;
+		        case 14:
+			        // Change equipment, show Jones with skull mace
+			        me->SetStandState(UNIT_STAND_STATE_STAND);
+			        SetEquipmentSlots(false, EQUIP_ID_MAIN_HAND, EQUIP_ID_OFF_HAND, EQUIP_NO_CHANGE);
+
+                    if (GameObject* cage = GameObject::GetGameObject(*me,cageA))
+			            cage->SetGoState(GO_STATE_READY); // Close Adarrah's cage
+                    break;
+		        case 16:
+			        // gong hit 1
+			        me->HandleEmoteCommand(EMOTE_ONESHOT_ATTACK1H);
+			        me->PlayDirectSound(SOUND_GONG);
+			        DoCast(player,SPELL_CAMERA_SHAKE_MED);
+			        break;
+		        case 17:
+			        // gong hit 2
+			        me->HandleEmoteCommand(EMOTE_ONESHOT_ATTACK1H);
+			        me->PlayDirectSound(SOUND_GONG);
+			        DoCast(player,SPELL_CAMERA_SHAKE_MED);
+                    break;
+		        case 18:
+                    Talk(JONES_SAY_PROGRESS4);
+                    break;
+		        case 19:
+                    Talk(JONES_SAY_PROGRESS5);
+                    break;
+		        case 21:
+			        // set firewall state to block exit
+			        if (GameObject* firewall = me->FindNearestGameObject(GO_FIREWALL,50))
+                    {
+                        firewall->SetGoState(GO_STATE_READY);
+                        firewallGUID = firewall->GetGUID();
+                    }
+			        // spawn Tecahuna (snake boss)
+			        if (Creature* tecahuna = me->SummonCreature(NPC_TECAHUNA,4906.78f,-4818.94f,32.55777f,2.447285f,TEMPSUMMON_CORPSE_TIMED_DESPAWN,5000))
+                        tecahunaGUID = tecahuna->GetGUID();
+                    break;
+		        case 22:
+                    Talk(JONES_SAY_PROGRESS6);
+			        SetRun();
+                    break;
+		        case 23:
+                    SetRun(false);
+                    break;
+		        case 24:
+                    Talk(JONES_SAY_PROGRESS7);
+			        break;
+		        case 25:
+                    Talk(JONES_SAY_PROGRESS8);
+			        SetRun();
+                    break;
+		        case 26:
+                    // Change Tecahuna factionID
+                if (Creature* tecahuna = Creature::GetCreature(*me,tecahunaGUID))
+			            tecahuna->setFaction(16);   // Set hostile
+                    break;
+		        case 27:
+			        // set firewall state to open
+                    if (GameObject* firewall = GameObject::GetGameObject(*me,firewallGUID))
+					    firewall->SetGoState(GO_STATE_ACTIVE);
+				    break;
+                case 48:
+                    Talk(JONES_SAY_END);
+			        player->GroupEventHappens(QUEST_DUN_DA_DUN_TAH,me);
+			        break;
+		    }
+        }
+
+	    void JustDied(Unit* killer)
+        {
+            if (Player* player = GetPlayerForEscort())
+		    {
+                player->FailQuest(QUEST_DUN_DA_DUN_TAH);
+			    // set firewall state to open
+                if (GameObject* firewall = GameObject::GetGameObject(*me,firewallGUID))
+					firewall->SetGoState(GO_STATE_ACTIVE);
+			    // Remove Tecahuna if still alive
+                if (Creature* tecahuna = Creature::GetCreature(*me,tecahunaGUID))
+				    tecahuna->DespawnOrUnsummon();
+		    }
+	    }
+
+        void UpdateAI(const uint32 diff)
+        {
+            npc_escortAI::UpdateAI(diff);
+        }
+
+        private:
+            uint64 cageH;
+            uint64 cageA;
+            uint64 adarrahGUID;
+            uint64 firewallGUID;
+            uint64 tecahunaGUID;
+    };
+
+    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest)
+    {
+        if (quest->GetQuestId() == QUEST_DUN_DA_DUN_TAH)
+        {
+		    creature->setFaction(250);  // Faction in db 35 (friendly) :s
+		    if (npc_escortAI* pEscortAI = CAST_AI(npc_escortAI, creature->AI()))
+			    pEscortAI->Start(true, false, player->GetGUID());
+	    }
+        return true;
+    }
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_harrison_jones_grizzlyAI(creature);
     }
 };
 
@@ -920,4 +1131,5 @@ void AddSC_grizzly_hills()
     new npc_lake_frog;
     new npc_maiden_of_ashwood_lake;
     new npc_maiden_of_drak_mar;
+    new npc_harrison_jones_grizzly;
 }
