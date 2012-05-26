@@ -3100,7 +3100,7 @@ public:
                     _events.ScheduleEvent(11, 500);
                     break;
                 case 7:
-                    _events.ScheduleEvent(13, 500);
+                    _events.ScheduleEvent(13, 1000);
                     break;
                 default:
                     break;
@@ -3178,7 +3178,7 @@ public:
                     case 13:
                         me->SetFacingTo(M_PI*3/2);
                         Talk(SAY_DRAKURU_6);
-                        _events.ScheduleEvent(14, 1500);
+                        _events.ScheduleEvent(14, 1000);
                         break;
                     case 14:              // TODO: Find correct spells
                         if (Creature* LK = me->SummonCreature(NPC_LICH_KING,LichKingPos[0]))
@@ -3284,7 +3284,7 @@ public:
                     case 30:
                         if (Creature* LichKing = Unit::GetCreature(*me, LichKingGUID))
                             LichKing->AI()->Talk(SAY_LICH_KING_6);
-                        _events.ScheduleEvent(31, 5500);
+                        _events.ScheduleEvent(31, 5000);
                         break;
                     case 31:
                         if (Creature* LichKing = Unit::GetCreature(*me, LichKingGUID))
@@ -3306,11 +3306,11 @@ public:
                             bunny->RemoveAurasDueToSpell(SPELL_ARTHAS_PORTAL);
                         me->SetFacingTo(M_PI);
                         Talk(SAY_DRAKURU_11);
-                        _events.ScheduleEvent(35, 7000);
+                        _events.ScheduleEvent(35, 6000);
                         break;
                     case 35:
                         Talk(SAY_DRAKURU_12);
-                        _events.ScheduleEvent(36, 6000);
+                        _events.ScheduleEvent(36, 5000);
                         break;
                     case 36:
                         Talk(SAY_DRAKURU_13);
