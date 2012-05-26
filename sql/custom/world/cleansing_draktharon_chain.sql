@@ -158,3 +158,7 @@ UPDATE `creature_template` SET `gossip_menu_id`=@GOSSIP, `npcflag`=`npcflag`|1, 
 DELETE FROM `gossip_menu` WHERE `entry`=@GOSSIP AND `text_id`=13265;
 INSERT INTO `gossip_menu` (`entry`, `text_id`) VALUES 
 (@GOSSIP, 13265);
+
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=13 AND `SourceEntry`=51825;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
+(13, 1, 51825, 0, 0, 31, 0, 3, @DRAKURU, 0, 0, 0, '', 'Arthas Scourge Drakuru Only target Drakuru');
