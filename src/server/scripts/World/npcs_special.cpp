@@ -3023,6 +3023,7 @@ enum DrakuruDrakTharon
     GO_HEART_OF_THE_ANCIENTS        = 190596,
     GO_EYE_OF_THE_PROPHET           = 190597,
 
+    SPELL_SHADOW_CHANNELING         = 51795,
     SPELL_ARTHAS_PORTAL             = 51807,
     SPELL_RED_LIGHTNING_BOLT        = 51802,
     SPELL_ARTHAS_SCOURGE_DRAKURU    = 51825,
@@ -3179,8 +3180,18 @@ public:
                         Talk(SAY_DRAKURU_6);
                         _events.ScheduleEvent(14, 1500);
                         break;
-                    case 14:
-                        DoCast(49824);  // TODO: Find correct spells
+                    case 14:              // TODO: Find correct spells
+                        if (Creature* LK = me->SummonCreature(NPC_LICH_KING,LichKingPos[0]))
+                        {
+                            LK->SetVisible(false);
+                            LichKingGUID = LK->GetGUID();
+                            if (Creature* bunny = LK->FindNearestCreature(NPC_DRAKURU_EVENT_INVISMAN,3.0f))
+                            {
+                                eventBunny4 = bunny->GetGUID();
+                                bunny->CastSpell(bunny,49824);
+                            }
+                        }
+                        DoCast(SPELL_SHADOW_CHANNELING);
                         _events.ScheduleEvent(15, 5000);
                         break;
                     case 15:            // and here
@@ -3190,22 +3201,14 @@ public:
                             bunny->CastSpell(bunny,SPELL_RED_LIGHTNING_BOLT);
                         if (Creature* bunny = Unit::GetCreature(*me, eventBunny3))
                             bunny->CastSpell(bunny,SPELL_RED_LIGHTNING_BOLT);
+                        if (Creature* bunny = Unit::GetCreature(*me, eventBunny4))
+                            bunny->CastSpell(bunny,SPELL_ARTHAS_PORTAL,true);
                         if (GameObject* go = me->FindNearestGameObject(GO_EYE_OF_THE_PROPHET,5.0f))
                             go->RemoveFromWorld();
                         if (GameObject* go = me->FindNearestGameObject(GO_HEART_OF_THE_ANCIENTS,5.0f))
                             go->RemoveFromWorld();
                         if (GameObject* go = me->FindNearestGameObject(GO_ANCIENT_DRAKKARI_TABLETS,5.0f))
                             go->RemoveFromWorld();
-                        if (Creature* LK = me->SummonCreature(NPC_LICH_KING,LichKingPos[0]))
-                        {
-                            LK->SetVisible(false);
-                            LichKingGUID = LK->GetGUID();
-                            if (Creature* bunny = LK->FindNearestCreature(NPC_DRAKURU_EVENT_INVISMAN,3.0f))
-                            {
-                                eventBunny4 = bunny->GetGUID();
-                                bunny->CastSpell(bunny,SPELL_ARTHAS_PORTAL);
-                            }
-                        }
                         _events.ScheduleEvent(16, 5000);
                         break;
                     case 16:            // and find music id when Lich King summoned
