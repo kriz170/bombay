@@ -927,7 +927,7 @@ enum HarrisonJonesGrizzly
 
     NPC_ADARRAH                 = 24405,  // when freed run SAI: cheer, kiss, "Thank You!", runs out
     NPC_TECAHUNA                = 26865,  // SmartAI - cast venom spit and summons mobs every 10sec
-    NPC_ANCIENT_DRAKKARI_KING	= 26871,  // SmartAI - cast Drakkari Curse
+    NPC_ANCIENT_DRAKKARI_KING   = 26871,  // SmartAI - cast Drakkari Curse
 
     GO_FIREWALL                 = 188480, // firewall that blocks exit
     GO_CAGE_HARRISON            = 188465, // guid 56996
@@ -967,126 +967,126 @@ public:
             switch(i)
             {
                 case 0:
-			        me->HandleEmoteCommand(EMOTE_ONESHOT_ATTACK1H);
-			        break;
-		        case 1:
-			        if (GameObject* cage = me->FindNearestGameObject(GO_CAGE_HARRISON, 20))
-				    {
-					    cage->SetGoState(GO_STATE_ACTIVE);
+                    me->HandleEmoteCommand(EMOTE_ONESHOT_ATTACK1H);
+                    break;
+                case 1:
+                    if (GameObject* cage = me->FindNearestGameObject(GO_CAGE_HARRISON, 20))
+                    {
+                        cage->SetGoState(GO_STATE_ACTIVE);
                         cageH = cage->GetGUID();
-				    }
+                    }
                     Talk(JONES_SAY_START);
-			        break;
-		        case 5:
+                    break;
+                case 5:
                     Talk(JONES_SAY_PROGRESS1);
-			        // Summon Adarrah
-			        if (Creature* adarrah = me->SummonCreature(NPC_ADARRAH, 4912.772461f, -4797.773458f, 32.644875f, 3.741192f, TEMPSUMMON_TIMED_DESPAWN,300000))
+                    // Summon Adarrah
+                    if (Creature* adarrah = me->SummonCreature(NPC_ADARRAH, 4912.772461f, -4797.773458f, 32.644875f, 3.741192f, TEMPSUMMON_TIMED_DESPAWN,300000))
                         adarrahGUID = adarrah->GetGUID();
                     if (GameObject* cage = GameObject::GetGameObject(*me,cageH))
-			            cage->SetGoState(GO_STATE_READY);               // Close Jones's cage
+                        cage->SetGoState(GO_STATE_READY);               // Close Jones's cage
                     break;
-		        case 6:
+                case 6:
                     Talk(JONES_SAY_PROGRESS2);
                     break;
-		        case 8:
-			        me->HandleEmoteCommand(EMOTE_ONESHOT_USE_STANDING);  // Jones manipulates cage lock
-			        break;
-		        case 9:
-			        if (GameObject* cage = me->FindNearestGameObject(GO_CAGE_ADARRAH, 20))
-				    {
-					    cage->SetGoState(GO_STATE_ACTIVE);
+                case 8:
+                    me->HandleEmoteCommand(EMOTE_ONESHOT_USE_STANDING);  // Jones manipulates cage lock
+                    break;
+                case 9:
+                    if (GameObject* cage = me->FindNearestGameObject(GO_CAGE_ADARRAH, 20))
+                    {
+                        cage->SetGoState(GO_STATE_ACTIVE);
                         cageA = cage->GetGUID();
-				    }
+                    }
                     Talk(JONES_SAY_PROGRESS3);
-			
-			        // Set Adarrah's data to 1 1
+
+                    // Set Adarrah's data to 1 1
                     if (Creature* adarrah = Creature::GetCreature(*me,adarrahGUID))
                         adarrah->AI()->SetData(1,1);
-			        break;
-		        case 13:
-			        me->SetStandState(UNIT_STAND_STATE_KNEEL);  // Kneels and gets skull mace from pile (for gong)
-			        break;
-		        case 14:
-			        // Change equipment, show Jones with skull mace
-			        me->SetStandState(UNIT_STAND_STATE_STAND);
-			        SetEquipmentSlots(false, EQUIP_ID_MAIN_HAND, EQUIP_ID_OFF_HAND, EQUIP_NO_CHANGE);
+                    break;
+                case 13:
+                    me->SetStandState(UNIT_STAND_STATE_KNEEL);  // Kneels and gets skull mace from pile (for gong)
+                    break;
+                case 14:
+                    // Change equipment, show Jones with skull mace
+                    me->SetStandState(UNIT_STAND_STATE_STAND);
+                    SetEquipmentSlots(false, EQUIP_ID_MAIN_HAND, EQUIP_ID_OFF_HAND, EQUIP_NO_CHANGE);
 
                     if (GameObject* cage = GameObject::GetGameObject(*me,cageA))
-			            cage->SetGoState(GO_STATE_READY); // Close Adarrah's cage
+                        cage->SetGoState(GO_STATE_READY); // Close Adarrah's cage
                     break;
-		        case 16:
-			        // gong hit 1
-			        me->HandleEmoteCommand(EMOTE_ONESHOT_ATTACK1H);
-			        me->PlayDirectSound(SOUND_GONG);
-			        DoCast(player,SPELL_CAMERA_SHAKE_MED);
-			        break;
-		        case 17:
-			        // gong hit 2
-			        me->HandleEmoteCommand(EMOTE_ONESHOT_ATTACK1H);
-			        me->PlayDirectSound(SOUND_GONG);
-			        DoCast(player,SPELL_CAMERA_SHAKE_MED);
+                case 16:
+                    // gong hit 1
+                    me->HandleEmoteCommand(EMOTE_ONESHOT_ATTACK1H);
+                    me->PlayDirectSound(SOUND_GONG);
+                    DoCast(player,SPELL_CAMERA_SHAKE_MED);
                     break;
-		        case 18:
+                case 17:
+                    // gong hit 2
+                    me->HandleEmoteCommand(EMOTE_ONESHOT_ATTACK1H);
+                    me->PlayDirectSound(SOUND_GONG);
+                    DoCast(player,SPELL_CAMERA_SHAKE_MED);
+                    break;
+                case 18:
                     Talk(JONES_SAY_PROGRESS4);
                     break;
-		        case 19:
+                case 19:
                     Talk(JONES_SAY_PROGRESS5);
                     break;
-		        case 21:
-			        // set firewall state to block exit
-			        if (GameObject* firewall = me->FindNearestGameObject(GO_FIREWALL,50))
+                case 21:
+                    // set firewall state to block exit
+                    if (GameObject* firewall = me->FindNearestGameObject(GO_FIREWALL,50))
                     {
                         firewall->SetGoState(GO_STATE_READY);
                         firewallGUID = firewall->GetGUID();
                     }
-			        // spawn Tecahuna (snake boss)
-			        if (Creature* tecahuna = me->SummonCreature(NPC_TECAHUNA,4906.78f,-4818.94f,32.55777f,2.447285f,TEMPSUMMON_CORPSE_TIMED_DESPAWN,5000))
+                    // spawn Tecahuna (snake boss)
+                    if (Creature* tecahuna = me->SummonCreature(NPC_TECAHUNA,4906.78f,-4818.94f,32.55777f,2.447285f,TEMPSUMMON_CORPSE_TIMED_DESPAWN,5000))
                         tecahunaGUID = tecahuna->GetGUID();
                     break;
-		        case 22:
+                case 22:
                     Talk(JONES_SAY_PROGRESS6);
-			        SetRun();
+                    SetRun();
                     break;
-		        case 23:
+                case 23:
                     SetRun(false);
                     break;
-		        case 24:
+                case 24:
                     Talk(JONES_SAY_PROGRESS7);
-			        break;
-		        case 25:
-                    Talk(JONES_SAY_PROGRESS8);
-			        SetRun();
                     break;
-		        case 26:
+                case 25:
+                    Talk(JONES_SAY_PROGRESS8);
+                    SetRun();
+                    break;
+                case 26:
                     // Change Tecahuna factionID
                 if (Creature* tecahuna = Creature::GetCreature(*me,tecahunaGUID))
-			            tecahuna->setFaction(16);   // Set hostile
+                        tecahuna->setFaction(16);   // Set hostile
                     break;
-		        case 27:
-			        // set firewall state to open
+                case 27:
+                    // set firewall state to open
                     if (GameObject* firewall = GameObject::GetGameObject(*me,firewallGUID))
-					    firewall->SetGoState(GO_STATE_ACTIVE);
-				    break;
+                        firewall->SetGoState(GO_STATE_ACTIVE);
+                    break;
                 case 48:
                     Talk(JONES_SAY_END);
-			        player->GroupEventHappens(QUEST_DUN_DA_DUN_TAH,me);
-			        break;
-		    }
+                    player->GroupEventHappens(QUEST_DUN_DA_DUN_TAH,me);
+                    break;
+            }
         }
 
-	    void JustDied(Unit* killer)
+        void JustDied(Unit* killer)
         {
             if (Player* player = GetPlayerForEscort())
-		    {
+            {
                 player->FailQuest(QUEST_DUN_DA_DUN_TAH);
-			    // set firewall state to open
+                // set firewall state to open
                 if (GameObject* firewall = GameObject::GetGameObject(*me,firewallGUID))
-					firewall->SetGoState(GO_STATE_ACTIVE);
-			    // Remove Tecahuna if still alive
+                    firewall->SetGoState(GO_STATE_ACTIVE);
+                // Remove Tecahuna if still alive
                 if (Creature* tecahuna = Creature::GetCreature(*me,tecahunaGUID))
-				    tecahuna->DespawnOrUnsummon();
-		    }
-	    }
+                    tecahuna->DespawnOrUnsummon();
+            }
+        }
 
         void UpdateAI(const uint32 diff)
         {
