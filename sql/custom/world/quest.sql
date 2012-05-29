@@ -137,3 +137,21 @@ DELETE FROM `smart_scripts` WHERE `entryorguid`=@ANCIENTKING AND `source_type`=0
 INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
 (@ANCIENTKING, 0, 0, 0, 63, 0, 100, 0, 0, 0, 0, 0, 2, 16, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'Ancient Drakkari King - On Created - Set Faction 16'),
 (@ANCIENTKING, 0, 1, 0, 0, 0, 100, 0, 3000, 5000, 5000, 7000, 11, 52466, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 'Ancient Drakkari King - In Combat - Cast Drakkari Curse');
+
+
+
+-- Sabotage
+SET @BUNNY := 28780;
+UPDATE `creature_template` SET `AIName` = 'SmartAI' WHERE `entry`=@BUNNY;
+DELETE FROM `smart_scripts` WHERE `entryorguid`=@BUNNY AND `source_type`=0;
+INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`link`,`event_type`,`event_phase_mask`,`event_chance`,`event_flags`,`event_param1`,`event_param2`,`event_param3`,`event_param4`,`action_type`,`action_param1`,`action_param2`,`action_param3`,`action_param4`,`action_param5`,`action_param6`,`target_type`,`target_param1`,`target_param2`,`target_param3`,`target_x`,`target_y`,`target_z`,`target_o`,`comment`) VALUES
+(@BUNNY,0,0,1,54,0,100,0,0,0,0,0,11,52324,2,0,0,0,0,1,0,0,0,0,0,0,0, 'Explosive Charges Bunny - On Summoned - Cast Scourgewagon Explosion'),
+(@BUNNY,0,1,2,61,0,100,0,0,0,0,0,11,52325,2,0,0,0,0,1,0,0,0,0,0,0,0, 'Explosive Charges Bunny - On Summoned - Cast Explode Scourgewagon:Roller'),
+(@BUNNY,0,2,3,61,0,100,0,0,0,0,0,11,52330,2,0,0,0,0,1,0,0,0,0,0,0,0, 'Explosive Charges Bunny - On Summoned - Cast Explode Scourgewagon:Grill'),
+(@BUNNY,0,3,4,61,0,100,0,0,0,0,0,11,52329,2,0,0,0,0,1,0,0,0,0,0,0,0, 'Explosive Charges Bunny - On Summoned - Cast Explode Scourgewagon:Frame'),
+(@BUNNY,0,4,5,61,0,100,0,0,0,0,0,11,52332,2,0,0,0,0,1,0,0,0,0,0,0,0, 'Explosive Charges Bunny - On Summoned - Cast Explode Scourgewagon:Wheel'),
+(@BUNNY,0,5,0,61,0,100,0,0,0,0,0,33,28777,0,0,0,0,0,7,0,0,0,0,0,0,0, 'Explosive Charges Bunny - On Summoned - Give Kill Credit');
+
+DELETE FROM `spell_script_names` WHERE `ScriptName`='spell_q12676_scourgewagon_explosion';
+INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
+(52324,'spell_q12676_scourgewagon_explosion');

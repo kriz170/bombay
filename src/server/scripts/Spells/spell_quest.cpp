@@ -1162,7 +1162,7 @@ class spell_q12277_wintergarde_mine_explosion : public SpellScriptLoader
         }
 };
 
-enum itRollsDownhill
+enum ItRollsDownhill
 {
     NPC_BLIGHT_CRYSTAL_CREDIT       = 28740,
 
@@ -1239,6 +1239,50 @@ class spell_q12673_harvest_blight_crystal : public SpellScriptLoader
         }
 };
 
+
+enum Sabotage
+{
+    NPC_CATAPULT_KC_BUNNY   = 28777,
+
+    GO_SCOURGEAWGON         = 190731,
+};
+
+class spell_q12676_scourgewagon_explosion : public SpellScriptLoader
+{
+    public:
+        spell_q12676_scourgewagon_explosion() : SpellScriptLoader("spell_q12676_scourgewagon_explosion") { }
+
+        class spell_q12676_scourgewagon_explosion_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_q12676_scourgewagon_explosion_SpellScript);
+
+            bool Load()
+            {
+                return GetCaster()->GetTypeId() == TYPEID_UNIT;
+            }
+
+            void HandleScript(SpellEffIndex /*effIndex*/)
+            {
+                Creature* caster = GetCaster()->ToCreature();
+                if (GameObject* wagon = caster->FindNearestGameObject(GO_SCOURGEAWGON,20.0f))
+                {
+                    wagon->DestroyForNearbyPlayers();
+                    caster->DespawnOrUnsummon(100);
+                }
+            }
+
+            void Register()
+            {
+                OnEffectHitTarget += SpellEffectFn(spell_q12676_scourgewagon_explosion_SpellScript::HandleScript, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_q12676_scourgewagon_explosion_SpellScript();
+        }
+};
+
 void AddSC_quest_spell_scripts()
 {
     new spell_q55_sacred_cleansing();
@@ -1267,4 +1311,5 @@ void AddSC_quest_spell_scripts()
     new spell_q12987_read_pronouncement();
     new spell_q12277_wintergarde_mine_explosion();
     new spell_q12673_harvest_blight_crystal();
+    new spell_q12676_scourgewagon_explosion();
 }
