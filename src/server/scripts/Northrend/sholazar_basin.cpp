@@ -752,20 +752,20 @@ public:
     }
 };
 
-enum eArtruisTheHeartless
+enum ArtruisTheHeartless
 {
-    SPELL_TOMB_OF_THE_HEARTLESS		= 52182,
+    SPELL_TOMB_OF_THE_HEARTLESS     = 52182,
 
     SPELL_BINDINGS_OF_SUBMISSION    = 52185,
-    SPELL_FROST_NOVA				= 11831,
-    SPELL_FROSTBOLT					= 15530,
-    SPELL_ICE_LANCE					= 54261,
-    SPELL_ICY_VEINS					= 54792,
+    SPELL_FROST_NOVA                = 11831,
+    SPELL_FROSTBOLT                 = 15530,
+    SPELL_ICE_LANCE                 = 54261,
+    SPELL_ICY_VEINS                 = 54792,
+    SPELL_SUMMON_ARTRUIS_PHYLACTERY = 52518,
 
-    NPC_JALOOT						= 28667,
-    NPC_ZEPIK						= 28668,
+    NPC_JALOOT                      = 28667,
+    NPC_ZEPIK                       = 28668,
 
-    ARTRUIS_PHYLACTERY              = 190777,
     FACTION_MONSTER                 = 16
 };
 
@@ -812,7 +812,7 @@ public:
 
         void JustDied(Unit* /* killer */)
         {
-            GameObject* object = me->SummonGameObject(ARTRUIS_PHYLACTERY,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ(),0,0,0,0,0,600);
+            DoCast(me, SPELL_SUMMON_ARTRUIS_PHYLACTERY,true);
             if (Creature * jaloot = Unit::GetCreature(*me, m_uiJalootGuid))
             {
                 jaloot->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
@@ -824,8 +824,6 @@ public:
                 zepik->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
                 zepik->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
             }
-
-            me->DespawnOrUnsummon();
         }
 
         //Called at World update tick
@@ -835,7 +833,7 @@ public:
             {
                 if (!Unit::GetCreature(*me, m_uiJalootGuid))
                 {
-                    if ( TempSummon* jaloot = me->SummonCreature(NPC_JALOOT, SpawnLocations[0], TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30 * IN_MILLISECONDS))
+                    if (TempSummon* jaloot = me->SummonCreature(NPC_JALOOT, SpawnLocations[0], TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30 * IN_MILLISECONDS))
                     {
                         m_uiJalootGuid = jaloot->GetGUID();
                         jaloot->AddAura(SPELL_TOMB_OF_THE_HEARTLESS, jaloot);
@@ -855,7 +853,7 @@ public:
 
                 if (!Unit::GetCreature(*me, m_uiZepikGuid))
                 {
-                    if ( TempSummon* zepik = me->SummonCreature(NPC_ZEPIK, SpawnLocations[1], TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30 * IN_MILLISECONDS))
+                    if (TempSummon* zepik = me->SummonCreature(NPC_ZEPIK, SpawnLocations[1], TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30 * IN_MILLISECONDS))
                     {
                         m_uiZepikGuid = zepik->GetGUID();
                         zepik->AddAura(SPELL_TOMB_OF_THE_HEARTLESS, zepik);

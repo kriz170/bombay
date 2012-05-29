@@ -47,10 +47,15 @@ INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`link`,`event_type
 (@SCRIPT2,@SOURCETYPE2,1,0,0,0,100,0,0,0,0,0,11,52157,0,0,0,0,0,7,0,0,0,0,0,0,0,"Script 1 - Credit"),
 (@SCRIPT2,@SOURCETYPE2,2,0,0,0,100,0,5000,5000,0,0,41,0,0,0,0,0,0,1,0,0,0,0,0,0,0,"Script 1 - Despawn");
 
--- A hero's burden
+-- A Hero's Burden
 UPDATE `creature_template` SET `ScriptName` = 'npc_artruis_the_heartless' WHERE `entry` = 28659;
 DELETE FROM `creature_ai_scripts` WHERE creature_id = 28659;
 DELETE FROM `creature` WHERE `Id` IN (28667,28668);
+
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=13 AND `SourceEntry`=52185;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
+(13, 1, 52185, 0, 0, 31, 0, 3, 28667, 0, 0, 0, '', 'Binding of Submission target Jaloot'),
+(13, 1, 52185, 0, 1, 31, 0, 3, 28668, 0, 0, 0, '', 'Binding of Submission target Zepik');
 
 -- Hand of the Oracles
 DELETE FROM `creature_involvedrelation` WHERE `quest`=12689;
