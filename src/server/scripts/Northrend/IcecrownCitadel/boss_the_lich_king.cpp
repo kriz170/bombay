@@ -2978,6 +2978,8 @@ class spell_the_lich_king_restore_soul : public SpellScriptLoader
                     lichKing->AI()->DoAction(ACTION_TELEPORT_BACK);
                 if (Creature* spawner = GetCaster()->FindNearestCreature(NPC_WORLD_TRIGGER_INFINITE_AOI, 50.0f))
                     spawner->RemoveAllAuras();
+                if (GetCaster()->GetMap()->IsHeroic())
+                    _instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_HARVEST_SOULS_TELEPORT);
             }
 
             void RemoveAura()
