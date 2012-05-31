@@ -1952,6 +1952,7 @@ class npc_spirit_bomb : public CreatureScript
                 me->SendMovementFlagUpdate();
                 destZ = 1055.0f;    // approximation, gets more precise later
                 me->UpdateGroundPositionZ(destX, destY, destZ);
+                me->SetSpeed(MOVE_FLIGHT, 0.5f, true);
                 me->GetMotionMaster()->MovePoint(POINT_GROUND, destX, destY, destZ);
             }
 
