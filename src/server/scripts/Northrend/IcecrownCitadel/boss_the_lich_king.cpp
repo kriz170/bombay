@@ -1945,8 +1945,11 @@ class npc_spirit_bomb : public CreatureScript
 
             void IsSummonedBy(Unit* /*summoner*/)
             {
-                float destX, destY, destZ;
-                me->GetPosition(destX, destY);
+                float destX, destY, destZ, Z;
+                me->GetPosition(destX, destY, Z);
+                me->NearTeleportTo(destX, destY, Z+30.0f, me->GetOrientation());
+                me->Relocate(destX, destY, Z+30.0f);
+                me->SendMovementFlagUpdate();
                 destZ = 1055.0f;    // approximation, gets more precise later
                 me->UpdateGroundPositionZ(destX, destY, destZ);
                 me->GetMotionMaster()->MovePoint(POINT_GROUND, destX, destY, destZ);
