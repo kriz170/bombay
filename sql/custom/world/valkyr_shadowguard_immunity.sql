@@ -1,5 +1,5 @@
 -- immunity valkyr shadowguard
-UPDATE `creature_template` SET `mechanic_immune_mask` = `mechanic_immune_mask` | 
+UPDATE `creature_template` SET `speed_walk`=1, `mechanic_immune_mask` = 
 1|          -- charm
 2|          -- disorient
 4|          -- disarm
@@ -18,6 +18,5 @@ UPDATE `creature_template` SET `mechanic_immune_mask` = `mechanic_immune_mask` |
 4194304|    -- turn
 8388608|    -- horror
 33554432|   -- interrupt
-67108864|   -- dazed
 536870912   -- sapped
 where `entry` IN (36609,39120,39121,39122);
