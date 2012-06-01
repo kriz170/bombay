@@ -251,6 +251,7 @@ class boss_halion : public CreatureScript
             void Reset()
             {
                 _Reset();
+                me->SetReactState(REACT_DEFENSIVE);
             }
 
             void EnterCombat(Unit* who)
