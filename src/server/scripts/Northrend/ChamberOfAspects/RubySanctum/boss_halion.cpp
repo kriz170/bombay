@@ -1224,40 +1224,76 @@ class npc_orb_carrier : public CreatureScript
             void UpdateAI(uint32 const diff)
             {
                 _events.Update(diff);
-                if (_events.ExecuteEvent() == EVENT_TRACK_ROTATION)
+                while (uint32 eventId = _events.ExecuteEvent())
                 {
-                    me->CastSpell((Unit*)NULL, SPELL_TRACK_ROTATION, false);
-                    _events.ScheduleEvent(EVENT_TRACK_ROTATION, 500);
-
-                    // Update Orb Position
-                    Vehicle* vehicle = me->GetVehicleKit();
-                    Unit* southOrb = vehicle->GetPassenger(SEAT_SOUTH);
-                    Unit* northOrb = vehicle->GetPassenger(SEAT_NORTH);
-                    if (southOrb && northOrb)
+                    switch (eventId)
                     {
-                        if (northOrb->GetTypeId() != TYPEID_UNIT || southOrb->GetTypeId() != TYPEID_UNIT)
-                            return;
+                       case EVENT_TRACK_ROTATION:
+                            me->CastSpell((Unit*)NULL, SPELL_TRACK_ROTATION, false);
+                            _events.ScheduleEvent(EVENT_TRACK_ROTATION, 500);
 
-                        me->GetNearPoint2D(x, y, RING_RADIUS, me->GetOrientation() + M_PI/2);
-                        northOrb->Relocate(x,y);
-                        me->GetNearPoint2D(x, y, RING_RADIUS, me->GetOrientation() + M_PI*1.5);
-                        southOrb->Relocate(x,y);
-                    }
+                            // Update Orb Position
+                            Vehicle* vehicle = me->GetVehicleKit();
+                            Unit* southOrb = vehicle->GetPassenger(SEAT_SOUTH);
+                            Unit* northOrb = vehicle->GetPassenger(SEAT_NORTH);
+                            if (southOrb && northOrb)
+                            {
+                                if (northOrb->GetTypeId() != TYPEID_UNIT || southOrb->GetTypeId() != TYPEID_UNIT)
+                                    return;
 
-                    if (!IsHeroic())
-                        return;
+                                me->GetNearPoint2D(x, y, RING_RADIUS, me->GetOrientation() + M_PI/2);
+                                northOrb->Relocate(x,y);
+                                me->GetNearPoint2D(x, y, RING_RADIUS, me->GetOrientation() + M_PI*1.5);
+                                southOrb->Relocate(x,y);
+                            }
 
-                    Unit* eastOrb = vehicle->GetPassenger(SEAT_EAST);
-                    Unit* westOrb = vehicle->GetPassenger(SEAT_WEST);
-                    if (eastOrb && westOrb)
-                    {
-                        if (eastOrb->GetTypeId() != TYPEID_UNIT || westOrb->GetTypeId() != TYPEID_UNIT)
-                            return;
+                            if (!IsHeroic())
+                                return;
 
-                        me->GetNearPoint2D(x, y, RING_RADIUS, me->GetOrientation() + M_PI);
-                        eastOrb->Relocate(x,y);
-                        me->GetNearPoint2D(x, y, RING_RADIUS, me->GetOrientation());
-                        westOrb->Relocate(x,y);
+                            Unit* eastOrb = vehicle->GetPassenger(SEAT_EAST);
+                            Unit* westOrb = vehicle->GetPassenger(SEAT_WEST);
+                            if (eastOrb && westOrb)
+                            {
+                                if (eastOrb->GetTypeId() != TYPEID_UNIT || westOrb->GetTypeId() != TYPEID_UNIT)
+                                    return;
+
+                                me->GetNearPoint2D(x, y, RING_RADIUS, me->GetOrientation() + M_PI);
+                                eastOrb->Relocate(x,y);
+                                me->GetNearPoint2D(x, y, RING_RADIUS, me->GetOrientation());
+                                westOrb->Relocate(x,y);
+                            }
+                            break;
+                        case EVENT_SHADOW_PULSARS_SHOOT:
+                            Vehicle* vehicle = me->GetVehicleKit();
+                            Unit* southOrb = vehicle->GetPassenger(SEAT_SOUTH);
+                            Unit* northOrb = vehicle->GetPassenger(SEAT_NORTH);
+                            if (southOrb && northOrb)
+                            {
+                                if (northOrb->GetTypeId() != TYPEID_UNIT || southOrb->GetTypeId() != TYPEID_UNIT)
+                                    return;
+
+                                northOrb->CastSpell(northOrb, SPELL_TWILIGHT_PULSE_PERIODIC, true);
+                                southOrb->CastSpell(southOrb, SPELL_TWILIGHT_PULSE_PERIODIC, true);
+                                northOrb->CastSpell(southOrb, SPELL_TWILIGHT_CUTTER, false);
+                            }
+
+                            if (!IsHeroic())
+                                return;
+
+                            Unit* eastOrb = vehicle->GetPassenger(SEAT_EAST);
+                            Unit* westOrb = vehicle->GetPassenger(SEAT_WEST);
+                            if (eastOrb && westOrb)
+                            {
+                                if (eastOrb->GetTypeId() != TYPEID_UNIT || westOrb->GetTypeId() != TYPEID_UNIT)
+                                    return;
+
+                                eastOrb->CastSpell(eastOrb, SPELL_TWILIGHT_PULSE_PERIODIC, true);
+                                westOrb->CastSpell(westOrb, SPELL_TWILIGHT_PULSE_PERIODIC, true);
+                                eastOrb->CastSpell(westOrb, SPELL_TWILIGHT_CUTTER, false);
+                            }
+                            break;
+                        default:
+                            break;
                     }
                 }
             }
@@ -1267,37 +1303,10 @@ class npc_orb_carrier : public CreatureScript
                 switch (action)
                 {
                     case ACTION_SHOOT:
-                    {
-                        Vehicle* vehicle = me->GetVehicleKit();
-                        Unit* southOrb = vehicle->GetPassenger(SEAT_SOUTH);
-                        Unit* northOrb = vehicle->GetPassenger(SEAT_NORTH);
-                        if (southOrb && northOrb)
-                        {
-                            if (northOrb->GetTypeId() != TYPEID_UNIT || southOrb->GetTypeId() != TYPEID_UNIT)
-                                return;
-
+                        if (Unit* northOrb = me->GetVehicleKit()->GetPassenger(SEAT_NORTH))
                             northOrb->ToCreature()->AI()->Talk(EMOTE_WARN_LASER);
-                            northOrb->CastSpell(northOrb, SPELL_TWILIGHT_PULSE_PERIODIC, true);
-                            southOrb->CastSpell(southOrb, SPELL_TWILIGHT_PULSE_PERIODIC, true);
-                            northOrb->CastSpell(southOrb, SPELL_TWILIGHT_CUTTER, false);
-                        }
-
-                        if (!IsHeroic())
-                            return;
-
-                        Unit* eastOrb = vehicle->GetPassenger(SEAT_EAST);
-                        Unit* westOrb = vehicle->GetPassenger(SEAT_WEST);
-                        if (eastOrb && westOrb)
-                        {
-                            if (eastOrb->GetTypeId() != TYPEID_UNIT || westOrb->GetTypeId() != TYPEID_UNIT)
-                                return;
-
-                            eastOrb->CastSpell(eastOrb, SPELL_TWILIGHT_PULSE_PERIODIC, true);
-                            westOrb->CastSpell(westOrb, SPELL_TWILIGHT_PULSE_PERIODIC, true);
-                            eastOrb->CastSpell(westOrb, SPELL_TWILIGHT_CUTTER, false);
-                        }
+                        _events.ScheduleEvent(EVENT_SHADOW_PULSARS_SHOOT, 2000);
                         break;
-                    }
                     case ACTION_ROTATE:
                         _events.ScheduleEvent(EVENT_TRACK_ROTATION, 500);
 
