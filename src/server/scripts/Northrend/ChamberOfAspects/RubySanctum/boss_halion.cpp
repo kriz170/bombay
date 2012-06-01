@@ -1308,8 +1308,7 @@ class npc_orb_carrier : public CreatureScript
                 switch (action)
                 {
                     case ACTION_SHOOT:
-                        if (Unit* northOrb = me->GetVehicleKit()->GetPassenger(SEAT_NORTH))
-                            northOrb->ToCreature()->AI()->Talk(EMOTE_WARN_LASER);
+                        Talk(EMOTE_WARN_LASER);
                         _events.ScheduleEvent(EVENT_SHADOW_PULSARS_SHOOT, 2000);
                         break;
                     case ACTION_ROTATE:
