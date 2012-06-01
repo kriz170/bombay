@@ -304,6 +304,7 @@ class boss_halion : public CreatureScript
 
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                 me->RemoveAurasDueToSpell(SPELL_TWILIGHT_PHASING);
+                me->SetReactState(REACT_AGGRESSIVE);
 
                 if (GameObject* go = me->FindNearestGameObject(GO_HALION_PORTAL_1,200.0f))
                     go->RemoveFromWorld();
