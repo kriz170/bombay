@@ -1230,6 +1230,7 @@ class npc_orb_carrier : public CreatureScript
                     switch (eventId)
                     {
                        case EVENT_TRACK_ROTATION:
+                       {
                             me->CastSpell((Unit*)NULL, SPELL_TRACK_ROTATION, false);
                             _events.ScheduleEvent(EVENT_TRACK_ROTATION, 500);
 
@@ -1264,7 +1265,9 @@ class npc_orb_carrier : public CreatureScript
                                 westOrb->Relocate(x,y);
                             }
                             break;
+                        }
                         case EVENT_SHADOW_PULSARS_SHOOT:
+                        {
                             Vehicle* vehicle = me->GetVehicleKit();
                             Unit* southOrb = vehicle->GetPassenger(SEAT_SOUTH);
                             Unit* northOrb = vehicle->GetPassenger(SEAT_NORTH);
@@ -1293,6 +1296,7 @@ class npc_orb_carrier : public CreatureScript
                                 eastOrb->CastSpell(westOrb, SPELL_TWILIGHT_CUTTER, false);
                             }
                             break;
+                        }
                         default:
                             break;
                     }
