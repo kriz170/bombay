@@ -1529,129 +1529,104 @@ class spell_halion_meteor_strike_marker : public SpellScriptLoader
         }
 };
 
-class spell_halion_fiery_combustion : public SpellScriptLoader
+class spell_halion_combustion_consumption : public SpellScriptLoader
 {
     public:
-        spell_halion_fiery_combustion() : SpellScriptLoader("spell_halion_fiery_combustion") { }
+        spell_halion_combustion_consumption(char const* scriptName, uint32 spell) : SpellScriptLoader(scriptName), _spellID(spell) { }
 
-        class spell_halion_fiery_combustion_AuraScript : public AuraScript
+        class spell_halion_combustion_consumption_AuraScript : public AuraScript
         {
-            PrepareAuraScript(spell_halion_fiery_combustion_AuraScript);
+            PrepareAuraScript(spell_halion_combustion_consumption_AuraScript);
+
+        public:
+            spell_halion_combustion_consumption_AuraScript(uint32 spellID) : AuraScript(), _spellID(spellID) { }
 
             bool Validate(SpellEntry const* /*spell*/)
             {
-                if (!sSpellMgr->GetSpellInfo(SPELL_MARK_OF_COMBUSTION))
+                if (!sSpellMgr->GetSpellInfo(_spellID))
                     return false;
                 return true;
             }
 
             void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
             {
-                if (GetTarget()->HasAura(SPELL_MARK_OF_COMBUSTION))
-                    GetTarget()->RemoveAurasDueToSpell(SPELL_MARK_OF_COMBUSTION, 0, 0, AURA_REMOVE_BY_EXPIRE);
+                if (GetTargetApplication()->GetRemoveMode() == AURA_REMOVE_BY_DEATH)
+                    return;
+
+                if (GetTarget()->HasAura(_spellID))
+                    GetTarget()->RemoveAurasDueToSpell(_spellID, 0, 0, AURA_REMOVE_BY_EXPIRE);
             }
 
             void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
             {
-                GetTarget()->CastSpell(GetTarget(), SPELL_MARK_OF_COMBUSTION, true);
+                GetTarget()->CastSpell(GetTarget(), _spellID, true);
             }
 
             void AddMarkStack(AuraEffect const* /*aurEff*/)
             {
-                GetTarget()->CastSpell(GetTarget(), SPELL_MARK_OF_COMBUSTION, true);
+                GetTarget()->CastSpell(GetTarget(), _spellID, true);
             }
 
             void Register()
             {
-                OnEffectPeriodic += AuraEffectPeriodicFn(spell_halion_fiery_combustion_AuraScript::AddMarkStack, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE);
-                AfterEffectApply += AuraEffectApplyFn(spell_halion_fiery_combustion_AuraScript::OnApply, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE, AURA_EFFECT_HANDLE_REAL);
-                AfterEffectRemove += AuraEffectRemoveFn(spell_halion_fiery_combustion_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE, AURA_EFFECT_HANDLE_REAL);
+                OnEffectPeriodic += AuraEffectPeriodicFn(spell_halion_combustion_consumption_AuraScript::AddMarkStack, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE);
+                AfterEffectApply += AuraEffectApplyFn(spell_halion_combustion_consumption_AuraScript::OnApply, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE, AURA_EFFECT_HANDLE_REAL);
+                AfterEffectRemove += AuraEffectRemoveFn(spell_halion_combustion_consumption_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE, AURA_EFFECT_HANDLE_REAL);
             }
+
+            uint32 _spellID;
         };
 
         AuraScript* GetAuraScript() const
         {
-            return new spell_halion_fiery_combustion_AuraScript();
+            return new spell_halion_combustion_consumption_AuraScript(_spellID);
         }
+
+    private:
+        uint32 _spellID;
 };
 
-class spell_halion_soul_consumption : public SpellScriptLoader
+class spell_halion_marks : public SpellScriptLoader
 {
     public:
-        spell_halion_soul_consumption() : SpellScriptLoader("spell_halion_soul_consumption") { }
+        spell_halion_marks(char const* scriptName, uint32 summonSpell) : SpellScriptLoader(scriptName), _summonSpell(summonSpell) { }
 
-        class spell_halion_soul_consumption_AuraScript : public AuraScript
+        class spell_halion_marks_AuraScript : public AuraScript
         {
-            PrepareAuraScript(spell_halion_soul_consumption_AuraScript);
+            PrepareAuraScript(spell_halion_marks_AuraScript);
+
+        public:
+            spell_halion_marks_AuraScript(uint32 summonSpell) : AuraScript(), _summonSpell(summonSpell) { }
 
             bool Validate(SpellEntry const* /*spell*/)
             {
-                if (!sSpellMgr->GetSpellInfo(SPELL_MARK_OF_CONSUMPTION))
+                if (!sSpellMgr->GetSpellInfo(_summonSpell))
                     return false;
                 return true;
             }
 
-            void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+            //! We were purged. Force removed stacks to zero
+            //! and trigger the appropriated remove handler.
+            //! See spell_halion_combustion_consumption_AuraScript::OnRemove
+            void BeforeDispel(DispelInfo* dispelData)
             {
-                if (GetTarget()->HasAura(SPELL_MARK_OF_CONSUMPTION))
-                    GetTarget()->RemoveAurasDueToSpell(SPELL_MARK_OF_CONSUMPTION, 0, 0, AURA_REMOVE_BY_EXPIRE);
-            }
+                Unit* dispelledUnit = GetUnitOwner();
+                // Prevent any stack from being removed at this point.
+                dispelData->SetRemovedCharges(0);
 
-            void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-            {
-                GetTarget()->CastSpell(GetTarget(), SPELL_MARK_OF_CONSUMPTION, true);
-            }
+                if (!dispelledUnit) // Should never be false. Just checking.
+                    return;
 
-            void AddMarkStack(AuraEffect const* /*aurEff*/)
-            {
-                GetTarget()->CastSpell(GetTarget(), SPELL_MARK_OF_CONSUMPTION, true);
-            }
-
-            void Register()
-            {
-                OnEffectPeriodic += AuraEffectPeriodicFn(spell_halion_soul_consumption_AuraScript::AddMarkStack, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE);
-                AfterEffectApply += AuraEffectApplyFn(spell_halion_soul_consumption_AuraScript::OnApply, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE, AURA_EFFECT_HANDLE_REAL);
-                AfterEffectRemove += AuraEffectRemoveFn(spell_halion_soul_consumption_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE, AURA_EFFECT_HANDLE_REAL);
-            }
-        };
-
-        AuraScript* GetAuraScript() const
-        {
-            return new spell_halion_soul_consumption_AuraScript();
-        }
-};
-
-class spell_halion_mark_of_combustion : public SpellScriptLoader
-{
-    public:
-        spell_halion_mark_of_combustion() : SpellScriptLoader("spell_halion_mark_of_combustion") { }
-
-        class spell_halion_mark_of_combustion_AuraScript : public AuraScript
-        {
-            PrepareAuraScript(spell_halion_mark_of_combustion_AuraScript);
-
-            bool Validate(SpellEntry const* /*spell*/)
-            {
-                if (!sSpellMgr->GetSpellInfo(SPELL_FIERY_COMBUSTION_SUMMON))
-                    return false;
-                if (!sSpellMgr->GetSpellInfo(SPELL_FIERY_COMBUSTION_EXPLOSION))
-                    return false;
-                return true;
+                if (dispelledUnit->HasAura(SPELL_FIERY_COMBUSTION))
+                    dispelledUnit->RemoveAurasDueToSpell(SPELL_FIERY_COMBUSTION, 0, 0, AURA_REMOVE_BY_EXPIRE);
+                else if (dispelledUnit->HasAura(SPELL_SOUL_CONSUMPTION))
+                    dispelledUnit->RemoveAurasDueToSpell(SPELL_SOUL_CONSUMPTION, 0, 0, AURA_REMOVE_BY_EXPIRE);
             }
 
             void OnRemove(AuraEffect const* aurEff, AuraEffectHandleModes /*mode*/)
             {
                 Unit* target = GetTarget();
 
-                if (GetTargetApplication()->GetRemoveMode() == AURA_REMOVE_BY_ENEMY_SPELL) // Purged
-                    target->RemoveAurasDueToSpell(SPELL_FIERY_COMBUSTION, 0, 0, AURA_REMOVE_BY_ENEMY_SPELL);
-
-                //! Don't process if the aura is not considered expired.
-                //! The hook will still be called upon dispelling Soul Consumption because
-                //! it causes Mark of Combustion to be considered removed by expire.
-                //! It will also be called upon purging the mark, but purging it will
-                //! trigger Fiery Conbustion's dispel.
-                //! Note: This is really fubarish, we need something simpler.
                 if (GetTargetApplication()->GetRemoveMode() != AURA_REMOVE_BY_EXPIRE)
                     return;
 
@@ -1661,82 +1636,28 @@ class spell_halion_mark_of_combustion : public SpellScriptLoader
 
                 uint8 stacks = aurEff->GetBase()->GetStackAmount();
 
-                // Keep track of stacks when dispelling, there's only one effect in the spell.
                 CustomSpellValues values;
                 values.AddSpellMod(SPELLVALUE_BASE_POINT1, stacks);
 
-                target->CastCustomSpell(SPELL_FIERY_COMBUSTION_SUMMON, values, target, true, NULL, NULL, GetCasterGUID());
+                target->CastCustomSpell(_summonSpell, values, target, true, NULL, NULL, GetCasterGUID());
             }
 
             void Register()
             {
-                AfterEffectRemove += AuraEffectRemoveFn(spell_halion_mark_of_combustion_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+                OnDispel += AuraDispelFn(spell_halion_marks_AuraScript::BeforeDispel);
+                AfterEffectRemove += AuraEffectRemoveFn(spell_halion_marks_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
             }
+
+            uint32 _summonSpell;
         };
 
         AuraScript* GetAuraScript() const
         {
-            return new spell_halion_mark_of_combustion_AuraScript();
+            return new spell_halion_marks_AuraScript(_summonSpell);
         }
-};
 
-class spell_halion_mark_of_consumption : public SpellScriptLoader
-{
-    public:
-        spell_halion_mark_of_consumption() : SpellScriptLoader("spell_halion_mark_of_consumption") { }
-
-        class spell_halion_mark_of_consumption_AuraScript : public AuraScript
-        {
-            PrepareAuraScript(spell_halion_mark_of_consumption_AuraScript);
-
-            bool Validate(SpellInfo const* /*spell*/)
-            {
-                if (!sSpellMgr->GetSpellInfo(SPELL_SOUL_CONSUMPTION_SUMMON))
-                    return false;
-                if (!sSpellMgr->GetSpellInfo(SPELL_SOUL_CONSUMPTION_EXPLOSION))
-                    return false;
-                return true;
-            }
-
-            void OnRemove(AuraEffect const* aurEff, AuraEffectHandleModes /*mode*/)
-            {
-                Unit* target = GetTarget();
-
-                if (GetTargetApplication()->GetRemoveMode() == AURA_REMOVE_BY_ENEMY_SPELL) // Purged
-                    target->RemoveAurasDueToSpell(SPELL_SOUL_CONSUMPTION, 0, 0, AURA_REMOVE_BY_ENEMY_SPELL);
-
-                //! Don't process if the aura is not considered expired.
-                //! The hook will still be called upon dispelling Soul Consumption because
-                //! it causes Mark of Consumption to be considered removed by expire.
-                //! It will also be called upon purging the mark, but purging it will
-                //! trigger Soul Consumption's dispel.
-                //! Note: This is really fubarish, we need something simpler.
-                if (GetTargetApplication()->GetRemoveMode() != AURA_REMOVE_BY_EXPIRE)
-                    return;
-
-                InstanceScript* instance = target->GetInstanceScript();
-                if (!instance)
-                    return;
-
-                uint8 stacks = aurEff->GetBase()->GetStackAmount();
-
-                // Keep track of stacks when dispelling, there's only one effect in the spell.
-                CustomSpellValues values;
-                values.AddSpellMod(SPELLVALUE_BASE_POINT1, stacks);
-
-                target->CastCustomSpell(SPELL_SOUL_CONSUMPTION_SUMMON, values, target, true, NULL, NULL, GetCasterGUID());
-            }
-
-            void Register()
-            {
-                AfterEffectRemove += AuraEffectRemoveFn(spell_halion_mark_of_consumption_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-            }
-        };
-
-        AuraScript* GetAuraScript() const
-        {
-            return new spell_halion_mark_of_consumption_AuraScript();
-        }
+    private:
+        uint32 _summonSpell;
 };
 
 class spell_halion_combustion_consumption_summon : public SpellScriptLoader
@@ -2048,10 +1969,10 @@ void AddSC_boss_halion()
     new npc_living_ember();
     new spell_halion_meteor_strike_marker();
     new spell_halion_combustion_consumption_summon();
-    new spell_halion_mark_of_combustion();
-    new spell_halion_mark_of_consumption();
-    new spell_halion_fiery_combustion();
-    new spell_halion_soul_consumption();
+    new spell_halion_combustion_consumption("spell_halion_soul_consumption", SPELL_MARK_OF_CONSUMPTION);
+    new spell_halion_combustion_consumption("spell_halion_fiery_combustion", SPELL_MARK_OF_COMBUSTION);
+    new spell_halion_marks("spell_halion_mark_of_combustion", SPELL_FIERY_COMBUSTION_SUMMON);
+    new spell_halion_marks("spell_halion_mark_of_consumption", SPELL_SOUL_CONSUMPTION_SUMMON);
     new spell_halion_leave_twilight_realm();
     new spell_halion_enter_twilight_realm();
     new spell_halion_twilight_phasing();
