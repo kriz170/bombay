@@ -250,7 +250,6 @@ class boss_halion : public CreatureScript
 
             void Reset()
             {
-                instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
                 _Reset();
             }
 
@@ -487,7 +486,7 @@ class boss_twilight_halion : public CreatureScript
             void Reset()
             {
                 if (Creature* halion = ObjectAccessor::GetCreature(*me, _instance->GetData64(DATA_HALION)))
-                    halion->AI()->Reset();
+                    halion->AI()->EnterEvadeMode();
                 if(GameObject* go = ObjectAccessor::GetGameObject(*me,_portal1))
                     go->RemoveFromWorld();
                 if(GameObject* go = ObjectAccessor::GetGameObject(*me,_portal2))
@@ -529,7 +528,8 @@ class boss_twilight_halion : public CreatureScript
             void KilledUnit(Unit* victim)
             {
                 if (victim->GetTypeId() == TYPEID_PLAYER)
-                    Talk(SAY_KILL);
+                    if (Creature* halion = ObjectAccessor::GetCreature(*me, _instance->GetData64(DATA_HALION)))
+                        halion->AI()->Talk(SAY_KILL);
 
                 // Victims should not be in the Twilight Realm
                 me->CastSpell(victim, SPELL_LEAVE_TWILIGHT_REALM, true);
@@ -560,8 +560,6 @@ class boss_twilight_halion : public CreatureScript
                 if (Creature* controller = ObjectAccessor::GetCreature(*me, _instance->GetData64(DATA_HALION_CONTROLLER)))
                     controller->CastSpell(controller, SPELL_CLEAR_DEBUFFS);
                 ScriptedAI::JustReachedHome();
-                if (Creature* halion = ObjectAccessor::GetCreature(*me, _instance->GetData64(DATA_HALION)))
-                    halion->AI()->Reset();
             }
 
             void DamageTaken(Unit* attacker, uint32& damage)
