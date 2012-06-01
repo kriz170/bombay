@@ -488,7 +488,11 @@ class boss_twilight_halion : public CreatureScript
             void Reset()
             {
                 if (Creature* halion = ObjectAccessor::GetCreature(*me, _instance->GetData64(DATA_HALION)))
+                {
+                    halion->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                    halion->SetHealth(halion->GetMaxHealth());
                     halion->AI()->EnterEvadeMode();
+                }
                 if(GameObject* go = ObjectAccessor::GetGameObject(*me,_portal1))
                     go->RemoveFromWorld();
                 if(GameObject* go = ObjectAccessor::GetGameObject(*me,_portal2))
