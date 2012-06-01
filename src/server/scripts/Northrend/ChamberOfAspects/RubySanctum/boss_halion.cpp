@@ -251,7 +251,6 @@ class boss_halion : public CreatureScript
             void Reset()
             {
                 instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                 _Reset();
             }
 
@@ -303,6 +302,7 @@ class boss_halion : public CreatureScript
             {
                 instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
 
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                 me->RemoveAurasDueToSpell(SPELL_TWILIGHT_PHASING);
 
                 if (GameObject* go = me->FindNearestGameObject(GO_HALION_PORTAL_1,200.0f))
