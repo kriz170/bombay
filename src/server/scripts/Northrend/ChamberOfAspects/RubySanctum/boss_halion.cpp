@@ -252,6 +252,7 @@ class boss_halion : public CreatureScript
             {
                 _Reset();
                 me->SetReactState(REACT_DEFENSIVE);
+                me->SetHealth(me->GetMaxHealth());
             }
 
             void EnterCombat(Unit* who)
