@@ -714,8 +714,6 @@ class npc_volatile_ooze : public CreatureScript
                 _newTargetSelectTimer = 0;
                 me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK, true);
                 me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK_DEST, true);
-                me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, true);
-                me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_ATTACK_ME, true);
             }
 
             void SpellHitTarget(Unit* /*target*/, SpellInfo const* spell)
@@ -733,7 +731,11 @@ class npc_volatile_ooze : public CreatureScript
             void UpdateAI(uint32 const diff)
             {
                 if (!UpdateVictim() && !_newTargetSelectTimer)
+                {
+                    if (!me->HasUnitState(UNIT_STATE_CASTING))
+                        _newTargetSelectTimer = 1000;
                     return;
+                }
 
                 if (!_newTargetSelectTimer)
                     return;
@@ -772,8 +774,6 @@ class npc_gas_cloud : public CreatureScript
                 _newTargetSelectTimer = 0;
                 me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK, true);
                 me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK_DEST, true);
-                me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, true);
-                me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_ATTACK_ME, true);
             }
 
             void SpellHitTarget(Unit* /*target*/, SpellInfo const* spell)
@@ -791,7 +791,11 @@ class npc_gas_cloud : public CreatureScript
             void UpdateAI(uint32 const diff)
             {
                 if (!UpdateVictim() && !_newTargetSelectTimer)
+                {
+                    if (!me->HasUnitState(UNIT_STATE_CASTING))
+                        _newTargetSelectTimer = 1000;
                     return;
+                }
 
                 DoMeleeAttackIfReady();
 
