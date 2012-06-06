@@ -7627,6 +7627,8 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
                     if ((*itr)->GetEntry() == 27893)
                     {
                         pPet = *itr;
+                        if (getVictim())
+                            pPet->SetInCombatWith(getVictim());
                         break;
                     }
 
@@ -7635,6 +7637,10 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
                     uint32 procDmg = damage / 2;
                     pPet->SendSpellNonMeleeDamageLog(pPet->getVictim(), procSpell->Id, procDmg, procSpell->GetSchoolMask(), 0, 0, false, 0, false);
                     pPet->DealDamage(pPet->getVictim(), procDmg, NULL, SPELL_DIRECT_DAMAGE, procSpell->GetSchoolMask(), procSpell, true);
+                    if (procSpell->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT && (procSpell->SpellFamilyFlags[EFFECT_0] & 0x1))        // DRW cast disease if spell is Plague Strike or Icy Touch
+                        pPet->CastSpell(pPet->getVictim(),55078,true);
+                    else if (procSpell->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT && (procSpell->SpellFamilyFlags[EFFECT_0] & 0x2))
+                        pPet->CastSpell(pPet->getVictim(),55095,true);
                     break;
                 }
                 else
