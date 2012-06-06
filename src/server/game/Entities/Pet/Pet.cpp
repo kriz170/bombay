@@ -1056,6 +1056,14 @@ bool Guardian::InitStatsForLevel(uint8 petlevel)
                     SetBonusDamage(int32(m_owner->GetTotalAttackPowerValue(BASE_ATTACK) * 0.006f));
                     SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, float(petlevel - 30 - (petlevel / 4)));
                     SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, float(petlevel - 30 + (petlevel / 4)));
+                    break;
+                }
+                case 27893: // Temp fix Dancing Rune Weapon melee damage until find a way to copy owner melee damage
+                {
+                    SetBonusDamage(int32(m_owner->GetTotalAttackPowerValue(BASE_ATTACK) / 2));
+                    SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, m_owner->GetWeaponDamageRange(BASE_ATTACK, MINDAMAGE) / 2);
+                    SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, m_owner->GetWeaponDamageRange(BASE_ATTACK, MAXDAMAGE) / 2);
+                    break;
                 }
             }
             break;
