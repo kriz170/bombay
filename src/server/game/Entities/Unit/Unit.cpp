@@ -7643,6 +7643,18 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
                         pPet->CastSpell(pPet->getVictim(),55095,true);
                     break;
                 }
+                else if (pPet && pPet->getVictim() && damage && !procSpell)     // copy 50% melee damage
+                {
+                        CalcDamageInfo damageInfo;
+                        CalculateMeleeDamage(pPet->getVictim(), 0, &damageInfo, BASE_ATTACK);
+                        damageInfo.attacker = pPet;
+                        damageInfo.damage = damageInfo.damage / 2;
+                        // Send log damage message to client
+                        pPet->DealDamageMods(pPet->getVictim(),damageInfo.damage,&damageInfo.absorb);
+                        pPet->SendAttackStateUpdate(&damageInfo);
+                        pPet->ProcDamageAndSpell(damageInfo.target, damageInfo.procAttacker, damageInfo.procVictim, damageInfo.procEx, damageInfo.damage, damageInfo.attackType);
+                        pPet->DealMeleeDamage(&damageInfo,true);
+                }
                 else
                     return false;
             }
