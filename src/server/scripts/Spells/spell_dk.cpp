@@ -384,7 +384,7 @@ class spell_dk_scourge_strike : public SpellScriptLoader
 
             bool Load()
             {
-                multiply = 1;
+                multiply = 0;
                 return true;
             }
 
