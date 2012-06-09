@@ -384,7 +384,7 @@ class spell_dk_scourge_strike : public SpellScriptLoader
 
             bool Load()
             {
-                multiply = 0;
+                multiplier = 0;
                 return true;
             }
 
@@ -399,7 +399,7 @@ class spell_dk_scourge_strike : public SpellScriptLoader
             {
                 Unit* caster = GetCaster();
                 if (Unit* unitTarget = GetHitUnit())
-                    multiply = GetEffectValue() * unitTarget->GetDiseasesByCaster(caster->GetGUID());
+                    multiplier = GetEffectValue() * unitTarget->GetDiseasesByCaster(caster->GetGUID());
             }
 
             void HandleAfterHit()
@@ -407,7 +407,7 @@ class spell_dk_scourge_strike : public SpellScriptLoader
                 Unit* caster = GetCaster();
                 if (Unit* unitTarget = GetHitUnit())
                 {
-                    int32 bp = CalculatePctN(GetHitDamage(), multiply);
+                    int32 bp = CalculatePctN(GetHitDamage(), multiplier);
                     caster->CastCustomSpell(unitTarget, DK_SPELL_SCOURGE_STRIKE_TRIGGERED, &bp, NULL, NULL, true);
                 }
             }
@@ -418,7 +418,7 @@ class spell_dk_scourge_strike : public SpellScriptLoader
                 AfterHit += SpellHitFn(spell_dk_scourge_strike_SpellScript::HandleAfterHit);
             }
 
-            int32 multiply;
+            int32 multiplier;
         };
 
         SpellScript* GetSpellScript() const
