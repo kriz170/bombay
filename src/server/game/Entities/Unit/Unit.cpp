@@ -11181,8 +11181,8 @@ uint32 Unit::SpellHealingBonusDone(Unit* victim, SpellInfo const* spellProto, ui
         if (Unit* owner = GetOwner())
             return owner->SpellHealingBonusDone(victim, spellProto, healamount, damagetype, stack);
 
-    // No bonus healing for potion spells and for Empowered Renew and Glyph of HL (hack fix)
-    if (spellProto->SpellFamilyName == SPELLFAMILY_POTION || spellProto->Id == 63544 || spellProto->Id == 54968)
+    // No bonus healing for potion spells and Glyph of HL (hack fix)
+    if (spellProto->SpellFamilyName == SPELLFAMILY_POTION || spellProto->Id == 54968)
         return healamount;
 
     float DoneTotalMod = 1.0f;
