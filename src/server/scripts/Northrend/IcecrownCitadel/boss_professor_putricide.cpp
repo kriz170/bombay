@@ -298,6 +298,7 @@ class boss_professor_putricide : public CreatureScript
                         summon->AI()->DoZoneInCombat();
                         summon->CastSpell(summon, SPELL_GASEOUS_BLOAT_PROC, true);
                         summon->CastCustomSpell(SPELL_GASEOUS_BLOAT, SPELLVALUE_AURA_STACK, 10, summon, false);
+                        summon->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK, true);
                         return;
                     case NPC_VOLATILE_OOZE:
                         // no possible aura seen in sniff adding the aurastate
@@ -306,6 +307,7 @@ class boss_professor_putricide : public CreatureScript
                         summon->AI()->DoZoneInCombat();
                         summon->CastSpell(summon, SPELL_OOZE_ERUPTION_SEARCH_PERIODIC, true);
                         summon->CastSpell(summon, SPELL_VOLATILE_OOZE_ADHESIVE, false);
+                        summon->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK, true);
                         return;
                     case NPC_CHOKING_GAS_BOMB:
                         summon->CastSpell(summon, SPELL_CHOKING_GAS_BOMB_PERIODIC, true);
@@ -712,7 +714,6 @@ class npc_volatile_ooze : public CreatureScript
             npc_putricide_oozeAI(Creature* creature) : ScriptedAI(creature)
             {
                 _newTargetSelectTimer = 0;
-                me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK, true);
                 me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK_DEST, true);
             }
 
@@ -772,7 +773,6 @@ class npc_gas_cloud : public CreatureScript
             npc_gas_cloudAI(Creature* creature) : ScriptedAI(creature)
             {
                 _newTargetSelectTimer = 0;
-                me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK, true);
                 me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK_DEST, true);
             }
 
