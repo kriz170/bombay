@@ -1749,7 +1749,7 @@ class spell_halion_leave_twilight_realm : public SpellScriptLoader
                     player->RemoveAurasDueToSpell(SPELL_SOUL_CONSUMPTION, 0, 0, AURA_REMOVE_BY_ENEMY_SPELL);
             }
 
-            void FilterTargets(std::list<Unit*>& unitList)
+            void FilterTargets(std::list<WorldObject*>& unitList)
             {
                 if (!unitList.empty())
                     unitList.remove_if(Trinity::UnitAuraCheck(false, SPELL_TWILIGHT_REALM));
@@ -1758,7 +1758,7 @@ class spell_halion_leave_twilight_realm : public SpellScriptLoader
             void Register()
             {
                 BeforeHit += SpellHitFn(spell_halion_leave_twilight_realm_SpellScript::HandleBeforeHit);
-                OnUnitTargetSelect += SpellUnitTargetFn(spell_halion_leave_twilight_realm_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_TARGET_ANY);
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_halion_leave_twilight_realm_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_TARGET_ANY);
             }
         };
 
@@ -1869,7 +1869,7 @@ class TwilightCutterSelector
     public:
         TwilightCutterSelector(Unit* caster, Unit* cutterCaster) : _caster(caster), _cutterCaster(cutterCaster) {}
 
-        bool operator()(Unit* unit)
+        bool operator()(WorldObject* unit)
         {
             return !unit->IsInBetween(_caster, _cutterCaster, 4.0f);
         }
@@ -1888,7 +1888,7 @@ class spell_halion_twilight_cutter : public SpellScriptLoader
         {
             PrepareSpellScript(spell_halion_twilight_cutter_SpellScript);
 
-            void RemoveNotBetween(std::list<Unit*>& unitList)
+            void RemoveNotBetween(std::list<WorldObject*>& unitList)
             {
                 if (unitList.empty())
                     return;
@@ -1909,7 +1909,7 @@ class spell_halion_twilight_cutter : public SpellScriptLoader
 
             void Register()
             {
-                OnUnitTargetSelect += SpellUnitTargetFn(spell_halion_twilight_cutter_SpellScript::RemoveNotBetween, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_halion_twilight_cutter_SpellScript::RemoveNotBetween, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
             }
         };
 
