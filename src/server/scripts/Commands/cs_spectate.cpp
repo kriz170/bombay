@@ -85,12 +85,7 @@
                  handler->SetSentErrorMessage(true);
                  return false;
              }
-             if (!target->GetSocial()->HasFriend(_player->GetGUIDLow()))
-             {
-                 handler->PSendSysMessage(LANG_SPEC_FORBID, chrNameLink.c_str());
-                 handler->SetSentErrorMessage(true);
-                 return false;
-             }
+             
              if (_player->isInFlight())
              {
                  handler->SendSysMessage(LANG_YOU_IN_FLIGHT);
