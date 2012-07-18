@@ -80,7 +80,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recv_data)
     
     if (_player->IsSpectator())
     {
-        SendNotification(LANG_SPEC_CAN_NOT_CHAT);
+        SendNotification(LANG_SPEC_CAN_NOT_CHAT_AND_EMOTE);
         return;
     }
 

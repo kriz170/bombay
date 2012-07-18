@@ -1072,7 +1072,7 @@ enum TrinityStrings
     LANG_SPEC_ON_ARENA_OR_BG            = 11612,
     LANG_SPEC_ALREADY_SPECTATOR         = 11613,
     LANG_SPEC_DISABLED                  = 11614,
-    LANG_SPEC_CAN_NOT_CHAT              = 11615,
+    LANG_SPEC_CAN_NOT_CHAT_AND_EMOTE    = 11615,
 
     // NOT RESERVED IDS                   12000-1999999999
     // `db_script_string` table index     2000000000-2000009999 (MIN_DB_SCRIPT_STRING_ID-MAX_DB_SCRIPT_STRING_ID)
