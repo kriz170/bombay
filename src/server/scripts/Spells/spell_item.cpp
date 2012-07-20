@@ -2008,71 +2008,6 @@ public:
     }
 };
 
-enum ChimeOfCleansing
-{
-    AREA_RIVER_S_HEART      = 4290,
-    AREA_BITTERTIDE_LAKE    = 4385,
-    AREA_WINTERGRASP_RIVER  = 4388,
-
-    NPC_HA_KHALAN           = 29018,
-    NPC_ATHA                = 29033,
-    NPC_KOOSU               = 29034,
-};
-
-class spell_item_chime_of_cleansing : public SpellScriptLoader
-{
-    public:
-        spell_item_chime_of_cleansing() : SpellScriptLoader("spell_item_chime_of_cleansing") { }
-
-        class spell_item_chime_of_cleansing_SpellScript : public SpellScript
-        {
-            PrepareSpellScript(spell_item_chime_of_cleansing_SpellScript);
-
-            bool Load()
-            {
-               return GetCaster()->GetTypeId() == TYPEID_PLAYER;
-            }
-
-            void HandleScript(SpellEffIndex /* effIndex */)
-            {
-                Unit* player = GetCaster();
-                switch (player->GetAreaId())
-                {
-                    case AREA_BITTERTIDE_LAKE:
-                        player->SummonCreature(NPC_ATHA,*player,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,30000);
-                        break;
-                    case AREA_RIVER_S_HEART:
-                        player->SummonCreature(NPC_HA_KHALAN,*player,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,30000);
-                        break;
-                    case AREA_WINTERGRASP_RIVER:
-                        player->SummonCreature(NPC_KOOSU,*player,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,30000);
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            SpellCastResult CheckRequirement()
-            {
-                Player* player = GetCaster()->ToPlayer();
-                if (player->GetAreaId() == AREA_RIVER_S_HEART || player->GetAreaId() == AREA_BITTERTIDE_LAKE || player->GetAreaId() == AREA_WINTERGRASP_RIVER)
-                    return SPELL_CAST_OK;
-                return SPELL_FAILED_NOT_HERE;
-            }
-
-            void Register()
-            {
-                OnEffectHitTarget += SpellEffectFn(spell_item_chime_of_cleansing_SpellScript::HandleScript, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
-                OnCheckCast += SpellCheckCastFn(spell_item_chime_of_cleansing_SpellScript::CheckRequirement);
-            }
-        };
-
-        SpellScript* GetSpellScript() const
-        {
-            return new spell_item_chime_of_cleansing_SpellScript();
-        }
-};
-
 enum WickedStrongFetish
 {
     AREA_BLADESPIRE_HOLD            = 3773,
@@ -2346,7 +2281,6 @@ void AddSC_item_spell_scripts()
     new spell_item_chicken_cover();
     new spell_item_muisek_vessel();
     new spell_item_greatmothers_soulcatcher();
-    new spell_item_chime_of_cleansing();
     new spell_item_wicked_strong_fetish();
     new spell_item_skyguard_bombs();
     new spell_item_drakuru_s_elixir();

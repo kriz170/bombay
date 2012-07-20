@@ -1354,9 +1354,18 @@ class spell_q12735_song_of_cleansing : public SpellScriptLoader
                 }
             }
 
+            SpellCastResult CheckRequirement()
+            {
+                Unit* caster = GetCaster();
+                if (caster->GetAreaId() == AREA_RIVERSHEART || caster->GetAreaId() == AREA_BITTERTIDELAKE || caster->GetAreaId() == AREA_WINTERGRASPRIVER)
+                    return SPELL_CAST_OK;
+                return SPELL_FAILED_NOT_HERE;
+            }
+
             void Register()
             {
                 OnEffectHitTarget += SpellEffectFn(spell_q12735_song_of_cleansing_SpellScript::HandleScript, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
+                OnCheckCast += SpellCheckCastFn(spell_q12735_song_of_cleansing_SpellScript::CheckRequirement);       
             }
         };
 

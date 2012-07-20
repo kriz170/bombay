@@ -314,11 +314,6 @@ DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=17 AND `SourceEntry`=@E
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
 (17, 0, @EXPLOSIVE, 0, 0, 36, 1, 0, 0, 0, 1, 0, '', 'Item Venture Co. Explosive can only target dead unit');
 
--- A Cleansing Song
-DELETE FROM `spell_script_names` WHERE `ScriptName`='spell_item_chime_of_cleansing';
-INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES 
-(52941, 'spell_item_chime_of_cleansing');
-
 -- Rejek: First Blood
 SET @SPELL := 52992;
 SET @WASP := 28086;
