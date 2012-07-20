@@ -544,7 +544,7 @@ uint32 ArenaTeam::GetTypeBySlot(uint8 slot)
 			break;
 	}
 	sLog->outError("FATAL: Unknown arena team slot %u for some arena team", slot);	
-	return 0xFFFFFFFF; 
+	return 0xFFFFFFFF;
 }
 
 

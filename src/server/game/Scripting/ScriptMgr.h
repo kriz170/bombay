@@ -720,8 +720,8 @@ class PlayerScript : public ScriptObject
         // Called in Spell::Cast.
         virtual void OnSpellCast(Player* /*player*/, Spell* /*spell*/, bool /*skipCheck*/) { }
 
-		// Called when a player remove from battle
-		virtual void OnPlayerRemoveFromBattleground(Player* /*player*/, Battleground* /*bg*/) { }
+        // Called when a player remove from battle
+        virtual void OnPlayerRemoveFromBattleground(Player* /*player*/, Battleground* /*bg*/) { }
 
         // Called when a player logs in.
         virtual void OnLogin(Player* /*player*/) { }

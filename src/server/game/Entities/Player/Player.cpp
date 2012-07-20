@@ -21950,8 +21950,8 @@ bool Player::IsVisibleGloballyFor(Player* u) const
     if (!AccountMgr::IsPlayerAccount(u->GetSession()->GetSecurity()))
         return GetSession()->GetSecurity() <= u->GetSession()->GetSecurity();
 
-	if (!isGMVisible())
-		return false;
+    if (!isGMVisible())
+	    return false;
 
     // non faction visibility non-breakable for non-GMs
     if (!IsVisible())
