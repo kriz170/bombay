@@ -9,6 +9,3 @@ INSERT INTO `trinity_string` (`entry`, `content_default`) VALUES
 
 DELETE FROM `command ` WHERE `name` = 'spectate player';
 INSERT INTO `command` VALUES ('spectate player', '0', 'Syntax: .spectate player $player\r\n\r\nMakes you a spectator of arena match with $player');
-
-
-

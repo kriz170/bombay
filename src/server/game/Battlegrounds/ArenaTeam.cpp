@@ -547,7 +547,6 @@ uint32 ArenaTeam::GetTypeBySlot(uint8 slot)
 	return 0xFFFFFFFF;
 }
 
-
 bool ArenaTeam::IsMember(uint64 guid) const
 {
     for (MemberList::const_iterator itr = Members.begin(); itr != Members.end(); ++itr)

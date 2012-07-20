@@ -924,14 +924,21 @@ void Battleground::EndBattleground(uint32 winner)
     Map::PlayerList const &PlList = m_Map->GetPlayers();
 
     if (!PlList.isEmpty())
+    {
         for (Map::PlayerList::const_iterator i = PlList.begin(); i != PlList.end(); ++i)
+        {
             if (Player* pPlayer = i->getSource())
+            {
                 if (pPlayer->IsSpectator())
+                {
                     {
                         pPlayer->SetSpectator(false);
                         pPlayer->TeleportTo(pPlayer->m_recallMap, pPlayer->m_recallX, pPlayer->m_recallY, pPlayer->m_recallZ, pPlayer->m_recallO);
                     }
-
+                }
+            }
+        }
+    }
 }
 
 uint32 Battleground::GetBonusHonorFromKill(uint32 kills) const
