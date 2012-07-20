@@ -1695,10 +1695,10 @@ bool WorldObject::canSeeOrDetect(WorldObject const* obj, bool ignoreStealth, boo
 
     if (obj->IsAlwaysVisibleFor(this) || CanAlwaysSee(obj))
         return true;
-
-    if (ToPlayer())
-    if (ToPlayer()->IsSpectator() && GetMap()->IsBattleArena() && ToPlayer()->HasAura(8326)) // Prevent exploits
-        return true;
+    
+    if (Player const* thisPlayer = ToPlayer())
+        if (thisPlayer->IsSpectator() && GetMap()->IsBattleArena() && thisPlayer->HasAura(8326) && !obj->m_serverSideVisibility.GetValue(SERVERSIDE_VISIBILITY_GM)) // Prevent exploits
+            return true;
 
     bool corpseCheck = false;
     bool corpseVisibility = false;
