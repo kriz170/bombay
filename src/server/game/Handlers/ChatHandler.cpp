@@ -530,7 +530,7 @@ namespace Trinity
 
 void WorldSession::HandleTextEmoteOpcode(WorldPacket & recv_data)
 {
-    if (!GetPlayer()->isAlive())
+    if (!GetPlayer()->isAlive() || GetPlayer()->IsSpectator())
         return;
 
     if (!GetPlayer()->CanSpeak())
