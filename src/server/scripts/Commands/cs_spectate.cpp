@@ -74,6 +74,12 @@ public:
             handler->SetSentErrorMessage(true);
             return false;
         }
+        if (_player->GetPet())
+        {
+            handler->SendSysMessage(LANG_SPEC_NO_PET);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
 
         if (target)
         {
