@@ -74,7 +74,7 @@ public:
             handler->SetSentErrorMessage(true);
             return false;
         }
-        if (_player->GetPet())
+        if (_player->GetPet() || _player->IsMounted())
         {
             handler->SendSysMessage(LANG_SPEC_NO_PET);
             handler->SetSentErrorMessage(true);
