@@ -169,9 +169,9 @@ enum eArgentValiant
 {
     SPELL_CHARGE                = 63010,
     SPELL_SHIELD_BREAKER        = 65147,
-    SPELL_KILL_CREDIT           = 63049,
     SPELL_DEFEND                = 62719,
     SPELL_THRUST                = 62544,
+    SPELL_KILL_CREDIT           = 63049,
 };
 
 enum eValiantText
