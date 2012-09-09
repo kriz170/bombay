@@ -1658,7 +1658,7 @@ class spell_halion_marks : public SpellScriptLoader
                 CustomSpellValues values;
                 values.AddSpellMod(SPELLVALUE_BASE_POINT1, stacks);
 
-                target->CastCustomSpell(_summonSpell, values, target, true, NULL, NULL, GetCasterGUID());
+                target->CastCustomSpell(_summonSpell, values, target, TRIGGERED_FULL_MASK, NULL, NULL, GetCasterGUID());
             }
 
             void Register()
