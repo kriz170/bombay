@@ -2070,69 +2070,6 @@ class spell_item_wicked_strong_fetish : public SpellScriptLoader
         }
 };
 
-enum SkyguardBombs
-{
-    AREA_FORGE_CAMP_TERROR  = 3784,
-    AREA_FORGE_CAMP_WRATH   = 3785,
-
-    GO_CANNONBALL           = 185861,
-    NPC_TARGET_BUNNY        = 23118,
-    NPC_DUMMY               = 23119,
-};
-
-class spell_item_skyguard_bombs : public SpellScriptLoader
-{
-    public:
-        spell_item_skyguard_bombs() : SpellScriptLoader("spell_item_skyguard_bombs") { }
-
-        class spell_item_skyguard_bombs_SpellScript : public SpellScript
-        {
-            PrepareSpellScript(spell_item_skyguard_bombs_SpellScript);
-
-            bool Load()
-            {
-               return GetCaster()->GetTypeId() == TYPEID_PLAYER;
-            }
-
-            void HandleDummy(SpellEffIndex /* effIndex */)
-            {
-                Player* player = GetCaster()->ToPlayer();
-                if (WorldLocation const* loc = GetExplTargetDest())
-                {
-                    if (Creature* dummy = player->SummonCreature(NPC_DUMMY,*loc,TEMPSUMMON_TIMED_DESPAWN,1000))
-                    {
-                        if(GameObject* cannonball = dummy->FindNearestGameObject(GO_CANNONBALL,5.0f))
-                        {
-                            cannonball->DestroyForPlayer(player);
-                            player->KilledMonsterCredit(NPC_TARGET_BUNNY,0);
-                        }
-                    }
-                }
-            }
-
-            SpellCastResult CheckRequirement()
-            {
-                Player* player = GetCaster()->ToPlayer();
-                if (player->GetAreaId() != AREA_FORGE_CAMP_TERROR && player->GetAreaId() != AREA_FORGE_CAMP_WRATH)
-                    return SPELL_FAILED_NOT_HERE;
-                if (!player->IsFlying())
-                    return SPELL_FAILED_NOT_ON_GROUND;
-                return SPELL_CAST_OK;
-            }
-
-            void Register()
-            {
-                OnEffectHit += SpellEffectFn(spell_item_skyguard_bombs_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
-                OnCheckCast += SpellCheckCastFn(spell_item_skyguard_bombs_SpellScript::CheckRequirement);
-            }
-        };
-
-        SpellScript* GetSpellScript() const
-        {
-            return new spell_item_skyguard_bombs_SpellScript();
-        }
-};
-
 enum DrakuruElixir
 {
     AREA_RUINS_OF_DRAKZIN                   = 4255,
@@ -2293,7 +2230,6 @@ void AddSC_item_spell_scripts()
     new spell_item_muisek_vessel();
     new spell_item_greatmothers_soulcatcher();
     new spell_item_wicked_strong_fetish();
-    new spell_item_skyguard_bombs();
     new spell_item_drakuru_s_elixir();
     new spell_item_drakuru_s_elixir_enduring();
 }
