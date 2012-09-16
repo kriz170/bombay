@@ -941,6 +941,13 @@ public:
                 return false;
             }
 
+			if (player->isDead() || player->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_GHOST) || player->IsSpectator())
+			{
+				// if player is dead and stuck, send ghost to graveyard
+				player->RepopAtGraveyard();
+				return true;
+			}
+
             //7355: "Stuck"
             player->CastSpell(player, 7355, false);
             return true;
@@ -975,7 +982,7 @@ public:
             return true;
         }
 
-        if (!stricmp(location_str, "graveyard") || player->IsSpectator())
+        if (!stricmp(location_str, "graveyard"))
         {
             player->RepopAtGraveyard();
             return true;
