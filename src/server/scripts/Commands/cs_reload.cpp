@@ -158,6 +158,7 @@ public:
             { "waypoint_data",                SEC_ADMINISTRATOR, true,  &HandleReloadWpCommand,                         "", NULL },
             { "vehicle_accessory",            SEC_ADMINISTRATOR, true,  &HandleReloadVehicleAccessoryCommand,           "", NULL },
             { "vehicle_template_accessory",   SEC_ADMINISTRATOR, true,  &HandleReloadVehicleTemplateAccessoryCommand,   "", NULL },
+			{ "chat_filter",                  SEC_ADMINISTRATOR, true,  &HandleReloadLoadChatFilterCommand,             "", NULL },
             { NULL,                           0,                 false, NULL,                                           "", NULL }
         };
         static ChatCommand commandTable[] =
@@ -200,7 +201,11 @@ public:
         HandleReloadVehicleAccessoryCommand(handler, "");
         HandleReloadVehicleTemplateAccessoryCommand(handler, "");
 
+		HandleReloadLoadChatFilterCommand(handler, "");
+
         HandleReloadAutobroadcastCommand(handler, "");
+
+		HandleReloadLoadChatFilterCommand(handler, "");
         return true;
     }
 
@@ -1306,6 +1311,15 @@ public:
         handler->SendGlobalGMSysMessage("Vehicle template accessories reloaded.");
         return true;
     }
+
+	static bool HandleReloadLoadChatFilterCommand(ChatHandler* handler, char const* /*args*/)
+    {
+        sLog->outInfo(LOG_FILTER_CHATSYS, "Reloading chat_filter table...");
+        sObjectMgr->LoadChatFilter();
+        handler->SendGlobalGMSysMessage("Chat Filter words reloaded.");
+        return true;
+    }
+
 };
 
 void AddSC_reload_commandscript()
