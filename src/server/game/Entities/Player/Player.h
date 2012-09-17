@@ -2308,9 +2308,9 @@ class Player : public Unit, public GridObject<Player>
         bool CanSpeak() const;
         void ChangeSpeakTime(int utime);
 
-		 /*********************************************************/
+        /*********************************************************/
         /***                 CHAT FILTER SYSTEM                ***/
-       /*********************************************************/
+        /*********************************************************/
 
         void SetLoggedOutWhilePunished(bool _true) { loggedOutWhilePunished = _true; }
         bool LoggedOutWhilePunished() { return loggedOutWhilePunished; }
@@ -2784,7 +2784,7 @@ class Player : public Unit, public GridObject<Player>
         uint32 m_zoneUpdateTimer;
         uint32 m_areaUpdateId;
 
-		uint32 freezeTimer;
+        uint32 freezeTimer;
         uint32 stunTimer;
         bool loggedOutWhilePunished;
 

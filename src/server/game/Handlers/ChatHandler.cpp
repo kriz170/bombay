@@ -153,7 +153,6 @@ void PunishPlayerForBadWord(Player* _sender, uint32 _muteTime = 0, uint32 _freez
     }
 }
 
-
 void WorldSession::HandleMessagechatOpcode(WorldPacket & recv_data)
 {
     uint32 type;
@@ -333,8 +332,8 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recv_data)
             return;
     }
 
-	bool kickPlayer = false, punishPlayer = false, duplicatedMessage = false;
-	uint32 muteTime = 0, freezeTime = 0, banTimeDays = 0, stunTime = 0, punishment = 0;
+    bool kickPlayer = false, punishPlayer = false, duplicatedMessage = false;
+    uint32 muteTime = 0, freezeTime = 0, banTimeDays = 0, stunTime = 0, punishment = 0;
     char* message = strdup(msg.c_str());
     char* words = strtok(message, " ,.-()&^%$#@!{}'<>/?|\\=+-_1234567890");
     std::string convertedMsg = msg;
@@ -643,7 +642,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recv_data)
                 }
             }
         } 
-		break;
+        break;
         case CHAT_MSG_AFK:
         {
             if ((msg.empty() || !_player->isAFK()) && !_player->isInCombat())
@@ -685,7 +684,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recv_data)
             break;
     }
 
-	//! No need to reset variable punishment because they automatically do that every chatmessage
+    //! No need to reset variable punishment because they automatically do that every chatmessage
     if (punishPlayer && !duplicatedMessage)
         PunishPlayerForBadWord(sender, muteTime, freezeTime, banTimeDays, stunTime, kickPlayer);
 

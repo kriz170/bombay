@@ -1684,7 +1684,7 @@ void Player::Update(uint32 p_time)
         }
     }
 
-	    if (freezeTimer > 0)
+    if (freezeTimer > 0)
     {
         if (p_time >= freezeTimer)
         {
@@ -1705,7 +1705,6 @@ void Player::Update(uint32 p_time)
         else
             stunTimer -= p_time;
     }
-
 
     if (m_weaponChangeTimer > 0)
     {

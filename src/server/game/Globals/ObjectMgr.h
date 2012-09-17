@@ -608,7 +608,7 @@ class ObjectMgr
 
         typedef std::vector<std::string> ScriptNameContainer;
 
-		typedef std::vector<std::pair<std::string, uint32> > ChatFilterContainer;
+        typedef std::vector<std::pair<std::string, uint32> > ChatFilterContainer;
 
         typedef std::map<uint32, uint32> CharacterConversionMap;
 
@@ -908,7 +908,7 @@ class ObjectMgr
 
         void LoadNPCSpellClickSpells();
 
-		void LoadChatFilter();
+        void LoadChatFilter();
         ChatFilterContainer& GetCensoredWords() { return _chatFilterStore; }
 
         void LoadGameTele();
@@ -1215,7 +1215,7 @@ class ObjectMgr
 
         SpellClickInfoContainer _spellClickInfoStore;
 
-		ChatFilterContainer _chatFilterStore;
+        ChatFilterContainer _chatFilterStore;
 
         SpellScriptsContainer _spellScriptsStore;
 
