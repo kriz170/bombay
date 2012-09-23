@@ -189,12 +189,12 @@ bool BattlegroundRV::IsPlayerUnderMap(Player* player, float x, float y, float z)
 			return false;
 }
 
-void BattlegroundRV::HandleAreaTrigger(Player* Source, uint32 Trigger)
+void BattlegroundRV::HandleAreaTrigger(Player* player, uint32 trigger)
 {
     if (GetStatus() != STATUS_IN_PROGRESS)
         return;
 
-    switch (Trigger)
+    switch (trigger)
     {
         case 5224:
         case 5226:
@@ -203,8 +203,7 @@ void BattlegroundRV::HandleAreaTrigger(Player* Source, uint32 Trigger)
         case 5474:
             break;
         default:
-            sLog->outError(LOG_FILTER_BATTLEGROUND, "WARNING: Unhandled AreaTrigger in Battleground: %u", Trigger);
-            Source->GetSession()->SendAreaTriggerMessage("Warning: Unhandled AreaTrigger in Battleground: %u", Trigger);
+            Battleground::HandleAreaTrigger(player, trigger);
             break;
     }
 }
