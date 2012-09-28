@@ -3647,6 +3647,10 @@ void SpellMgr::LoadDbcDataCorrections()
             case 23881: // Bloodthirst
                 spellInfo->EffectImplicitTargetA[EFFECT_1] = TARGET_UNIT_CASTER;
                 break;
+            case 42436: // Brewfest: Drink!
+                spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_TARGET_ANY;
+                spellInfo->EffectImplicitTargetB[0] = 0;
+                break;
             default:
                 break;
         }
