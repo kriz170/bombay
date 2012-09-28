@@ -41,7 +41,7 @@ DELETE FROM `conditions` WHERE `SourceEntry`=42299 AND `ConditionValue2`=0;
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`,`SourceGroup`,`SourceEntry`,`ElseGroup`,`ConditionTypeOrReference`,`ConditionValue1`,`ConditionValue2`,`ConditionValue3`,`ErrorTextId`,`ScriptName`,`Comment`) VALUES
 (13,0,42299,0,18,1,0,0,0,'',"Spell Brewfest - Dark Iron Knockback can only be cast at players");
 
-SET @GUID := XXXX;
+SET @GUID := 240240;
 -- Spawn [DND] Brewfest Dark Iron Event Generator and Dark Iron Herald
 DELETE FROM `creature` WHERE `id` IN (23703,24536) AND `guid` IN (@GUID+0,@GUID+1,@GUID+2,@GUID+3);
 INSERT INTO `creature` (`guid`,`id`,`map`,`spawnMask`,`phaseMask`,`modelid`,`equipment_id`,`position_x`,`position_y`,`position_z`,`orientation`,`spawntimesecs`,`spawndist`,`currentwaypoint`,`curhealth`,`curmana`,`MovementType`,`npcflag`,`unit_flags`,`dynamicflags`) VALUES
