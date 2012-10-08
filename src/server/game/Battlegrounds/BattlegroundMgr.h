@@ -121,9 +121,10 @@ class BattlegroundMgr
         static HolidayIds BGTypeToWeekendHolidayId(BattlegroundTypeId bgTypeId);
         static BattlegroundTypeId WeekendHolidayIdToBGType(HolidayIds holiday);
         static bool IsBGWeekend(BattlegroundTypeId bgTypeId);
+        static bool IsArenaType(BattlegroundTypeId bgTypeId);
 
-        BattlegroundSet GetAllBattlegroundsWithTypeId(BattlegroundTypeId bgTypeId) { return m_Battlegrounds[bgTypeId]; }
-        
+        BattlegroundContainer GetAllBattlegroundsWithTypeId(BattlegroundTypeId bgTypeId) { return bgDataStore[bgTypeId].m_Battlegrounds; }
+
         uint32 GetMaxRatingDifference() const;
         uint32 GetRatingDiscardTimer()  const;
         void InitAutomaticArenaPointDistribution();
@@ -139,7 +140,6 @@ class BattlegroundMgr
     private:
         bool CreateBattleground(CreateBattlegroundData& data);
         uint32 CreateClientVisibleInstanceId(BattlegroundTypeId bgTypeId, BattlegroundBracketId bracket_id);
-        static bool IsArenaType(BattlegroundTypeId bgTypeId);
         BattlegroundTypeId GetRandomBG(BattlegroundTypeId id);
 
         typedef std::map<BattlegroundTypeId, BattlegroundData> BattlegroundDataContainer;
