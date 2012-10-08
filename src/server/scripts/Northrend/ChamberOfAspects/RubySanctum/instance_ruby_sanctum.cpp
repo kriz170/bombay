@@ -207,7 +207,14 @@ class instance_ruby_sanctum : public InstanceMapScript
             bool SetBossState(uint32 type, EncounterState state)
             {
                 if (!InstanceScript::SetBossState(type, state))
+                {
+                    // Summon Halion on instance loading if conditions are met. Without those lines,
+                    // InstanceScript::SetBossState returns false, thus preventing the switch from being called.
+                    if (type == DATA_HALION && state != DONE && GetBossState(DATA_GENERAL_ZARITHRIAN) == DONE && !GetData64(DATA_HALION_CONTROLLER))
+                        if (Creature* halionController = instance->SummonCreature(NPC_HALION_CONTROLLER, HalionControllerSpawnPos))
+                            halionController->AI()->DoAction(ACTION_INTRO_HALION);
                     return false;
+                }
 
                 switch (type)
                 {
@@ -232,23 +239,28 @@ class instance_ruby_sanctum : public InstanceMapScript
                         break;
                     }
                     case DATA_GENERAL_ZARITHRIAN:
+                    {
                         if (GetBossState(DATA_SAVIANA_RAGEFIRE) == DONE && GetBossState(DATA_BALTHARUS_THE_WARBORN) == DONE)
                             HandleGameObject(FlameWallsGUID, state != IN_PROGRESS);
-                        if (state == DONE)
+
+                        // Not called at instance loading, no big deal.
+                        if (state == DONE && GetBossState(DATA_HALION) != DONE)
                             if (Creature* halionController = instance->SummonCreature(NPC_HALION_CONTROLLER, HalionControllerSpawnPos))
                                 halionController->AI()->DoAction(ACTION_INTRO_HALION);
                         break;
+                    }
                     case DATA_HALION:
                     {
-                        if (state == IN_PROGRESS)
-                            break;
-
                         DoUpdateWorldState(WORLDSTATE_CORPOREALITY_TOGGLE, 0);
                         DoUpdateWorldState(WORLDSTATE_CORPOREALITY_TWILIGHT, 0);
                         DoUpdateWorldState(WORLDSTATE_CORPOREALITY_MATERIAL, 0);
 
-                        HandleGameObject(FlameRingGUID, true);
-                        HandleGameObject(TwilightFlameRingGUID, true);
+                        // Reopen rings on wipe or success
+                        if (state == DONE || state == FAIL)
+                        {
+                            HandleGameObject(FlameRingGUID, true);
+                            HandleGameObject(TwilightFlameRingGUID, true);
+                        }
                         break;
                     }
                     default:

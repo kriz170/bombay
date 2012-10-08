@@ -724,7 +724,7 @@ class npc_putricide_oozeAI : public ScriptedAI
 {
     public:
         npc_putricide_oozeAI(Creature* creature, uint32 hitTargetSpellId) : ScriptedAI(creature),
-            _newTargetSelectTimer(0), _hitTargetSpellId(hitTargetSpellId)
+            _hitTargetSpellId(hitTargetSpellId), _newTargetSelectTimer(0)
         {
                 me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK_DEST, true);
         }

@@ -528,12 +528,12 @@ void BattlefieldWG::OnCreatureCreate(Creature* creature)
             case NPC_WINTERGRASP_CATAPULT:
             case NPC_WINTERGRASP_DEMOLISHER:
             {
-                if (!creature->ToTempSummon()->GetSummonerGUID() || !sObjectAccessor->FindPlayer(creature->ToTempSummon()->GetSummonerGUID()))
+                if (!creature->ToTempSummon() || !creature->ToTempSummon()->GetSummonerGUID() || !sObjectAccessor->FindPlayer(creature->ToTempSummon()->GetSummonerGUID()))
                 {
-                    creature->setDeathState(DEAD);
-                    creature->RemoveFromWorld();
+                    creature->DespawnOrUnsummon();
                     return;
                 }
+
                 Player* creator = sObjectAccessor->FindPlayer(creature->ToTempSummon()->GetSummonerGUID());
                 TeamId team = creator->GetTeamId();
 
@@ -548,8 +548,7 @@ void BattlefieldWG::OnCreatureCreate(Creature* creature)
                     }
                     else
                     {
-                        creature->setDeathState(DEAD);
-                        creature->RemoveFromWorld();
+                        creature->DespawnOrUnsummon();
                         return;
                     }
                 }
@@ -564,8 +563,7 @@ void BattlefieldWG::OnCreatureCreate(Creature* creature)
                     }
                     else
                     {
-                        creature->setDeathState(DEAD);
-                        creature->RemoveFromWorld();
+                        creature->DespawnOrUnsummon();
                         return;
                     }
                 }
@@ -876,9 +874,9 @@ void BattlefieldWG::SendInitWorldStatesTo(Player* player)
     data << uint32(m_ZoneId);
     data << uint32(0);
     data << uint16(10 + BuildingsInZone.size() + WorkshopsList.size()); // Number of fields
-    
+
     FillInitialWorldStates(data);
-    
+
     player->GetSession()->SendPacket(&data);
 }
 
