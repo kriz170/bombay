@@ -108,6 +108,7 @@ void AggroAllPlayers(Creature* temp)
 
             if (player->isAlive())
             {
+				temp->setFaction(14);
                 temp->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC);
                 temp->SetReactState(REACT_AGGRESSIVE);
                 temp->SetInCombatWith(player);

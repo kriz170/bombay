@@ -28,6 +28,7 @@ EndScriptData */
 
 #define MAX_ENCOUNTER  4
 
+const Position BlackKnightPos = {758.135620f, 639.459778f, 411.722473f, 0.808736f};
 class instance_trial_of_the_champion : public InstanceMapScript
 {
 public:
@@ -206,7 +207,9 @@ public:
                         {
                             pBoss->GetMotionMaster()->MovePoint(0, 746.88f, 618.74f, 411.06f);
                             pBoss->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+							pBoss->setFaction(14);
                             pBoss->SetReactState(REACT_AGGRESSIVE);
+							pBoss->AI()->DoZoneInCombat();
                         }
                     }
                     break;
@@ -217,6 +220,16 @@ public:
                         pAnnouncer->GetMotionMaster()->MovePoint(0, 748.309f, 619.487f, 411.171f);
                         pAnnouncer->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                         pAnnouncer->SummonGameObject(instance->IsHeroic()? GO_EADRIC_LOOT_H : GO_EADRIC_LOOT, 746.59f, 618.49f, 411.09f, 1.42f, 0, 0, 0, 0, 90000000);
+
+						if(Creature* knightVehicle = pAnnouncer->SummonCreature(VEHICLE_BLACK_KNIGHT, 769.834f, 651.915f, 447.035f, 0)){
+                            knightVehicle->SetReactState(REACT_PASSIVE);
+                            if(Creature* bKnight = knightVehicle->SummonCreature(35451, BlackKnightPos)){
+                                bKnight->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                                bKnight->setFaction(14);
+                                bKnight->SetReactState(REACT_AGGRESSIVE);
+                                bKnight->AI()->DoZoneInCombat();
+                            }
+                        }
                     }
                     break;
                 case BOSS_ARGENT_CHALLENGE_P:
@@ -224,8 +237,20 @@ public:
                     if (Creature* pAnnouncer = instance->GetCreature(uiAnnouncerGUID))
                     {
                         pAnnouncer->GetMotionMaster()->MovePoint(0, 748.309f, 619.487f, 411.171f);
-                        pAnnouncer->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                        pAnnouncer->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                         pAnnouncer->SummonGameObject(instance->IsHeroic()? GO_PALETRESS_LOOT_H : GO_PALETRESS_LOOT, 746.59f, 618.49f, 411.09f, 1.42f, 0, 0, 0, 0, 90000000);
+
+						if(Creature* knightVehicle = pAnnouncer->SummonCreature(VEHICLE_BLACK_KNIGHT, 769.834f, 651.915f, 447.035f, 0)){
+
+                            knightVehicle->SetReactState(REACT_PASSIVE);
+                            if(Creature* bKnight = knightVehicle->SummonCreature(35451, BlackKnightPos)){
+                                bKnight->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                                bKnight->setFaction(14);
+                                bKnight->SetReactState(REACT_AGGRESSIVE);
+                                bKnight->AI()->DoZoneInCombat();
+                                pAnnouncer->DespawnOrUnsummon();
+                            }
+                        }
                     }
                     break;
             }
