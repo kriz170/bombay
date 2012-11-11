@@ -166,8 +166,8 @@ UPDATE `creature` SET `spawntimesecs`=450 WHERE `id`=24484; -- Brewfest Reveler 
 SET @MAIL_A := 209;
 SET @MAIL_H := 210;
 UPDATE `quest_template` SET `RewardMailTemplateId`=@MAIL_A,`OfferRewardText`="Your paperwork looks to be in order. Welcome to the club, $N!$B$BYou can expect to get our mail at the start of every month. If you like what you got, stop by and we can sell you some more. This is the club that keeps on giving.",`RequestItemsText`="Do you have your membership forms filled out?" WHERE `id`=12420;
-UPDATE `quest_template` SET `RewardMailTemplateId`=@MAIL_A WHERE `id`=12278;
-UPDATE `quest_template` SET `RewardMailTemplateId`=@MAIL_H WHERE `id` IN (12306,12421);
+UPDATE `quest_template` SET `RewardMailTemplateId`=@MAIL_H WHERE `id`=12421;
+UPDATE `quest_template` SET `RewardMailTemplateId`=0 WHERE `id` IN (12278,12306);
 
 -- Ray'ma and Larkin were also finishing quest no longer available within the game.
 DELETE FROM `creature_involvedrelation` WHERE `quest` IN (12278,12306); -- old "Brew of the Month Club" quests

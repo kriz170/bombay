@@ -24,12 +24,12 @@ UPDATE `creature_template_addon` SET `bytes1`=0,`bytes2`=1,`mount`=0,`emote`=0,`
 
 -- Brewfest - Attack Keg can only target kegs
 DELETE FROM `conditions` WHERE `SourceEntry` IN (42393) AND `ConditionValue2` IN (23702,23700,23706,24373,24372);
-INSERT INTO `conditions` (`SourceTypeOrReferenceId`,`SourceGroup`,`SourceEntry`,`ElseGroup`,`ConditionTypeOrReference`,`ConditionValue1`,`ConditionValue2`,`ConditionValue3`,`ErrorTextId`,`ScriptName`,`Comment`) VALUES
-(13,0,42393,0,18,1,23702,0,0,'',"Spell Brewfest - Attack Keg can only be cast at Thunderbrew Festive Keg"),
-(13,0,42393,0,18,1,23700,0,0,'',"Spell Brewfest - Attack Keg can only be cast at Barleybrew Festive Keg"),
-(13,0,42393,0,18,1,23706,0,0,'',"Spell Brewfest - Attack Keg can only be cast at Gordok Festive Keg"),
-(13,0,42393,0,18,1,24373,0,0,'',"Spell Brewfest - Attack Keg can only be cast at T'chalis's Festive Keg"),
-(13,0,42393,0,18,1,24372,0,0,'',"Spell Brewfest - Attack Keg can only be cast at Drohn's Festive Keg");
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
+(17, 0, 42393, 0, 0, 31, 1, 3, 24372, 0, 0, 0, '', 'Spell Brewfest - Attack Keg can only be cast at Drohn''s Festive Keg'),
+(17, 0, 42393, 0, 0, 31, 1, 3, 24373, 0, 0, 0, '', 'Spell Brewfest - Attack Keg can only be cast at T''chalis''s Festive Keg'),
+(17, 0, 42393, 0, 0, 31, 1, 3, 23700, 0, 0, 0, '', 'Spell Brewfest - Attack Keg can only be cast at Barleybrew Festive Keg'),
+(17, 0, 42393, 0, 0, 31, 1, 3, 23706, 0, 0, 0, '', 'Spell Brewfest - Attack Keg can only be cast at Gordok Festive Keg'),
+(17, 0, 42393, 0, 0, 31, 1, 3, 23702, 0, 0, 0, '', 'Spell Brewfest - Attack Keg can only be cast at Thunderbrew Festive Keg');
 
 -- Holiday - Brewfest - Dark Iron Knockback Target Test
 -- DELETE FROM `spell_script_names` WHERE `spell_id`=42674;
@@ -38,8 +38,8 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`,`SourceGroup`,`SourceEntry`,
 
 -- Brewfest - Dark Iron Knockback
 DELETE FROM `conditions` WHERE `SourceEntry`=42299 AND `ConditionValue2`=0;
-INSERT INTO `conditions` (`SourceTypeOrReferenceId`,`SourceGroup`,`SourceEntry`,`ElseGroup`,`ConditionTypeOrReference`,`ConditionValue1`,`ConditionValue2`,`ConditionValue3`,`ErrorTextId`,`ScriptName`,`Comment`) VALUES
-(13,0,42299,0,18,1,0,0,0,'',"Spell Brewfest - Dark Iron Knockback can only be cast at players");
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
+(17, 0, 42299, 0, 0, 31, 1, 4, 0, 0, 0, 0, '', 'Spell Brewfest - Dark Iron Knockback can only be cast at players');
 
 SET @GUID := 240240;
 -- Spawn [DND] Brewfest Dark Iron Event Generator and Dark Iron Herald
@@ -92,10 +92,10 @@ INSERT INTO `creature_template_addon` (`entry`,`mount`,`bytes1`,`bytes2`,`emote`
 
 -- Drunken Master & Dark Iron Retreat
 DELETE FROM `conditions` WHERE `SourceEntry` IN (42695,42794,42341) AND `ConditionValue2` IN (23709);
-INSERT INTO `conditions` (`SourceTypeOrReferenceId`,`SourceGroup`,`SourceEntry`,`ElseGroup`,`ConditionTypeOrReference`,`ConditionValue1`,`ConditionValue2`,`ConditionValue3`,`ErrorTextId`,`ScriptName`,`Comment`) VALUES
-(13,0,42695,0,18,1,23709,0,0,'',"Spell Holiday - Brewfest - Dark Iron Knock-down Power-up can only be cast at Dark Iron Guzzler"),
-(13,0,42794,0,18,1,23709,0,0,'',"Spell Holiday - Brewfest - Random Mug Fling can only be cast at Dark Iron Guzzler"),
-(13,0,42341,0,18,1,23709,0,0,'',"Spell Dark Iron Retreat can only be cast at Dark Iron Guzzler");
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
+(17, 0, 42695, 0, 0, 31, 1, 3, 23709, 0, 0, 0, '', 'Spell Holiday - Brewfest - Dark Iron Knock-down Power-up can only be cast at Dark Iron Guzzler'),
+(17, 0, 42794, 0, 0, 31, 1, 3, 23709, 0, 0, 0, '', 'Spell Holiday - Brewfest - Random Mug Fling can only be cast at Dark Iron Guzzler'),
+(17, 0, 42341, 0, 0, 31, 1, 3, 23709, 0, 0, 0, '', 'Spell Dark Iron Retreat can only be cast at Dark Iron Guzzler');
 
 -- Insert missing object template for spell Drunken Master's - it's a trap and these do not come from sniffs, so WDBVerified on 1
 DELETE FROM `gameobject_template` WHERE `entry`=186471;

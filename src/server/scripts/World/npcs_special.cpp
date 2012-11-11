@@ -37,7 +37,7 @@ npc_mount_vendor        100%    Regular mount vendors all over the world. Displa
 npc_rogue_trainer        80%    Scripted trainers, so they are able to offer item 17126 for class quest 6681
 npc_sayge               100%    Darkmoon event fortune teller, buff player based on answers given
 npc_snake_trap_serpents  80%    AI for snakes that summoned by Snake Trap
-npc_shadowfiend         100%   restore 5% of owner's mana when shadowfiend die from damage
+npc_shadowfiend         100%    restore 5% of owner's mana when shadowfiend die from damage
 npc_locksmith            75%    list of keys needs to be confirmed
 npc_firework            100%    NPC's summoned by rockets and rocket clusters, for making them cast visual
 EndContentData */
@@ -1555,34 +1555,6 @@ public:
     CreatureAI* GetAI(Creature* creature) const
     {
         return new npc_tonk_mineAI(creature);
-    }
-};
-
-/*####
-## npc_brewfest_reveler
-####*/
-
-class npc_brewfest_reveler : public CreatureScript
-{
-public:
-    npc_brewfest_reveler() : CreatureScript("npc_brewfest_reveler") { }
-
-    struct npc_brewfest_revelerAI : public ScriptedAI
-    {
-        npc_brewfest_revelerAI(Creature* creature) : ScriptedAI(creature) {}
-        void ReceiveEmote(Player* player, uint32 emote)
-        {
-            if (!IsHolidayActive(HOLIDAY_BREWFEST))
-                return;
-
-            if (emote == TEXT_EMOTE_DANCE)
-                me->CastSpell(player, 41586, false);
-        }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        return new npc_brewfest_revelerAI(creature);
     }
 };
 
@@ -3900,7 +3872,6 @@ void AddSC_npcs_special()
     new npc_steam_tonk();
     new npc_tonk_mine();
     new npc_winter_reveler();
-    new npc_brewfest_reveler();
     new npc_snake_trap();
     new npc_mirror_image();
     new npc_ebon_gargoyle();
