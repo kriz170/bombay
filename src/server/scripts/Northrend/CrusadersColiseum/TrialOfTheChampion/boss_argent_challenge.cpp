@@ -47,7 +47,7 @@ enum eSpells
     SPELL_HOLY_NOVA             = 66546,
     SPELL_SHIELD                = 66515,
     SPELL_CONFESS               = 66680,
-    SPELL_SUMMON_MEMORY         = 66545,
+    
 
     //Memory
     SPELL_OLD_WOUNDS            = 66620,
@@ -55,8 +55,36 @@ enum eSpells
     SPELL_SHADOWS_PAST          = 66619,
     SPELL_SHADOWS_PAST_H        = 67678,
     SPELL_WAKING_NIGHTMARE      = 66552,
-    SPELL_WAKING_NIGHTMARE_H    = 67677
+    SPELL_WAKING_NIGHTMARE_H    = 67677,
 };
+
+const uint32 summonMemory[] = {
+    66543,
+    66705,
+    66706,
+    66707,
+    66708,
+    66709,
+    66710,
+    66711,
+    66712,
+    66713,
+    66714,
+    66704,
+    66703,
+    66702,
+    66691,
+    66692,
+    66694,
+    66695,
+    66696,
+    66697,
+    66698,
+    66699,
+    66700,
+    66701,
+    66715,
+ };
 
 class OrientationCheck : public std::unary_function<Unit*, bool>
 {
@@ -338,7 +366,7 @@ public:
                 me->InterruptNonMeleeSpells(true);
                 DoCastAOE(SPELL_HOLY_NOVA, false);
                 DoCast(me, SPELL_SHIELD);
-                DoCastAOE(SPELL_SUMMON_MEMORY, false);
+                DoCastAOE(summonMemory[urand(0, 24)], false);
                 DoCastAOE(SPELL_CONFESS, false);
 
                 bHealth = true;
@@ -377,6 +405,10 @@ public:
             uiOldWoundsTimer = 12000;
             uiShadowPastTimer = 5000;
             uiWakingNightmare = 7000;
+			me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+            me->SetReactState(REACT_DEFENSIVE);
+            me->setFaction(14);
         }
 
         void UpdateAI(const uint32 uiDiff)

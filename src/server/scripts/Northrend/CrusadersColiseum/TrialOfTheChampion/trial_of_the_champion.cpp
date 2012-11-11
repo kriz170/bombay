@@ -41,7 +41,8 @@ EndContentData */
 ## npc_announcer_toc5
 ######*/
 
-const Position SpawnPosition = {746.261f, 657.401f, 411.681f, 4.65f};
+const Position BlackKnightPos = {758.135620f, 639.459778f, 411.722473f, 0.808736f};
+const Position SpawnPosition  = {746.261f, 657.401f, 411.681f, 4.65f};
 
 class npc_announcer_toc5 : public CreatureScript
 {
@@ -311,15 +312,27 @@ public:
             {
                 for (uint8 i = 0; i < 3; ++i)
                 {
-                    if (Creature* pTrash = me->SummonCreature(NPC_ARGENT_LIGHWIELDER, SpawnPosition))
+                    if (Creature* pTrash = me->SummonCreature(NPC_ARGENT_LIGHWIELDER, SpawnPosition)){
                         pTrash->AI()->SetData(i, 0);
-                    if (Creature* pTrash = me->SummonCreature(NPC_ARGENT_MONK, SpawnPosition))
+						pTrash->setFaction(14);
+                        pTrash->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+                        pTrash->SetReactState(REACT_DEFENSIVE);
+					}
+                    if (Creature* pTrash = me->SummonCreature(NPC_ARGENT_MONK, SpawnPosition)){
                         pTrash->AI()->SetData(i, 0);
-                    if (Creature* pTrash = me->SummonCreature(NPC_PRIESTESS, SpawnPosition))
+						pTrash->setFaction(14);
+                        pTrash->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+                        pTrash->SetReactState(REACT_DEFENSIVE);
+					}
+                    if (Creature* pTrash = me->SummonCreature(NPC_PRIESTESS, SpawnPosition)){
                         pTrash->AI()->SetData(i, 0);
+						pTrash->setFaction(14);
+                        pTrash->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+                        pTrash->SetReactState(REACT_DEFENSIVE);
                 }
             }
         }
+	}
 
         void SetGrandChampionsForEncounter()
         {
@@ -358,45 +371,44 @@ public:
             {
                 if (instance->GetData(BOSS_ARGENT_CHALLENGE_E) == NOT_STARTED && instance->GetData(BOSS_ARGENT_CHALLENGE_P) == NOT_STARTED)
                 {
-                    if (instance->GetData(BOSS_GRAND_CHAMPIONS) == NOT_STARTED)
+                    if (instance->GetData(BOSS_GRAND_CHAMPIONS) == NOT_STARTED){
                         me->AI()->SetData(DATA_START, 0);
+					}
 
-                    if (instance->GetData(BOSS_GRAND_CHAMPIONS) == DONE)
-                        DoStartArgentChampionEncounter();
+                    if (instance->GetData(BOSS_GRAND_CHAMPIONS) == DONE){
+						DoStartArgentChampionEncounter();}
                 }
-
-               if ((instance->GetData(BOSS_GRAND_CHAMPIONS) == DONE &&
-                   instance->GetData(BOSS_ARGENT_CHALLENGE_E) == DONE) ||
-                   instance->GetData(BOSS_ARGENT_CHALLENGE_P) == DONE)
-                    me->SummonCreature(VEHICLE_BLACK_KNIGHT, 769.834f, 651.915f, 447.035f, 0);
             }
-        }
+			else
+			{
+                    if(Creature* knightVehicle = me->SummonCreature(VEHICLE_BLACK_KNIGHT, 769.834f, 651.915f, 447.035f, 0)){
+
+                        knightVehicle->SetReactState(REACT_PASSIVE);
+
+                           if(Creature* bKnight = knightVehicle->SummonCreature(35451, BlackKnightPos)){
+                            bKnight->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                            bKnight->setFaction(14);
+                            bKnight->SetReactState(REACT_AGGRESSIVE);
+                            bKnight->AI()->DoZoneInCombat();
+                        }
+                    }
+                }
+            }
+        
 
         void AggroAllPlayers(Creature* temp)
         {
             Map::PlayerList const &PlList = me->GetMap()->GetPlayers();
 
+			temp->setFaction(14);
+            temp->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+            temp->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+            temp->SetHomePosition(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
+            temp->SetReactState(REACT_AGGRESSIVE);
+            temp->AI()->DoZoneInCombat();
+
             if (PlList.isEmpty())
-                return;
-
-            for (Map::PlayerList::const_iterator i = PlList.begin(); i != PlList.end(); ++i)
-            {
-                if (Player* player = i->getSource())
-                {
-                    if (player->isGameMaster())
-                        continue;
-
-                    if (player->isAlive())
-                    {
-                        temp->SetHomePosition(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
-                        temp->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                        temp->SetReactState(REACT_AGGRESSIVE);
-                        temp->SetInCombatWith(player);
-                        player->SetInCombatWith(temp);
-                        temp->AddThreat(player, 0.0f);
-                    }
-                }
-            }
+                return;   
         }
 
        void UpdateAI(const uint32 uiDiff)
