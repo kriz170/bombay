@@ -1844,9 +1844,7 @@ class spell_item_unusual_compass : public SpellScriptLoader
             {
                 Unit* caster = GetCaster();
                 caster->SetOrientation(frand(0.0f, 62832.0f) / 10000.0f);
-                WorldPacket data;
-                caster->BuildHeartBeatMsg(&data);
-                caster->SendMessageToSet(&data, true);
+                caster->SendMovementFlagUpdate(true);
             }
 
             void Register()
