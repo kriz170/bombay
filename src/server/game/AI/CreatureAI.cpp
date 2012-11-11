@@ -77,10 +77,8 @@ void CreatureAI::DoZoneInCombat(Creature* creature /*= NULL*/, float maxRangeToN
 
     if (!creature->HasReactState(REACT_PASSIVE) && !creature->getVictim())
     {
-		creature->SetReactState(REACT_AGGRESSIVE);
-        creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
         sLog->outError(LOG_FILTER_GENERAL, "DoZoneInCombat called for creature that has empty threat list (creature entry = %u)", creature->GetEntry());
-        //return;
+        return;
     }
 
     Map::PlayerList const& playerList = map->GetPlayers();
@@ -99,7 +97,7 @@ void CreatureAI::DoZoneInCombat(Creature* creature /*= NULL*/, float maxRangeToN
             {
                 creature->SetInCombatWith(player);
                 player->SetInCombatWith(creature);
-				creature->AddThreat(player, 1.0f);
+                creature->AddThreat(player, 0.0f);
             }
 
             /* Causes certain things to never leave the threat list (Priest Lightwell, etc):

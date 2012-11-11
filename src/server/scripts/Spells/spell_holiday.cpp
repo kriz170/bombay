@@ -190,7 +190,11 @@ enum TrickOrTreatSpells
 {
     SPELL_TRICK                 = 24714,
     SPELL_TREAT                 = 24715,
-    SPELL_TRICKED_OR_TREATED    = 24755
+    SPELL_TRICKED_OR_TREATED    = 24755,
+    SPELL_TRICKED_OR_TREATED    = 24755,
+    SPELL_TRICKY_TREAT_SPEED    = 42919,
+    SPELL_TRICKY_TREAT_TRIGGER  = 42965,
+    SPELL_UPSET_TUMMY           = 42966
 };
 
 class spell_gen_trick_or_treat : public SpellScriptLoader
@@ -273,7 +277,7 @@ class spell_tricky_treat : public SpellScriptLoader
 void AddSC_holiday_spell_scripts()
 {
     new spell_love_is_in_the_air_romantic_picnic();    
-	new spell_gen_trick();
+    new spell_gen_trick();
     new spell_gen_trick_or_treat();
-	new spell_tricky_treat();
+    new spell_tricky_treat();
 }
