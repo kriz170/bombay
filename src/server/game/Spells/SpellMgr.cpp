@@ -3668,6 +3668,9 @@ void SpellMgr::LoadDbcDataCorrections()
                 spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_TARGET_ANY;
                 spellInfo->EffectImplicitTargetB[0] = 0;
                 break;
+            case 62012: // Pilgrim's Bounty: Turkey Caller
+                spellInfo->EffectRadiusIndex[0] = EFFECT_RADIUS_0_YARDS;    // 0yd
+                break;
             // OCULUS SPELLS
             // The spells below are here, because their effect 1 is giving warning, because the triggered spell is not found in dbc and is missing from encounter sniff.
             case 49462: // Call Ruby Drake
