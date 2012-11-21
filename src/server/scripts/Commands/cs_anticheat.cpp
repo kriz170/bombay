@@ -13,10 +13,11 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ScriptMgr.h"
-#include "ObjectMgr.h"
-#include "Chat.h"
 #include "AnticheatMgr.h"
+#include "Chat.h"
+#include "Language.h"
+#include "ObjectMgr.h"
+#include "ScriptMgr.h"
 
 class anticheat_commandscript : public CommandScript
 {

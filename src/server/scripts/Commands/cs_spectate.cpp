@@ -15,8 +15,9 @@
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "ScriptMgr.h"
 #include "Chat.h"
+#include "Language.h"
+#include "ScriptMgr.h"
 #include "SocialMgr.h"
 
 class spectate_commandscript : public CommandScript
