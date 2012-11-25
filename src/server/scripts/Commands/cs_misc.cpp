@@ -937,16 +937,17 @@ public:
         //No args required for players
         if (handler->GetSession() && AccountMgr::IsPlayerAccount(handler->GetSession()->GetSecurity()))
         {
-            if (player->isDead() || player->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_GHOST) || player->IsSpectator())
-            {
-                // if player is dead and stuck, send ghost to graveyard
-                player->RepopAtGraveyard();
-                return true;
-            }
-
             // 7355: "Stuck"
             if (Player* player = handler->GetSession()->GetPlayer())
+            {
+                if (player->isDead() || player->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_GHOST) || player->IsSpectator())
+                {
+                    // if player is dead and stuck, send ghost to graveyard
+                    player->RepopAtGraveyard();
+                    return true;
+                }
                 player->CastSpell(player, 7355, false);
+            }
             return true;
         }
 
