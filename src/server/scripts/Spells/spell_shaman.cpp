@@ -552,46 +552,46 @@ class spell_sha_mana_tide_totem : public SpellScriptLoader
 };
 
 // 77746 - Totemic Wrath
+/// Updated 4.3.4
 class spell_sha_totemic_wrath : public SpellScriptLoader
 {
-public:
-    spell_sha_totemic_wrath() : SpellScriptLoader("spell_sha_totemic_wrath") { }
+    public:
+        spell_sha_totemic_wrath() : SpellScriptLoader("spell_sha_totemic_wrath") { }
 
-    class spell_sha_totemic_wrath_AuraScript : public AuraScript
-    {
-        PrepareAuraScript(spell_sha_totemic_wrath_AuraScript); 
-
-        bool Validate(SpellEntry const * /*spellEntry*/)
+        class spell_sha_totemic_wrath_AuraScript : public AuraScript
         {
-            if (!sSpellStore.LookupEntry(SHAMAN_TOTEM_SPELL_TOTEMIC_WRATH)) 
-                return false;
-            if (!sSpellStore.LookupEntry(SHAMAN_TOTEM_SPELL_TOTEMIC_WRATH_AURA))
-                return false;
-            return true;
-        }
+            PrepareAuraScript(spell_sha_totemic_wrath_AuraScript); 
 
-        void HandleEffectApply(AuraEffect const * aurEff, AuraEffectHandleModes /*mode*/)
+            bool Validate(SpellInfo const* /*spellInfo*/)
+            {
+                if (!sSpellMgr->GetSpellInfo(SHAMAN_TOTEM_SPELL_TOTEMIC_WRATH) || 
+                    !sSpellMgr->GetSpellInfo(SHAMAN_TOTEM_SPELL_TOTEMIC_WRATH_AURA))
+                    return false;
+                return true;
+            }
+
+            void HandleEffectApply(AuraEffect const * aurEff, AuraEffectHandleModes /*mode*/)
+            {
+                Unit* target = GetTarget();
+                if(target->ToPlayer())
+                    return; // just apply as dummy
+
+                // applied by a totem - cast the real aura if owner has the talent
+                if (Unit *caster = aurEff->GetBase()->GetCaster())
+                    if (caster->GetAuraEffect(SPELL_AURA_DUMMY, SPELLFAMILY_GENERIC, 2019, 0))
+                        target->CastSpell(target, SHAMAN_TOTEM_SPELL_TOTEMIC_WRATH_AURA, true, NULL, aurEff);
+            }
+
+            void Register()
+            {
+                OnEffectApply += AuraEffectApplyFn(spell_sha_totemic_wrath_AuraScript::HandleEffectApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+            }
+        };
+
+        AuraScript *GetAuraScript() const
         {
-            Unit* target = GetTarget();
-            if(target->ToPlayer())
-                return; // just apply as dummy
-
-            // applied by a totem - cast the real aura if owner has the talent
-            if (Unit *caster = aurEff->GetBase()->GetCaster())
-                if (caster->GetAuraEffect(SPELL_AURA_DUMMY, SPELLFAMILY_GENERIC, 2019, 0))
-                    target->CastSpell(target, SHAMAN_TOTEM_SPELL_TOTEMIC_WRATH_AURA, true, NULL, aurEff);
+            return new spell_sha_totemic_wrath_AuraScript();
         }
-
-        void Register()
-        {
-            OnEffectApply += AuraEffectApplyFn(spell_sha_totemic_wrath_AuraScript::HandleEffectApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-        }
-    };
-
-    AuraScript *GetAuraScript() const
-    {
-        return new spell_sha_totemic_wrath_AuraScript();
-    }
 };
 
 void AddSC_shaman_spell_scripts()
@@ -607,5 +607,5 @@ void AddSC_shaman_spell_scripts()
     new spell_sha_heroism();
     new spell_sha_lava_lash();
     new spell_sha_mana_tide_totem();
-	new spell_sha_totemic_wrath();
+    new spell_sha_totemic_wrath();
 }

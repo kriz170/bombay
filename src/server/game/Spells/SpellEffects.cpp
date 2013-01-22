@@ -404,7 +404,7 @@ void Spell::EffectSchoolDMG(SpellEffIndex effIndex)
             }
             case SPELLFAMILY_WARLOCK:
             {
-				// Rain of Fire
+                // Rain of Fire
                 if (m_spellInfo->Id == 42223)
                 {
                     
@@ -416,7 +416,7 @@ void Spell::EffectSchoolDMG(SpellEffIndex effIndex)
                         if (roll_chance_f(12.0f))
                             m_caster->CastSpell(unitTarget, 85387, true);
                 }
-				
+
                 // Incinerate Rank 1 & 2
                 if ((m_spellInfo->SpellFamilyFlags[1] & 0x000040) && m_spellInfo->SpellIconID == 2128)
                 {

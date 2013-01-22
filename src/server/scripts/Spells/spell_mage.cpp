@@ -65,7 +65,7 @@ enum MageSpells
     SPELL_MAGE_SUMMON_WATER_ELEMENTAL_TEMPORARY  = 70907,
 
     SPELL_MAGE_FINGERS_OF_FROST                  = 44544,
-	SPELL_MAGE_CAUTERIZE_DOT                     = 87023,
+    SPELL_MAGE_CAUTERIZE_DOT                     = 87023,
 };
 
 enum MageIcons
@@ -817,5 +817,5 @@ void AddSC_mage_spell_scripts()
     new spell_mage_replenish_mana();
     new spell_mage_summon_water_elemental();
     new spell_mage_water_elemental_freeze();
-	new spell_mage_cauterize();
+    new spell_mage_cauterize();
 }

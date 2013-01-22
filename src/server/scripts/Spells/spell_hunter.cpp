@@ -48,8 +48,8 @@ enum HunterSpells
     SPELL_HUNTER_SNIPER_TRAINING_R1                 = 53302,
     SPELL_HUNTER_SNIPER_TRAINING_BUFF_R1            = 64418,
     SPELL_DRAENEI_GIFT_OF_THE_NAARU                 = 59543,
-	HUNTER_SPELL_KILL_COMMAND                   	= 34026,
-    HUNTER_SPELL_KILL_COMMAND_TRIGGER               = 83381,
+    SPELL_HUNTER_KILL_COMMAND                       = 34026,
+    SPELL_HUNTER_KILL_COMMAND_TRIGGER               = 83381,
 };
 
 // 13161 - Aspect of the Beast
@@ -740,6 +740,7 @@ class spell_hun_target_only_pet_and_owner : public SpellScriptLoader
 };
 
 // 34026 Kill comamnd
+/// Updated 4.3.4
 class spell_hun_kill_command : public SpellScriptLoader
 {	
 public:
@@ -747,13 +748,14 @@ public:
 
     class spell_hun_kill_command_SpellScript : public SpellScript
     {
-       PrepareSpellScript(spell_hun_kill_command_SpellScript)
+        PrepareSpellScript(spell_hun_kill_command_SpellScript)
+
         bool Validate(SpellInfo const* /*spellEntry*/)
         {
-            if (!sSpellMgr->GetSpellInfo(HUNTER_SPELL_KILL_COMMAND))
-                return false;	
+            if (!sSpellMgr->GetSpellInfo(SPELL_HUNTER_KILL_COMMAND))
+                return false;
             return true;
-        }	
+        }
 
         SpellCastResult CheckCastMeet()
         {
@@ -774,19 +776,18 @@ public:
 
         void HandleDummy(SpellEffIndex /*effIndex*/)
         {
-          Unit* pet = GetCaster()->GetGuardianPet();
+            Unit* pet = GetCaster()->GetGuardianPet();
 
             if (!pet)
                 return;
 
-            pet->CastSpell(pet->getVictim(), HUNTER_SPELL_KILL_COMMAND_TRIGGER, true);
+            pet->CastSpell(pet->getVictim(), SPELL_HUNTER_KILL_COMMAND_TRIGGER, true);
         }
-        
-       
+
         void Register()
         {
             OnCheckCast += SpellCheckCastFn(spell_hun_kill_command_SpellScript::CheckCastMeet);
-           OnEffectHit += SpellEffectFn(spell_hun_kill_command_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+            OnEffectHit += SpellEffectFn(spell_hun_kill_command_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
         }
     };
 
@@ -813,5 +814,5 @@ void AddSC_hunter_spell_scripts()
     new spell_hun_sniper_training();
     new spell_hun_tame_beast();
     new spell_hun_target_only_pet_and_owner();
-	new spell_hun_kill_command();
+    new spell_hun_kill_command();
 }

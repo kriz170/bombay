@@ -2069,7 +2069,7 @@ enum Shadowfiend
 
 class npc_shadowfiend : public CreatureScript
 {
-    public:
+public:
     npc_shadowfiend() : CreatureScript("npc_shadowfiend") { }
 
     struct npc_shadowfiendAI : public ScriptedAI
@@ -2082,7 +2082,8 @@ class npc_shadowfiend : public CreatureScript
                 if (Unit* owner = me->ToTempSummon()->GetSummoner())
                     if (Unit* pet = owner->GetGuardianPet())
                         pet->CastSpell(pet, MANA_LEECH, true);
-		}
+        }
+
         void DamageTaken(Unit* /*killer*/, uint32& damage)
         {
             if (me->isSummon())
@@ -2098,8 +2099,9 @@ class npc_shadowfiend : public CreatureScript
 
             DoMeleeAttackIfReady();
         }
-	};
-	CreatureAI* GetAI(Creature* creature) const
+    };
+
+    CreatureAI* GetAI(Creature* creature) const
     {
         return new npc_shadowfiendAI(creature);
     }
