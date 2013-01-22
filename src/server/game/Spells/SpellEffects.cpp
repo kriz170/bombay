@@ -407,7 +407,7 @@ void Spell::EffectSchoolDMG(SpellEffIndex effIndex)
 				// Rain of Fire
                 if (m_spellInfo->Id == 42223)
                 {
-                    sLog->outDetail("Aftermath handling");
+                    
                     if(m_caster->HasAura(85113)) // Aftermath Rank 1
                         if (roll_chance_f(6.0f))
                             m_caster->CastSpell(unitTarget, 85387, true);
