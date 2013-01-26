@@ -1,4 +1,4 @@
--- 85256 - Templar's Verdict
-DELETE FROM `spell_script_names` WHERE `spell_id`=85256;
+-- 20271 - Judgement
+DELETE FROM `spell_script_names` WHERE `spell_id`=20271;
 INSERT INTO `spell_script_names` VALUES
-(85256,'spell_pal_templar_s_verdict');
+(20271,'spell_pal_judgement');

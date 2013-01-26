@@ -52,7 +52,11 @@ enum PaladinSpells
     SPELL_PALADIN_HAND_OF_SACRIFICE              = 6940,
     SPELL_PALADIN_DIVINE_SACRIFICE               = 64205,
 
-    SPELL_PALADIN_DIVINE_PURPOSE_PROC            = 90174
+    SPELL_PALADIN_DIVINE_PURPOSE_PROC            = 90174,
+    
+    SPELL_PALADIN_SEAL_OF_JUSTICE                = 20164,
+    SPELL_PALADIN_SEAL_OF_INSIGHT                = 20165,
+    SPELL_PALADIN_JUDGEMENT_DAMAGE               = 54158
 };
 
 // 31850 - Ardent Defender
@@ -752,7 +756,7 @@ class spell_pal_templar_s_verdict : public SpellScriptLoader
             }
 
             void ChangeDamage(SpellEffIndex /*effIndex*/)
-            {                
+            {
                 Unit* caster = GetCaster();
                 int32 damage = GetHitDamage();
 
@@ -789,6 +793,81 @@ class spell_pal_templar_s_verdict : public SpellScriptLoader
         }
 };
 
+// 20271 - Judgement
+/// Updated 4.3.4
+class spell_pal_judgement : public SpellScriptLoader
+{
+    public:
+        spell_pal_judgement() : SpellScriptLoader("spell_pal_judgement") { }
+
+        class spell_pal_judgement_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_pal_judgement_SpellScript);
+
+            bool Validate(SpellInfo const* /*spellEntry*/)
+            {
+                if (!sSpellMgr->GetSpellInfo(SPELL_PALADIN_DIVINE_PURPOSE_PROC))
+                    return false;
+
+                return true;
+            }
+            
+            void SwitchSpell()
+            {
+                if(Unit* target = GetExplTargetUnit())
+                {
+                    Unit* caster = GetCaster();
+                    uint32 spellId = 0;
+
+                    // Seal of Truth and Seal of Righteousness have a dummy aura on effect 2
+                    Unit::AuraApplicationMap & sealAuras = caster->GetAppliedAuras();
+                    for (Unit::AuraApplicationMap::iterator iter = sealAuras.begin(); iter != sealAuras.end();)
+                    {
+                        Aura* aura = iter->second->GetBase();
+                        if (aura->GetSpellInfo()->GetSpellSpecific() == SPELL_SPECIFIC_SEAL)
+                        {
+                            if (AuraEffect* aureff = aura->GetEffect(2))
+                            {
+                                if (aureff->GetAuraType() == SPELL_AURA_DUMMY)
+                                {
+                                    if (sSpellMgr->GetSpellInfo(aureff->GetAmount()))
+                                        spellId = aureff->GetAmount();
+                                    break;
+                                }
+                            }
+                            if (!spellId)
+                            {
+                                switch (iter->first)
+                                {
+                                    // Seal of Insight, Seal of Justice
+                                    case SPELL_PALADIN_SEAL_OF_JUSTICE:
+                                    case SPELL_PALADIN_SEAL_OF_INSIGHT:
+                                        spellId = SPELL_PALADIN_JUDGEMENT_DAMAGE;
+                                }
+                            }
+                            break;
+                        }
+                        else
+                            ++iter;
+                    }
+                    // Cast Judgement
+                    if (spellId)
+                        caster->CastSpell(target, spellId, true);
+                }
+            }
+
+            void Register()
+            {
+                OnCast += SpellCastFn(spell_pal_judgement_SpellScript::SwitchSpell);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_pal_judgement_SpellScript();
+        }
+};
+
 void AddSC_paladin_spell_scripts()
 {
     //new spell_pal_ardent_defender();
@@ -804,4 +883,5 @@ void AddSC_paladin_spell_scripts()
     new spell_pal_righteous_defense();
     new spell_pal_sacred_shield();
     new spell_pal_templar_s_verdict();
+    new spell_pal_judgement();
 }
