@@ -6422,6 +6422,13 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
             }
             switch (dummySpell->Id)
             {
+                // Judgements of the Bold
+                case 89901:
+                {
+                    target = this;
+                    triggered_spell_id = 89906;
+                    break;
+                }
                 // Sacred Shield
                 case 53601:
                 {
