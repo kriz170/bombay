@@ -6420,13 +6420,6 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
 
                 return false;
             }
-            // Judgements of the Wise
-            if (dummySpell->SpellIconID == 3017)
-            {
-                target = this;
-                triggered_spell_id = 31930;
-                break;
-            }
             switch (dummySpell->Id)
             {
                 // Sacred Shield
