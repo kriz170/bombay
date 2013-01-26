@@ -2051,14 +2051,15 @@ SpellSpecificType SpellInfo::GetSpellSpecific() const
         {
             // Collection of all the seal family flags. No other paladin spell has any of those.
             if (SpellFamilyFlags[1] & 0x26000C00
-                || SpellFamilyFlags[0] & 0x0A000000)
+                || SpellFamilyFlags[0] & 0x0A000000
+                || SpellFamilyFlags[1] & 0x80000000)        // Seal of Justice
                 return SPELL_SPECIFIC_SEAL;
 
             if (SpellFamilyFlags[0] & 0x00002190)
                 return SPELL_SPECIFIC_HAND;
 
-            // Judgement of Wisdom, Judgement of Light, Judgement of Justice
-            if (Id == 20184 || Id == 20185 || Id == 20186)
+            // Judgement, Judgement of Truth, Judgement of Righteoussness, Judgement of Light
+            if (Id == 20271 || Id == 31804 || Id == 20187 || Id == 54158)
                 return SPELL_SPECIFIC_JUDGEMENT;
 
             // only paladin auras have this (for palaldin class family)
