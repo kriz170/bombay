@@ -755,6 +755,7 @@ class spell_pal_templar_s_verdict : public SpellScriptLoader
             {                
                 Unit* caster = GetCaster();
                 int32 damage = GetHitDamage();
+
                 if (caster->HasAura(SPELL_PALADIN_DIVINE_PURPOSE_PROC))
                     damage *= 7.5;  // 7.5*30% = 225%
                 else
