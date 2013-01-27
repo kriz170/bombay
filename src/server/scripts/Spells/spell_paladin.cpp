@@ -794,6 +794,61 @@ class spell_pal_templar_s_verdict : public SpellScriptLoader
         }
 };
 
+// 53600 - Shield of the Righteous
+/// Updated 4.3.4
+class spell_pal_shield_of_the_righteous : public SpellScriptLoader
+{
+    public:
+        spell_pal_shield_of_the_righteous() : SpellScriptLoader("spell_pal_shield_of_the_righteous") { }
+
+        class spell_pal_shield_of_the_righteous_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_pal_shield_of_the_righteous_SpellScript);
+
+            bool Load()
+            {
+                if (GetCaster()->GetTypeId() != TYPEID_PLAYER)
+                    return false;
+
+                if (GetCaster()->ToPlayer()->getClass() != CLASS_PALADIN)
+                    return false;
+
+                return true;
+            }
+
+            void ChangeDamage(SpellEffIndex /*effIndex*/)
+            {
+                Unit* caster = GetCaster();
+                int32 damage = GetHitDamage();
+
+                switch (caster->GetPower(POWER_HOLY_POWER))
+                {
+                    case 0: // 1 Holy Power
+                        damage = damage;    // (X - 1)
+                        break;
+                    case 1: // 2 Holy Power
+                        damage *= 3;        // 3*(X - 1) = (X*3 - 3)
+                        break;
+                    case 2: // 3 Holy Power
+                        damage *= 6;        // 6*(X - 1) = (X*6 - 6)
+                        break;
+                }
+
+                SetHitDamage(damage);
+            }
+
+            void Register()
+            {
+                OnEffectHitTarget += SpellEffectFn(spell_pal_shield_of_the_righteous_SpellScript::ChangeDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_pal_shield_of_the_righteous_SpellScript();
+        }
+};
+
 // 20271 - Judgement
 /// Updated 4.3.4
 class spell_pal_judgement : public SpellScriptLoader
@@ -932,6 +987,7 @@ void AddSC_paladin_spell_scripts()
     new spell_pal_righteous_defense();
     new spell_pal_sacred_shield();
     new spell_pal_templar_s_verdict();
+    new spell_pal_shield_of_the_righteous();
     new spell_pal_judgement();
     new spell_pal_judgements_of_the_bold();
 }
