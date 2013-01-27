@@ -34,3 +34,9 @@ DELETE FROM `spell_proc_event` WHERE `entry` IN (75806, 85043);
 INSERT INTO `spell_proc_event` (`entry`, `SchoolMask`, `SpellFamilyName`, `SpellFamilyMask0`, `SpellFamilyMask1`, `SpellFamilyMask2`, `procFlags`, `procEx`, `ppmRate`, `CustomChance`, `Cooldown`) VALUES 
 (75806, 0, 10, 0, 294912, 0, 16, 0, 0, 0, 0),
 (85043, 0, 10, 0, 294912, 0, 16, 0, 0, 0, 0);
+
+-- Infusion of Light proc
+DELETE FROM `spell_proc_event` WHERE `entry` IN (53569, 53576);
+INSERT INTO `spell_proc_event` (`entry`, `SchoolMask`, `SpellFamilyName`, `SpellFamilyMask0`, `SpellFamilyMask1`, `SpellFamilyMask2`, `procFlags`, `procEx`, `ppmRate`, `CustomChance`, `Cooldown`) VALUES 
+(53569, 0, 10, 2097152, 65536, 0, 0, 2, 0, 0, 0),
+(53576, 0, 10, 2097152, 65536, 0, 0, 2, 0, 0, 0);
