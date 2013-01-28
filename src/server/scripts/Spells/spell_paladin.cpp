@@ -62,7 +62,9 @@ enum PaladinSpells
     SPELL_PALADIN_HAND_OF_SACRIFICE              = 6940,
     SPELL_PALADIN_DIVINE_SACRIFICE               = 64205,
 
-    SPELL_PALADIN_DIVINE_PURPOSE_PROC            = 90174
+    SPELL_PALADIN_DIVINE_PURPOSE_PROC            = 90174,
+
+    SPELL_PALADIN_SPEED_OF_LIGHT_BUFF            = 85497
 };
 
 // 31850 - Ardent Defender
@@ -996,6 +998,43 @@ class spell_pal_shield_of_the_righteous : public SpellScriptLoader
         }
 };
 
+// 85495,85498,85499 - Speed of Light
+/// Updated 4.3.4
+class spell_pal_speed_of_light : public SpellScriptLoader
+{
+    public:
+        spell_pal_speed_of_light() : SpellScriptLoader("spell_pal_speed_of_light") { }
+
+        class spell_pal_speed_of_light_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_pal_speed_of_light_AuraScript);
+
+            bool Validate(SpellInfo const* /*spellInfo*/)
+            {
+                if (!sSpellMgr->GetSpellInfo(SPELL_PALADIN_SPEED_OF_LIGHT_BUFF))
+                    return false;
+                return true;
+            }
+
+            void HandleProc(AuraEffect const* aurEff, ProcEventInfo& /*eventInfo*/)
+            {
+                PreventDefaultAction();
+                if (Unit* caster = GetCaster())
+                    caster->CastCustomSpell(SPELL_PALADIN_SPEED_OF_LIGHT_BUFF, SPELLVALUE_BASE_POINT0, aurEff->GetAmount(), caster);
+            }
+
+            void Register()
+            {
+                OnEffectProc += AuraEffectProcFn(spell_pal_speed_of_light_AuraScript::HandleProc, EFFECT_1, SPELL_AURA_DUMMY);
+            }
+        };
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_pal_speed_of_light_AuraScript();
+        }
+};
+
 // 85256 - Templar's Verdict
 /// Updated 4.3.4
 class spell_pal_templar_s_verdict : public SpellScriptLoader
@@ -1083,5 +1122,6 @@ void AddSC_paladin_spell_scripts()
     new spell_pal_righteous_defense();
     new spell_pal_sacred_shield();
     new spell_pal_shield_of_the_righteous();
+    new spell_pal_speed_of_light();
     new spell_pal_templar_s_verdict();
 }

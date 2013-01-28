@@ -57,3 +57,16 @@ DELETE FROM `spell_proc_event` WHERE `entry` IN (53556,53557);
 INSERT INTO `spell_proc_event` (`entry`, `SchoolMask`, `SpellFamilyName`, `SpellFamilyMask0`, `SpellFamilyMask1`, `SpellFamilyMask2`, `procFlags`, `procEx`, `ppmRate`, `CustomChance`, `Cooldown`) VALUES 
 (53556, 0, 10, 8388608, 0, 0, 0, 0, 0, 0, 0),
 (53557, 0, 10, 8388608, 0, 0, 0, 0, 0, 0, 0);
+
+-- 85495 - Speed of Light
+DELETE FROM `spell_script_names` WHERE `ScriptName`='spell_pal_speed_of_light';
+INSERT INTO `spell_script_names` VALUES
+(85495,'spell_pal_speed_of_light'),
+(85498,'spell_pal_speed_of_light'),
+(85499,'spell_pal_speed_of_light');
+-- Proc
+DELETE FROM `spell_proc_event` WHERE `entry` IN (85495,85498,85499);
+INSERT INTO `spell_proc_event` (`entry`, `SchoolMask`, `SpellFamilyName`, `SpellFamilyMask0`, `SpellFamilyMask1`, `SpellFamilyMask2`, `procFlags`, `procEx`, `ppmRate`, `CustomChance`, `Cooldown`) VALUES 
+(85495, 0, 10, 0x00400000, 0, 0, 0, 0x10000, 0, 0, 0),
+(85498, 0, 10, 0x00400000, 0, 0, 0, 0x10000, 0, 0, 0),
+(85499, 0, 10, 0x00400000, 0, 0, 0, 0x10000, 0, 0, 0);
