@@ -47,6 +47,8 @@ enum PaladinSpells
 
     SPELL_PALADIN_AVENGER_S_SHIELD               = 31935,
 
+    SPELL_PALADIN_INQUISITION                    = 84963,
+
     SPELL_PALADIN_FORBEARANCE                    = 25771,
     SPELL_PALADIN_AVENGING_WRATH_MARKER          = 61987,
     SPELL_PALADIN_IMMUNE_SHIELD_MARKER           = 61988,
@@ -606,6 +608,57 @@ class spell_pal_holy_shock : public SpellScriptLoader
         }
 };
 
+// 84963 - Inquisiton
+/// Updated 4.3.4
+class spell_pal_inquisiton : public SpellScriptLoader
+{
+    public:
+        spell_pal_inquisiton() : SpellScriptLoader("spell_pal_inquisiton") { }
+
+        class spell_pal_inquisiton_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_pal_inquisiton_SpellScript);
+
+            int32 holyPower;
+
+            bool Load()
+            {
+                if (GetCaster()->GetTypeId() != TYPEID_PLAYER)
+                    return false;
+
+                if (GetCaster()->ToPlayer()->getClass() != CLASS_PALADIN)
+                    return false;
+
+                return true;
+            }
+
+            void GetHP(SpellEffIndex /*effIndex*/)
+            {
+                holyPower = GetCaster()->GetPower(POWER_HOLY_POWER);
+            }
+
+            void UpdateDuration()
+            {
+                if (Aura* aura = GetCaster()->GetAura(SPELL_PALADIN_INQUISITION))
+                {
+                    int32 duration = aura->GetMaxDuration();
+                    aura->SetDuration(duration*(holyPower+1));
+                }
+            }
+
+            void Register()
+            {
+                OnEffectHitTarget += SpellEffectFn(spell_pal_inquisiton_SpellScript::GetHP, EFFECT_0, SPELL_EFFECT_APPLY_AURA);
+                AfterHit += SpellHitFn(spell_pal_inquisiton_SpellScript::UpdateDuration);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_pal_inquisiton_SpellScript();
+        }
+};
+
 // 20425 - Judgement of Command
 class spell_pal_judgement_of_command : public SpellScriptLoader
 {
@@ -1021,6 +1074,7 @@ void AddSC_paladin_spell_scripts()
     new spell_pal_guarded_by_the_light();
     new spell_pal_hand_of_sacrifice();
     new spell_pal_holy_shock();
+    new spell_pal_inquisiton();
     new spell_pal_judgement_of_command();
     new spell_pal_lay_on_hands();
     new spell_pal_righteous_defense();

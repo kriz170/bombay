@@ -46,3 +46,8 @@ DELETE FROM `spell_proc_event` WHERE `entry` IN (88820,88821);
 INSERT INTO `spell_proc_event` (`entry`, `SchoolMask`, `SpellFamilyName`, `SpellFamilyMask0`, `SpellFamilyMask1`, `SpellFamilyMask2`, `procFlags`, `procEx`, `ppmRate`, `CustomChance`, `Cooldown`) VALUES 
 (88820, 0, 10, 3221225472, 0, 1024, 0, 0, 0, 0, 0),
 (88821, 0, 10, 3221225472, 0, 1024, 0, 0, 0, 0, 0);
+
+-- 84963 - Inquisiton
+DELETE FROM `spell_script_names` WHERE `spell_id`=84963;
+INSERT INTO `spell_script_names` VALUES
+(84963,'spell_pal_inquisiton');
