@@ -51,3 +51,9 @@ INSERT INTO `spell_proc_event` (`entry`, `SchoolMask`, `SpellFamilyName`, `Spell
 DELETE FROM `spell_script_names` WHERE `spell_id`=84963;
 INSERT INTO `spell_script_names` VALUES
 (84963,'spell_pal_inquisiton');
+
+-- Enlightened Judgement proc
+DELETE FROM `spell_proc_event` WHERE `entry` IN (53556,53557);
+INSERT INTO `spell_proc_event` (`entry`, `SchoolMask`, `SpellFamilyName`, `SpellFamilyMask0`, `SpellFamilyMask1`, `SpellFamilyMask2`, `procFlags`, `procEx`, `ppmRate`, `CustomChance`, `Cooldown`) VALUES 
+(53556, 0, 10, 8388608, 0, 0, 0, 0, 0, 0, 0),
+(53557, 0, 10, 8388608, 0, 0, 0, 0, 0, 0, 0);
