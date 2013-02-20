@@ -4712,6 +4712,11 @@ void Spell::HandleHolyPower(Player* caster)
             m_caster->ModifyPower(POWER_HOLY_POWER, -m_powerCost);
         }
     }
+    else if (m_spellInfo->Id == 84963 || m_spellInfo->Id == 85222)  // Inquisition and Light of Dawn didn't have target
+    {
+        modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_COST, m_powerCost);
+        m_caster->ModifyPower(POWER_HOLY_POWER, -m_powerCost);
+    }
 }
 
 void Spell::HandleEffects(Unit* pUnitTarget, Item* pItemTarget, GameObject* pGOTarget, uint32 i, SpellEffectHandleMode mode)
@@ -5069,6 +5074,16 @@ SpellCastResult Spell::CheckCast(bool strict)
         // for effects of spells that have only one target
         switch (m_spellInfo->Effects[i].Effect)
         {
+            case SPELL_EFFECT_ADD_COMBO_POINTS:
+            {
+                if (m_spellInfo->Id == 73981)          // Redirect
+                {
+                    if (Player* plrCaster = m_caster->ToPlayer())
+                       if (!plrCaster->GetComboPoints())
+                            return SPELL_FAILED_NO_COMBO_POINTS;
+                }
+                break;
+            }
             case SPELL_EFFECT_DUMMY:
             {
                 if (m_spellInfo->Id == 19938)          // Awaken Peon
